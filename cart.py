@@ -11,7 +11,7 @@ class Cart:
             raise TypeError("This has to be an instance of Product")
 
     def remove_product(self, index: int):
-        if 0 <= index < len(self.products):
+        if 0 <= index:
             removed_product = self.products.pop(index)  # Usuwa produkt z podanym indeksie
             print(f"Produkt {removed_product.name_tag} został usunięty.")
         else:
