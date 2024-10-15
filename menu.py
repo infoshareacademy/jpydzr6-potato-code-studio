@@ -11,17 +11,17 @@ if __name__ == '__main__':
     def menu():
         while True:
             command = input("""
-    Witamy w sklepie z ekologiczną żywnością "EKO"!
+Witamy w sklepie z ekologiczną żywnością "EKO"!
     
     
-    Wybierz działanie:
+Wybierz działanie:
                             
-    [1] Wyświetl produkty
-    [2] Pokaż koszyk
-    [3] Dodaj do koszyka
-    [Q] Wyjście z programu
+[1] Wyświetl produkty
+[2] Pokaż koszyk
+[3] Dodaj do koszyka
+[Q] Wyjście z programu
                             
-    """)
+""")
 
 
             match command:
