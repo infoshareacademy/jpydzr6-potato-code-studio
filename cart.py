@@ -12,7 +12,7 @@ class Cart:
 
     def remove_product(self, index: int):
         if 0 <= index:
-            removed_product = self.products.pop(index)  # Usuwa produkt z podanym indeksie
+            removed_product = self.products.pop(index)  # It'll delete an item with selected index
             print(f"Produkt {removed_product.name_tag} został usunięty.")
         else:
             print("Nieprawidłowy indeks!")
