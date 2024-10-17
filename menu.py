@@ -4,9 +4,8 @@
 
 if __name__ == '__main__':
 
-    produkty = {}
-    koszyk = {}
-    dodawanie_do_koszyka = {}
+    products = {}
+    basket = {}
 
     def menu():
         while True:
@@ -18,7 +17,6 @@ Wybierz działanie:
                             
 [1] Wyświetl produkty
 [2] Pokaż koszyk
-[3] Dodaj do koszyka
 [Q] Wyjście z programu
                             
 """)
@@ -29,9 +27,6 @@ Wybierz działanie:
                     pass # Trzeba to dalej rozwinąć
 
                 case "2":
-                    pass # Trzeba to dalej rozwinąć
-
-                case "3":
                     pass # Trzeba to dalej rozwinąć
 
                 case "q":
