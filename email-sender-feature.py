@@ -6,12 +6,12 @@ from email.mime.multipart import MIMEMultipart
 import dotenv
 from dotenv import load_dotenv
 
-# MUST INSTALL dotenv !!!! "pip install python-dotenv"
+# MUST INSTALL dotenv !!!!! "pip install python-dotenv"
 load_dotenv(dotenv_path='.env')
 smtp_server = "smtp.wp.pl"
 port = 465
 sender_email = "biopotato@wp.pl"  # Company's mail
-password = os.getenv("mail_password")  # our password, well duh
+password = os.getenv("mail_password")  # our password, well duh load it using dotenv library and password from .env
 
 
 def send_mail():
