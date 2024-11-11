@@ -1,10 +1,11 @@
 # Menu do projektu "SKLEP Z ŻYWNOŚCIĄ EKOLOGICZNĄ"
 # Wersja 1.0
 # Potato Code Studio
+from products_display import display_products, load_products
 
 if __name__ == '__main__':
 
-    products = {}
+    products = load_products('list_of_products.json')
     basket = {}
 
     def menu():
@@ -24,7 +25,7 @@ Wybierz działanie:
 
             match command:
                 case "1":
-                    pass # Trzeba to dalej rozwinąć
+                    display_products(products)
 
                 case "2":
                     pass # Trzeba to dalej rozwinąć
