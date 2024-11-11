@@ -6,32 +6,35 @@ def load_products(filename):
             data = json.load(file)
         return data.get('Products', [])
     except FileNotFoundError:
-        print("JSON file not found.")
+        print("Nie znaleziono pliku JSON.")
     except json.JSONDecodeError:
-        print("JSON file decoding error.")
+        print("Błąd dekodowania pliku JSON.")
     return []
 
 def display_product(product):
     if not isinstance(product, dict):
         return
     fields = {
-        'Name': 'name_tag',
-        'Price': 'price',
-        'Expiry date': 'exp_date',
-        'Discount': 'promo',
-        'Producer': 'producer',
-        'Weight': 'weight'
+        'Nazwa': 'name_tag',
+        'Cena': 'price',
+        'Data ważności': 'exp_date',
+        'Promocja': 'promo',
+        'Producent': 'producer',
+        'Waga': 'weight'
     }
 
     for name, key in fields.items():
         value = product.get(key, 'No data')
-        if key == 'price' and isinstance(value, (int, float)):
-            value = f"{value: .2f} PLN"
+        if key == 'price':
+            try:
+                value = f"{float(value): .2f} PLN"
+            except ValueError:
+                value = "Niepoprawna cena produktu"
         print(f"{name}: {value}")
 
 def display_products(products):
     if not products:
-        print("No products to display.")
+        print("Brak produktów do wyświetlenia.")
         return
 
     for product in products:
