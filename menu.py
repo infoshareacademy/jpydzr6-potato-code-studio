@@ -2,6 +2,8 @@
 # Wersja 1.0
 # Potato Code Studio
 
+from mini_quiz_bio.showing_question import showing_all
+
 if __name__ == '__main__':
 
     produkty = {}
@@ -19,6 +21,7 @@ Wybierz działanie:
 [1] Wyświetl produkty
 [2] Pokaż koszyk
 [3] Dodaj do koszyka
+[4] Mini Quiz o tematyce BIO
 [Q] Wyjście z programu
                             
 """)
@@ -33,6 +36,9 @@ Wybierz działanie:
 
                 case "3":
                     pass # Trzeba to dalej rozwinąć
+
+                case "4":
+                    showing_all()
 
                 case "q":
                     print("Zapraszamy ponownie!")
