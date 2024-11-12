@@ -1,20 +1,20 @@
 import json
 
-def wczytaj_produkty(nazwa_pliku):
+def load_products(filename):
     try:
-        with open(nazwa_pliku, 'r') as plik:
-            dane = json.load(plik)
-        return dane.get('Products', [])
+        with open(filename, 'r') as file:
+            data = json.load(file)
+        return data.get('Products', [])
     except FileNotFoundError:
-        print("Plik JSON nie został znaleziony.")
+        print("Nie znaleziono pliku JSON.")
     except json.JSONDecodeError:
         print("Błąd dekodowania pliku JSON.")
     return []
 
-def wyswietl_produkt(produkt):
-    if not isinstance(produkt, dict):
+def display_product(product):
+    if not isinstance(product, dict):
         return
-    pola = {
+    fields = {
         'Nazwa': 'name_tag',
         'Cena': 'price',
         'Data ważności': 'exp_date',
@@ -23,32 +23,20 @@ def wyswietl_produkt(produkt):
         'Waga': 'weight'
     }
 
-    for nazwa, klucz in pola.items():
-        print(f"{nazwa}: {produkt.get(klucz, 'Brak danych')}")
+    for name, key in fields.items():
+        value = product.get(key, 'No data')
+        if key == 'price':
+            try:
+                value = f"{float(value): .2f} PLN"
+            except ValueError:
+                value = "Niepoprawna cena produktu"
+        print(f"{name}: {value}")
 
-def wyswietl_produkty(produkty):
-    if not produkty:
+def display_products(products):
+    if not products:
         print("Brak produktów do wyświetlenia.")
         return
 
-    for produkt in produkty:
-        wyswietl_produkt(produkt)
+    for product in products:
+        display_product(product)
         print()
-
-def main():
-    nazwa_pliku = 'list_of_products.json'
-    produkty = wczytaj_produkty(nazwa_pliku)
-
-    while True:
-        print("Menu: \n0. Zakończ \n1. Wyświetl listę produktów")
-        wybor = input("Wybierz opcję: ")
-
-        if wybor == '1':
-            wyswietl_produkty(produkty)
-        elif wybor == '0':
-            break
-        else:
-            print("Nieprawidłowa opcja, spróbuj ponownie.")
-
-if __name__ == "__main__":
-    main()
