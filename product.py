@@ -26,7 +26,7 @@ class Product:
         Shows an ID of created object and its details
         """
         return (
-            f"Produkt: {self.name_tag} o wadze  {self.weight} gramów ,wyprodukowany przez '{self.producer}' kosztuje:"
+            f"Produkt: {self.name_tag} o wadze  {self.weight} gramów, wyprodukowany przez '{self.producer}' kosztuje:"
             f" {self.price}PLN "
             f"jest ważny do: ({self.exp_date} i zostanie dostarczony w ciągu {self.delivery_time_to_customer} dni!)")
 
