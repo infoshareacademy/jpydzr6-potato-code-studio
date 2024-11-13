@@ -1,5 +1,8 @@
+
+
 from product import  Product
 class Cart:
+
     def __init__(self):
         self.products = []
 
@@ -18,10 +21,8 @@ class Cart:
             print("Nieprawidłowy indeks!")
 
     def total_price(self):
-        if len(self.products) > 0:
-            return  f"Twój koszyk jest warty: {sum(product.price for product in self.products)} PLN"
-        else:
-            return f"" # if that weren't to be here it'd print out none
+        total_price_of_products = {sum(product.price for product in self.products)}
+        return f"Twój koszyk jest warty: {total_price_of_products} PLN" if len(self.products) > 0 else ""
 
     def show_cart(self):
         if len(self.products) == 0:
