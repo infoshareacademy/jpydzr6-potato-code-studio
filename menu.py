@@ -3,6 +3,8 @@
 # Potato Code Studio
 from products_display import display_products, load_products
 
+from mini_quiz_bio.showing_question import showing_all
+
 if __name__ == '__main__':
     products = load_products('list_of_products.json')
     basket = {}
@@ -17,6 +19,8 @@ Wybierz działanie:
 
 [1] Wyświetl produkty
 [2] Pokaż koszyk
+[3] Dodaj do koszyka
+[4] Mini Quiz o tematyce BIO
 [Q] Wyjście z programu
 
     """)
@@ -31,7 +35,14 @@ Wybierz działanie:
             case "q":
                 print("Zapraszamy ponownie!")
                 break
+                
+                case "4":
+                    showing_all()
 
+                case "q":
+                    print("Zapraszamy ponownie!")
+                    break
+                    
             case other:
                 print("Niewłaściwy wybór. Spróbuj jeszcze raz")
 
