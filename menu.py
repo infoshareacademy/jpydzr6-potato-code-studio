@@ -32,14 +32,13 @@ Wybierz działanie:
             case "2":
                 pass  # Trzeba to dalej rozwinąć
 
-            case "q":
-                print("Zapraszamy ponownie!")
-                break
-                
-                case "4":
+            case "3":
+                pass
+
+            case "4":
                     showing_all()
 
-                case "q":
+            case "q":
                     print("Zapraszamy ponownie!")
                     break
                     
