@@ -5,8 +5,8 @@ from products_display import display_products, load_products
 
 from mini_quiz_bio.showing_question import showing_all
 
-if __name__ == '__main__':
-    products = load_products('list_of_products.json')
+if __name__ == "__main__":
+    products = load_products("list_of_products.json")
     basket = {}
 
 
@@ -36,12 +36,12 @@ Wybierz działanie:
                 pass
 
             case "4":
-                    showing_all()
+                showing_all()
 
             case "q":
-                    print("Zapraszamy ponownie!")
-                    break
-                    
+                print("Zapraszamy ponownie!")
+                break
+
             case other:
                 print("Niewłaściwy wybór. Spróbuj jeszcze raz")
 
