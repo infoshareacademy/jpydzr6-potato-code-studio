@@ -99,26 +99,6 @@
       "weight": 500,
       "amount": 10,
       "category": "Owoce"
-    },
-    {
-      "name_tag": "Test1",
-      "price": 8,
-      "exp_date": "2024-12-03",
-      "producer": "Ktoś",
-      "weight": 10,
-      "promo": 0,
-      "amount": 10,
-      "category": "Owoce"
-    },
-    {
-      "name_tag": "Test1",
-      "price": 8,
-      "exp_date": "2024-12-03",
-      "producer": "Ktoś",
-      "weight": 10,
-      "promo": 0,
-      "amount": 10,
-      "category": "Owoce"
     }
   ]
 }
