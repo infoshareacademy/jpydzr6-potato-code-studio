@@ -60,4 +60,3 @@ def add_new_product():
     print(f"Produkt {name_tag} został dodany do sklepu!")
 
 
-add_new_product()
