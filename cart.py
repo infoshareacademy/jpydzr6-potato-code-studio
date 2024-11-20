@@ -31,4 +31,10 @@ class Cart:
             for product in self.products:
                 print(product)
 
+    def summary(self):
+        self.show_cart()
+        total_price = self.total_price()
+        total_loyalty_points = self.get_points()
 
+        print(f"\nŁączna kwota: {total_price} PLN")
+        print(f"Łączna ilość punktów lojalnościowych: {total_loyalty_points}")
