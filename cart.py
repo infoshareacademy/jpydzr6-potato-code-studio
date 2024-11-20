@@ -64,3 +64,4 @@ class Cart:
 
         print(f"\nŁączna kwota: {total_price} PLN")
         print(f"Łączna ilość punktów lojalnościowych: {total_loyalty_points}")
+        
