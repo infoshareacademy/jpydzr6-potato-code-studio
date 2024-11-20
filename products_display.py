@@ -36,7 +36,7 @@ def display_product(product):
         print(f"{name}: {value}")
 
 
-def display_products(products):
+def display_products(products, cart):
     if not products:
         print("Brak produktów do wyświetlenia.")
         return
@@ -44,8 +44,6 @@ def display_products(products):
     for product in products:
         display_product(product)
         print()
-
-    cart = Cart(products)
 
     while True:
         print("\n1. Dodaj produkt do koszyka")
