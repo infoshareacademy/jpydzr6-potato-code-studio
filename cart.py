@@ -55,7 +55,7 @@ class Cart:
             print("Twój koszyk jest pusty")
         else:
             for product in self.basket:
-                print(f"- {product['name_tag']}, cena: {product['price']} PLN\n")
+                print(f"- {product['name_tag']}, cena: {product['price']:.2f} PLN\n")
 
     def summary(self):
         self.show_cart()
@@ -64,4 +64,3 @@ class Cart:
 
         print(f"\nŁączna kwota: {total_price} PLN")
         print(f"Łączna ilość punktów lojalnościowych: {total_loyalty_points}")
-        
