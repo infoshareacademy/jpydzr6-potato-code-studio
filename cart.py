@@ -50,6 +50,9 @@ class Cart:
             else ""
         )
 
+    def get_points(self)-> int:
+        return sum(int(product["loyalty_points"]) for product in self.basket)
+
     def show_cart(self):
         if len(self.basket) == 0:
             print("Twój koszyk jest pusty")
@@ -62,5 +65,5 @@ class Cart:
         total_price = self.total_price()
         total_loyalty_points = self.get_points()
 
-        print(f"\nŁączna kwota: {total_price} PLN")
+        print(f"\nŁączna kwota: {total_price:.2f} PLN")
         print(f"Łączna ilość punktów lojalnościowych: {total_loyalty_points}")
