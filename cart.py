@@ -58,7 +58,15 @@ class Cart:
             print("Twój koszyk jest pusty")
         else:
             for product in self.basket:
-                print(f"- {product['name_tag']}, cena: {product['price']:.2f} PLN\n")
+                name = product.get('name_tag', 'Unknown')
+                price = product.get('price', 0.0)
+                
+                try:
+                    price = float(price)
+                except ValueError:
+                    price = 0.0
+                
+                print(f"- {name}, cena: {price:.2f} PLN")
 
     def summary(self):
         self.show_cart()
