@@ -14,6 +14,7 @@ if __name__ == "__main__":
     cart = Cart(products)
 
 
+
 def menu():
     print('Witamy w sklepie z ekologiczną żywnością "EKO"!')
 
@@ -26,6 +27,7 @@ Wybierz działanie:
 [3] Usuń produkt z koszuka
 [4] Mini Quiz o tematyce BIO
 [5] Dodaj produkt do magazynu
+[6] Sortuj produkty
 [Q] Wyjście z programu
 
     """)
@@ -47,6 +49,35 @@ Wybierz działanie:
             case "5":
                 add_new_product()
 
+            case "6":
+                sort_option = input("""
+            Wybierz sposób sortowania:
+            [a] Cena rosnąco
+            [b] Cena malejąco
+            [c] Producent A-Z
+            [d] Producent Z-A
+            [e] Nazwa A-Z
+            [f] Nazwa Z-A
+            [g] Czas dostawy (malejąco)
+
+                """).lower()
+                match sort_option:
+                    case 'a':
+                        Product.sort_products(products, 'price', 'asc')
+                    case 'b':
+                        Product.sort_products(products, 'price', 'desc')
+                    case 'c':
+                        Product.sort_products(products, 'producer', 'asc')
+                    case 'd':
+                        Product.sort_products(products, 'producer', 'desc')
+                    case 'e':
+                        Product.sort_products(products, 'name', 'asc')
+                    case 'f':
+                        Product.sort_products(products, 'name', 'desc')
+                    case 'g':
+                        pass #further development needed
+                    case other:
+                        print("Niewłaściwy wybór. Spróbuj jeszcze raz.")
             case "q":
                 print("Zapraszamy ponownie!")
                 break
