@@ -3,7 +3,7 @@
 # Potato Code Studio
 from products_display import display_products, load_products
 from product import Product
-from add_product import add_new_product
+from add_product import add_new_product_to_warehouse
 from mini_quiz_bio.showing_question import showing_all
 from cart import Cart
 
@@ -45,7 +45,7 @@ Wybierz działanie:
                 showing_all()
 
             case "5":
-                add_new_product()
+                add_new_product_to_warehouse()
 
             case "q":
                 print("Zapraszamy ponownie!")
