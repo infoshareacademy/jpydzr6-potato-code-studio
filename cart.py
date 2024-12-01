@@ -1,7 +1,7 @@
 import re
+import unicodedata
 from typing import List
 from product import Product
-
 
 class Cart:
     def __init__(self, products: list):
@@ -75,3 +75,9 @@ class Cart:
 
         print(f"\nŁączna kwota: {total_price:.2f} PLN")
         print(f"Łączna ilość punktów lojalnościowych: {total_loyalty_points}")
+
+    def normalize_string(self, input_string: str) -> str:
+        """Normalize a string by removing diacritics and converting to lowercase."""
+        normalized = unicodedata.normalize('NFD', input_string)
+        normalized = normalized.encode('ascii', 'ignore').decode('utf-8')
+        return normalized.lower()
