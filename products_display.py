@@ -1,5 +1,4 @@
 import json
-from cart import Cart
 
 
 def load_products(filename):
@@ -36,7 +35,7 @@ def display_product(product):
         print(f"{name}: {value}")
 
 
-def display_products(products, cart):
+def display_products(products):
     if not products:
         print("Brak produktów do wyświetlenia.")
         return
@@ -44,17 +43,3 @@ def display_products(products, cart):
     for product in products:
         display_product(product)
         print()
-
-    while True:
-        print("\n1. Dodaj produkt do koszyka")
-        print("2. Wróć do głównego menu")
-
-        option = input("Wybierz opcje: ")
-        match option:
-            case "1":
-                new_product_name = input("\nNazwa produktu: ")
-                cart.add_product_to_basket(new_product_name)
-            case "2":
-                break
-            case _:
-                print("Nie ma takiej opcji")
