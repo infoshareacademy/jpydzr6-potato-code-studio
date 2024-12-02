@@ -50,7 +50,8 @@ Wybierz działanie:
                 add_new_product()
 
             case "6":
-                sort_option = input("""
+                while True:
+                    sort_option = input("""
             Wybierz sposób sortowania:
             [a] Cena rosnąco
             [b] Cena malejąco
@@ -58,30 +59,32 @@ Wybierz działanie:
             [d] Producent Z-A
             [e] Nazwa A-Z
             [f] Nazwa Z-A
-            [g] Czas dostawy (malejąco)
 
                 """).lower()
-                match sort_option:
-                    case 'a':
-                        Product.sort_products(products, 'price', 'asc')
-                    case 'b':
-                        Product.sort_products(products, 'price', 'desc')
-                    case 'c':
-                        Product.sort_products(products, 'producer', 'asc')
-                    case 'd':
-                        Product.sort_products(products, 'producer', 'desc')
-                    case 'e':
-                        Product.sort_products(products, 'name', 'asc')
-                    case 'f':
-                        Product.sort_products(products, 'name', 'desc')
-                    case 'g':
-                        pass #further development needed
-                    case other:
-                        print("Niewłaściwy wybór. Spróbuj jeszcze raz.")
+                    match sort_option:
+                        case 'a':
+                            Product.sort_products(products, 'price', 'asc')
+                            break
+                        case 'b':
+                            Product.sort_products(products, 'price', 'desc')
+                            break
+                        case 'c':
+                            Product.sort_products(products, 'producer', 'asc')
+                            break
+                        case 'd':
+                            Product.sort_products(products, 'producer', 'desc')
+                            break
+                        case 'e':
+                            Product.sort_products(products, 'name', 'asc')
+                            break
+                        case 'f':
+                            Product.sort_products(products, 'name', 'desc')
+                            break
+                        case other:
+                            print("Niewłaściwy wybór. Spróbuj jeszcze raz.")
             case "q":
                 print("Zapraszamy ponownie!")
                 break
-
             case other:
                 print("Niewłaściwy wybór. Spróbuj jeszcze raz")
 
