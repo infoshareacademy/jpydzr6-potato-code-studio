@@ -44,14 +44,14 @@ def is_empty_string(text):
         return False
 
 
-def add_new_product():
+def add_new_product_to_warehouse():
     name_tag = get_input("Podaj nazwę produktu: ", is_empty_string, "To miejsce nie może być puste!").title()
-    price = get_input("Podaj cenę produktu: ", is_positive_float, "Cena musi być liczbą większą niż 0!")
+    price = float(get_input("Podaj cenę produktu: ", is_positive_float, "Cena musi być liczbą większą niż 0!"))
     producer = get_input("Podaj producenta: ",is_empty_string, "To miejsce nie może być puste!" )
-    weight = get_input("Podaj wagę produktu (w gramach): ", is_positive_float, "Waga musi być liczbą większą niż 0!")
+    weight = float(get_input("Podaj wagę produktu (w gramach): ", is_positive_float, "Waga musi być liczbą większą niż 0!"))
     category = get_input("Podaj kategorię produktu (Warzywa/Owoce): ", is_valid_category,
                          "Kategoria musi się nazywać 'Warzywa' lub 'Owoce'!")
-    amount = get_input("Podaj ilość produktu: ", is_positive_int, "Ilość musi być liczbą  większą niż 0!")
+    amount = int(get_input("Podaj ilość produktu: ", is_positive_int, "Ilość musi być liczbą  większą niż 0!"))
     promo = 0  # by default, can be changed manually :)
 
     new_product = Product(name_tag, price, producer, weight, category, amount, promo=promo)

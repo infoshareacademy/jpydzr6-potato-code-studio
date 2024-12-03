@@ -2,7 +2,7 @@
 # Wersja 1.0
 # Potato Code Studio
 from products_display import display_products, load_products
-from add_product import add_new_product
+from add_product import add_new_product_to_warehouse
 from mini_quiz_bio.showing_question import showing_all
 from cart import Cart
 from product import Product
@@ -47,7 +47,7 @@ Wybierz działanie:
                 showing_all()
 
             case "5":
-                add_new_product()
+                add_new_product_to_warehouse()
 
             case "6":
                 while True:
