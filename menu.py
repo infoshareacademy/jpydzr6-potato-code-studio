@@ -5,6 +5,7 @@ from products_display import display_products, load_products
 from add_product import add_new_product
 from mini_quiz_bio.showing_question import showing_all
 from cart import Cart
+from product import Product
 
 
 if __name__ == "__main__":
