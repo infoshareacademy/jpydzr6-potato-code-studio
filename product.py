@@ -67,6 +67,32 @@ class Product:
         with open("list_of_products.json", "w") as file2:
             json.dump(data, file2, indent=4, ensure_ascii=False)
 
+    @staticmethod
+    def sort_products(products, sort_by, order):
+        if sort_by == 'price':
+            sorted_products = sorted(products, key=lambda x: float(x['price']), reverse=(order == 'desc'))
+        elif sort_by == 'producer':
+            sorted_products = sorted(products, key=lambda x: x['producer'], reverse=(order == 'desc'))
+        elif sort_by == 'name':
+            sorted_products = sorted(products, key=lambda x: x['name_tag'], reverse=(order == 'desc'))
+        else:
+            raise ValueError("Nieprawidłowa wartość.")
+
+        for product in sorted_products:
+            print(f"Nazwa: {product['name_tag']}")
+            print(f"Cena: {float(product['price']):.2f} PLN")
+            print(f"Data ważności: {product['exp_date']}")
+            print(f"Promocja: {product['promo']}")
+            print(f"Producent: {product['producer']}")
+            print(f"Waga: {product['weight']}")
+            print(f"Ilość: {product['amount']}")
+            print(f"Kategoria: {product['category']}")
+            print()
+
+    def sort_delivery_time_to_customer(self, delivery_time_to_customer):
+        for self.delivery_time_to_customer in reversed(delivery_time_to_customer):
+            print(delivery_time_to_customer)
+
 
 def change_promo(self, promo: int) -> None:
     self.promo = promo
