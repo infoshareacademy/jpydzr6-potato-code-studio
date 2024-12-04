@@ -34,8 +34,10 @@ Wybierz działanie:
 
         match command:
             case "1":
+                products = load_products("list_of_products.json")
                 display_products(products)
                 cart.add_to_cart_menu()
+
             case "2":
                 cart.show_cart()
 
@@ -80,12 +82,12 @@ Wybierz działanie:
                         case 'f':
                             Product.sort_products(products, 'name', 'desc')
                             break
-                        case other:
+                        case _:
                             print("Niewłaściwy wybór. Spróbuj jeszcze raz.")
             case "q":
                 print("Zapraszamy ponownie!")
                 break
-            case other:
+            case _:
                 print("Niewłaściwy wybór. Spróbuj jeszcze raz")
 
 
