@@ -46,12 +46,6 @@ def display_products(products):
     for product in products:
         print(f"- {product.name_tag}: {product.price} PLN")
 
-def normalize_string(input_string: str) -> str:
-    """Normalize a string by removing diacritics and converting to lowercase."""
-    normalized = unicodedata.normalize('NFD', input_string)
-    normalized = normalized.encode('ascii', 'ignore').decode('utf-8')
-    return normalized.lower()
-
 def add_product_to_cart(cart, available_products):
     display_products(available_products)
     product_choice = input("Podaj nazwę produktu, który chcesz dodać: ")
