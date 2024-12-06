@@ -62,12 +62,14 @@ class Cart:
                     print("Nie ma takiej opcji")
 
     def total_price(self):
-        total_price_of_products = {sum(product.price for product in self.product_data)}
-        return (
-            f"Twój koszyk jest warty: {total_price_of_products} PLN"
-            if len(self.product_data) > 0
-            else ""
-        )
+        try:
+            if len(self.basket) == 0:
+                print("Twój koszyk jest pusty")
+            total_price_of_products = sum(product["price"] for product in self.basket)
+            print(f"Twój koszyk jest warty: {total_price_of_products} PLN")
+            return total_price_of_products
+        except Exception as e:
+            print(f"Nieoczekiwany błąd: {e}")
 
     def get_points(self) -> int:
         return sum(int(product["loyalty_points"]) for product in self.basket)
