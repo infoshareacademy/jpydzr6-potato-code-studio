@@ -2,9 +2,10 @@ from product import Product
 from mod_loyalty import Mod_loyalty
 import unicodedata
 
+
 class CartSummary(Mod_loyalty):
     def __init__(self):
-        super().__init__()
+        super().__init__([])
 
     def __str__(self):
         return "\n".join(
@@ -60,15 +61,21 @@ def add_product_to_cart(cart, available_products):
         print("Nie znaleziono produktu o podanej nazwie.")
     return None
 
+def normalize_string(input_string: str) -> str:
+    """Normalize a string by removing diacritics and converting to lowercase."""
+    normalized = unicodedata.normalize('NFD', input_string)
+    normalized = normalized.encode('ascii', 'ignore').decode('utf-8')
+    return normalized.lower()
+
 def main():
     cart = CartSummary()
 
     # Example products
     available_products = [
-        Product("Wiśnia 3D", 23, "Farmer X", 2000),
-        Product("Jabłko", 10, "Farmer Y", 1500),
-        Product("Gruszka", 12, "Farmer Z", 1000),
-        Product("Mango", 30, "Farmer A", 1500),
+        Product("Wiśnia 3D", 23, "Farmer X", 2000, "Owoce"),
+        Product("Jabłko", 10, "Farmer Y", 1500, "Owoce"),
+        Product("Gruszka", 12, "Farmer Z", 1000, "Owoce"),
+        Product("Mango", 30, "Farmer A", 1500, "Owoce"),
     ]
 
     while True:

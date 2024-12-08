@@ -2,14 +2,14 @@ from cart import Cart
 
 class Mod_loyalty(Cart):
 
-    __slots__ = ("loyalty_points")
+    __slots__ = "loyalty_points"
 
-    def __init__(self):
+    def __init__(self, products):
         # Dziedziczenie:
-        super().__init__()
+        super().__init__(products)
         # Atrybuty obecnej klasy:
         self.loyalty_points = 0
-        self.old_instance = Cart().show_cart()
+        self.old_instance = Cart(products).show_cart()
         self.new_instance = None
 
     def add_points(self, amount_pln: int):
@@ -27,6 +27,6 @@ class Mod_loyalty(Cart):
 
 ### TESTING ###
 if __name__ == '__main__':
-    loyalty_program = Mod_loyalty()
+    loyalty_program = Mod_loyalty(products=[])
     loyalty_program.add_points(10)  # EXAMPLE # Your Loyalty Points for 10 PLN
     print(f"Loyalty Points: {loyalty_program.get_points()}")  # Result (Profit)
