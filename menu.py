@@ -6,13 +6,13 @@ from add_product import add_new_product_to_warehouse
 from mini_quiz_bio.showing_question import showing_all
 from cart import Cart
 from product import Product
-from payment import Payment, payment_menu
+from payment import Payment
 
 if __name__ == "__main__":
     products = load_products("list_of_products.json")
     basket = {}
     cart = Cart()
-    payment_instance = Payment()
+    payment_instance = Payment(cart)
 
 
 
@@ -25,11 +25,10 @@ Wybierz działanie:
 
 [1] Wyświetl produkty
 [2] Pokaż koszyk
-[3] Usuń produkt z koszuka
+[3] Usuń produkt z koszyka
 [4] Mini Quiz o tematyce BIO
 [5] Dodaj produkt do magazynu
 [6] Sortuj produkty
-[7] Przejdź do płatności
 [Q] Wyjście z programu
 
     """)
@@ -42,18 +41,7 @@ Wybierz działanie:
 
             case "2":
                 cart.show_cart()
-                while True:
-                    move_to_payment = input("Czy chcesz przejść do płatności? tak / nie: ")
-                    match move_to_payment:
-                        case "tak":
-                            cart.total_price()
-                            payment_menu(cart)
-                            break
-                        case "nie":
-                            print("Wracasz do menu głównego.")
-                            break
-                        case _:
-                            print("Podałeś zły wybór. Spróbuj jeszcze raz.")
+                payment_instance.final_payment()
 
             case "3":
                 product_name = input("Nazwa produktu: ")
