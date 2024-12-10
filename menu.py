@@ -6,12 +6,13 @@ from add_product import add_new_product_to_warehouse
 from mini_quiz_bio.showing_question import showing_all
 from cart import Cart
 from product import Product
-
+from payment import Payment
 
 if __name__ == "__main__":
     products = load_products("list_of_products.json")
     basket = {}
     cart = Cart()
+    payment_instance = Payment(cart)
 
 
 
@@ -24,7 +25,7 @@ Wybierz działanie:
 
 [1] Wyświetl produkty
 [2] Pokaż koszyk
-[3] Usuń produkt z koszuka
+[3] Usuń produkt z koszyka
 [4] Mini Quiz o tematyce BIO
 [5] Dodaj produkt do magazynu
 [6] Sortuj produkty
@@ -40,6 +41,7 @@ Wybierz działanie:
 
             case "2":
                 cart.show_cart()
+                payment_instance.final_payment()
 
             case "3":
                 product_name = input("Nazwa produktu: ")
@@ -84,6 +86,7 @@ Wybierz działanie:
                             break
                         case _:
                             print("Niewłaściwy wybór. Spróbuj jeszcze raz.")
+
             case "q":
                 print("Zapraszamy ponownie!")
                 break
