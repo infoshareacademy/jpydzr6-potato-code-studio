@@ -1,6 +1,8 @@
 from cart import Cart
+from email_sender import send_mail
 
-def first_option_in_payment_choice(cart_pay:Cart):
+
+def first_option_in_payment_choice(cart_pay: Cart):
     while True:
         final_choice = input("Czy potwierdzasz płatność tak / nie ?\n"
                              "Twój wybór:")
@@ -8,7 +10,7 @@ def first_option_in_payment_choice(cart_pay:Cart):
             case "tak":
                 while True:
                     print("Brawo właśnie kupiłeś u nas produkt.\n")
-                    cart_pay.basket.clear()
+
                     return
 
             case "nie":
@@ -16,19 +18,15 @@ def first_option_in_payment_choice(cart_pay:Cart):
             case _:
                 print("Spróbuj jeszcze raz. Podałeś zły wybór.\n")
 
-def confirmation_email() -> str:
-        email = input("Podaj e-mail, a wyślemy Tobie potwierdzenie zakupu.\n"
-                      "Twój e-mail:")
-        return email
 
-def payment_menu(cart_pay:Cart):
+def payment_menu(cart_pay: Cart):
     while True:
         payment_choice = input("[1] Kup\n"
                                "[2] Powrót do menu\n"
                                "Twój wybór: ")
         match payment_choice:
             case "1":
-                confirmation_email()
+
                 first_option_in_payment_choice(cart_pay)
                 return
 
@@ -37,6 +35,7 @@ def payment_menu(cart_pay:Cart):
 
             case _:
                 print("Podałeś zły wybór. Spróbuj jeszcze raz.\n")
+
 
 class Payment:
     def __init__(self, cart_pay):
@@ -50,9 +49,17 @@ class Payment:
                 move_to_payment = input("Czy chcesz przejść do płatności? tak / nie: ")
                 match move_to_payment:
                     case "tak":
-                        self.cart.total_price()
+                        total_total = self.cart.total_price()
                         payment_menu(self.cart)
+                        try:
+                            send_mail(self.cart.basket, total_total)
+                            self.cart.basket.clear()
+                        except Exception as e:
+                            print(f"Nie udało się wysłać wiadomości e-mail: {e}")
+                            print("Niespotykane, napotkaliśmy błąd! Nasz team już się tym zajmuje, tymczasem"
+                                  " spróbuj ponownie!")
                         break
+
                     case "nie":
                         print("Wracasz do menu głównego.\n")
                         break
