@@ -3,26 +3,22 @@ import smtplib
 import ssl
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
-from random import  randint
+from dotenv import load_dotenv
+from random import randint
 
-# import dotenv
-# from dotenv import load_dotenv
-
-# MUST INSTALL dotenv !!!!! "pip install python-dotenv"
-# load_dotenv(dotenv_path='.env')
+load_dotenv(dotenv_path='.env')
 smtp_server = "smtp.wp.pl"
 port = 465
-sender_email = "biopotato@wp.pl"  # Company's mail
-# password = os.getenv("mail_password")  # our password, well duh load it using dotenv library and password from .env
-password = "wpisz hasło"
+sender_email = "biopotato@wp.pl"
+password = os.getenv("mail_password")
+
 
 def send_mail(basket, total_price):
-    email = input("Podaj e-mail, a wyślemy Tobie potwierdzenie zakupu.\nTwój e-mail: ").strip()
+    email = input("Podaj e-mail, a wyślemy Tobie potwierdzenie zakupu.\nTwój e-mail: ")
     while True:
-
         if email == "" or "@" not in email:
             print("Something went wrong, try again.")
-            email = input("Podaj e-mail, a wyślemy Tobie potwierdzenie zakupu.\nTwój e-mail: ").strip()
+            email = input("Podaj e-mail, a wyślemy Tobie potwierdzenie zakupu.\nTwój e-mail: ")
         else:
             receiver_email = email
             break
@@ -48,7 +44,7 @@ def send_mail(basket, total_price):
     message["From"] = sender_email
     message["To"] = receiver_email
     message["Subject"] = subject
-    message.attach(MIMEText(body, "plain"))
+    message.attach(MIMEText(body, "plain", "utf-8"))
 
     try:
         context = ssl.create_default_context()
@@ -58,6 +54,3 @@ def send_mail(basket, total_price):
             print("Potwierdzenie zostało wysłane na Twojego maila, dziękujemy za zakupy!")
     except Exception as e:
         print(f"We didn't send your mail! Try again: {e} ")
-
-
-
