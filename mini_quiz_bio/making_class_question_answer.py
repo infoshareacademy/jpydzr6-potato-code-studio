@@ -19,6 +19,8 @@ class MakingQuestionAnswer:
                     return "Podałeś poprawną odpowiedź."
                 else:
                     return f"Podałeś zła odpowiedź. Poprawna odpowiedź to {self.correct_answer}."
+            elif self.choice == "q":
+                return "Powrót do menu"
             else:
                 print("Podałeś prawdopodobnie zła opcje do wyboru. Spróbuj jeszcze raz :)")
 
