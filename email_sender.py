@@ -17,7 +17,7 @@ def send_mail(basket, total_price):
     email = input("Podaj e-mail, a wyślemy Tobie potwierdzenie zakupu.\nTwój e-mail: ")
     while True:
         if email == "" or "@" not in email:
-            print("Something went wrong, try again.")
+            print("Wprowadzono niepoprawny mail, ponów próbę.")
             email = input("Podaj e-mail, a wyślemy Tobie potwierdzenie zakupu.\nTwój e-mail: ")
         else:
             receiver_email = email
