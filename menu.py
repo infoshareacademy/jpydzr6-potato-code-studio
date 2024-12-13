@@ -54,6 +54,7 @@ Wybierz działanie:
                 add_new_product_to_warehouse()
 
             case "6":
+                products = load_products("list_of_products.json")
                 while True:
                     sort_option = input("""
             Wybierz sposób sortowania:
