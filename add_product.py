@@ -1,11 +1,5 @@
 from product import Product
 
-'''
-I've decided to create a separate module in order to keep it all clean, 
-this func's been made simply for menu purposes, all of magic happens in product.py 
-
-'''
-
 
 def get_input(prompt, validation_func, error_message):
     while True:
@@ -46,12 +40,12 @@ def is_empty_string(text):
 
 def add_new_product_to_warehouse():
     name_tag = get_input("Podaj nazwę produktu: ", is_empty_string, "To miejsce nie może być puste!").title()
-    price = float(get_input("Podaj cenę produktu: ", is_positive_float, "Cena musi być liczbą większą niż 0!"))
+    price = float(get_input("Podaj cenę produktu: ", is_positive_float, "Wprowadziłeś nieprawidłową wartość, spróbuj ponownie!"))
     producer = get_input("Podaj producenta: ",is_empty_string, "To miejsce nie może być puste!" )
-    weight = float(get_input("Podaj wagę produktu (w gramach): ", is_positive_float, "Waga musi być liczbą większą niż 0!"))
+    weight = float(get_input("Podaj wagę produktu (w gramach): ", is_positive_float, "Wprowadziłeś nieprawidłową wartość, spróbuj ponownie!"))
     category = get_input("Podaj kategorię produktu (Warzywa/Owoce): ", is_valid_category,
                          "Kategoria musi się nazywać 'Warzywa' lub 'Owoce'!")
-    amount = int(get_input("Podaj ilość produktu: ", is_positive_int, "Ilość musi być liczbą  większą niż 0!"))
+    amount = int(get_input("Podaj ilość produktu: ", is_positive_int, "Wprowadziłeś nieprawidłową wartość, spróbuj ponownie!"))
     promo = 0  # by default, can be changed manually :)
 
     new_product = Product(name_tag, price, producer, weight, category, amount, promo=promo)
