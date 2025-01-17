@@ -30,7 +30,7 @@ The project is built using **Django**, **HTML**, **CSS**, and **Bootstrap**.
 
 ---
 
-## Instalation and Setup
+## Installation and Setup
 
 1. Clone the repository
 
@@ -40,7 +40,13 @@ cd jpydzr6-potato-code-studio
 cd bio_market_store
 ```
 
-3. Start project by command
+2. Install dependencies
+
+```bash
+pip install -r requirements.txt
+```
+
+3. Start the project by command
 
 ```bash
 python manage.py runserver
@@ -76,3 +82,9 @@ python manage.py runserver
   - [Maciej Kusztal](https://github.com/mKusztal)
   - [Julia Blaumann](https://github.com/Julbla23)
   - [Jakub Charkiewicz](https://github.com/JakubCharkiewicz)
+
+---
+
+## License
+
+[MIT](https://choosealicense.com/licenses/mit/)
