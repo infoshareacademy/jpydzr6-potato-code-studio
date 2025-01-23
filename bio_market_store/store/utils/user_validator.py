@@ -4,7 +4,7 @@ from django.utils.translation import gettext as _
 
 
 class UserValidator:
-    def validate_password(self, password, user=None):
+    def validate(self, password, user=None):
         if len(password) < 8:
             raise ValidationError(
                 _("This password is too short. It must contain at least 8 characters."),
