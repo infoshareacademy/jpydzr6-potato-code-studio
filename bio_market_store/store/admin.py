@@ -1,28 +1,22 @@
 from django.contrib import admin
 from django import forms
-from django.contrib.auth.forms import UserCreationForm, UserChangeForm
+from django.contrib.auth.forms import UserChangeForm, AdminPasswordChangeForm
 from .models import UserProfile, Address
+from .forms import UserCreatingForm
 
 
 # Register your models here.
-class UserCreatingForm(UserCreationForm):
-    class Meta(UserCreationForm.Meta):
-        model = UserProfile
-        fields = ("username", "email", "password")
-
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.fields["password"].widget = forms.PasswordInput()
-
-
 class UserPanelChangeForm(UserChangeForm):
     class Meta(UserChangeForm.Meta):
         model = UserProfile
-        fields = ("username", "email")
+        fields = (
+            "username",
+            "email",
+        )
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.fields["password"].widget = forms.PasswordInput()
+        # self.fields["password"].widget = forms.PasswordInput()
 
 
 class AddressInline(admin.StackedInline):
@@ -61,6 +55,13 @@ class UserProfileAdmin(admin.ModelAdmin):
             },
         ),
     ]
+
+    change_password_form = AdminPasswordChangeForm
+
+    def save_model(self, request, obj, form, change):
+        if form.cleaned_data.get("password"):
+            obj.set_password(form.cleaned_data["password"])
+        super().save_model(request, obj, form, change)
 
 
 admin.site.register(UserProfile, UserProfileAdmin)
