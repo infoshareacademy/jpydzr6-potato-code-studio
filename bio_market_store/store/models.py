@@ -1,8 +1,23 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
+from store.utils.user_validator import UserValidator
 
 
 class UserProfile(AbstractUser):
+    user_validation = UserValidator()
+    username = models.CharField(
+        max_length=150,
+        unique=True,
+        error_messages={
+            "unique": "A user with that username already exists.",
+        },
+    )
+    password = models.CharField(
+        max_length=128,
+        help_text=user_validation.get_help_text(),
+        validators=[user_validation.validate],
+    )
+
     def __str__(self):
         return f"{self.username}"
 
