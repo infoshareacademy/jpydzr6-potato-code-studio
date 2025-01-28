@@ -1,5 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
+from django.contrib.auth.models import User
+from django.conf import settings
 from store.utils.user_validator import UserValidator
 
 
@@ -35,3 +37,23 @@ class Address(models.Model):
 
     def __str__(self):
         return f"{self.street}, {self.city}, {self.postal_code}, {self.phone_number}"
+
+
+class Product(models.Model):
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    category = models.CharField(max_length=255)
+    name_tag = models.CharField(max_length=255)
+    price = models.DecimalField(decimal_places=2, max_digits=10)
+    commission = models.DecimalField(decimal_places=2, max_digits=10)
+    weight = models.DecimalField(decimal_places=2, max_digits=10)
+    created_at = models.DateTimeField(auto_now_add=True)
+    exp_date = models.DateField(null=True, blank=True)
+    amount = models.IntegerField()
+    producer = models.CharField(max_length=255)
+    image = models.ImageField(upload_to="img")
+
+    def __str__(self):
+        return f"{self.name_tag} ({self.category})"
+
+
+
