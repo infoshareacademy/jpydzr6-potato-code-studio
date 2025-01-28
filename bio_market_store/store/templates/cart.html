@@ -11,34 +11,37 @@
   </div>
 
   <div class="itemContainer">
-
-    {% for item in items %}
-    <div class="item">
-      <div class="iteminfo">
-        <div class="p_img">
-          <img src="{{item.product.picture.url}}" alt="" />
-        </div>
-        <p>{{item.product.name}}</p>
+    {% if items %}
+      {% for item in items %}
+      <div class="item">
+        <div class="iteminfo">
+          <div class="p_img">
+            <img src="{{item.product.picture.url}}" alt="" />
+          </div>
+          <p>{{item.product.name}}</p>
       </div>
 
       <div class="name"><p>{{item.quantity}}</p></div>
-      <div class="name"><p>${{item.product.price}}</p></div>
-      <div class="name"><p>${{item.price}}</p></div>
+      <div class="name"><p>PLN{{item.product.price}}</p></div>
+      <div class="name"><p>PLN{{item.price}}</p></div>
     </div>
 
     {% endfor %}
+  {% else %}
+    <p>Your cart is empty</p>
+  {% endif %}
   </div>
 
   <div class="pay-section">
-    <h3>Grand-Total: ${{cart.total_price}}</h3>
-    <button onclick = "makePayment()" >Pay</button>
+    <h3>Total Price: PLN {{cart.total_price|default:"0"}}</h3>
+    <button onclick = "makePayment()" {% if not items %}  disabled {% endif %}>Pay</button>
   </div>
 </div>
 
 <script src="https://checkout.flutterwave.com/v3.js"></script>
 <script>
 
-let cart_total = "{{cart.total_price}}"
+let cart_total = "{{cart.total_price|default:0}}"
 let cart_id = "{{cart.id}}"
 
 
@@ -47,7 +50,7 @@ let cart_id = "{{cart.id}}"
       public_key: "FLWPUBK_TEST-PUBLIC KEY",
       tx_ref: "titanic-48981487343MDI0NzMx",
       amount: cart_total,
-      currency: "USD",
+      currency: "PLN",
       payment_options: "card, mobilemoneyghana, ussd",
       redirect_url: "http://127.0.0.1:8000/confirm_payment/"+cart_id,
       meta: {
