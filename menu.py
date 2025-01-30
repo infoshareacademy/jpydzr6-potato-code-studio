@@ -3,7 +3,7 @@
 # Potato Code Studio
 from products_display import display_products, load_products
 from add_product import add_new_product_to_warehouse
-from mini_quiz_bio.showing_question import quiz_bio
+from bio_market_store.store.mini_quiz_bio.showing_question import quiz_bio
 from cart import Cart
 from product import Product
 from payment import Payment

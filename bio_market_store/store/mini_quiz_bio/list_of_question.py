@@ -1,4 +1,4 @@
-from mini_quiz_bio.making_class_question_answer import MakingQuestionAnswer
+from bio_market_store.store.mini_quiz_bio.making_class_question_answer import MakingQuestionAnswer
 
 list_of_questions = [
     MakingQuestionAnswer("Co oznacza skrót BIO na produktach spożywczych?", "Biologiczne Innowacje Organizacyjne",
