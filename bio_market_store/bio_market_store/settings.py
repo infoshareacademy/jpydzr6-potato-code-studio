@@ -55,7 +55,7 @@ ROOT_URLCONF = "bio_market_store.urls"
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
-        "DIRS": [],
+        "DIRS": [BASE_DIR / "store" / "templates"],
         "APP_DIRS": True,
         "OPTIONS": {
             "context_processors": [
@@ -103,6 +103,10 @@ AUTH_PASSWORD_VALIDATORS = [
     {
         "NAME": "store.utils.user_validator.UserValidator",
     },
+]
+
+AUTHENTICATION_BACKENDS = [
+    "store.utils.user_authentication.UserProfileAuthentication",
 ]
 
 
