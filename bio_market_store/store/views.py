@@ -6,6 +6,7 @@ import json
 
 
 def index(request):
+    global cart
     products = Product.objects.all()
 
     if request.user.is_authenticated:
