@@ -1,0 +1,124 @@
+html, body {
+    height: 100%;
+    margin: 0;
+}
+
+.mt-auto{
+    position: fixed;
+    bottom: 0;
+    width: 100vw;
+
+}
+
+/* Umieszcza linki po prawej */
+.nav {
+    margin-left: auto;
+}
+
+/* Stylizacja linków */
+.nav-link {
+    color: white;
+    font-size: 18px;
+    margin-left: 20px;
+}
+
+.nav-link:hover {
+    color: #32de84;
+}
+
+
+.nav-masthead .nav-link {
+    color: rgba(255, 255, 255, 0.75);
+    border-bottom: 0.25rem solid transparent;
+}
+
+.nav-masthead .nav-link:hover,
+.nav-masthead .nav-link.active {
+    border-bottom-color: rgba(255, 255, 255, 0.75);
+}
+
+.nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 30px;
+}
+
+/* bckground photo */
+body {
+    background: url("../images/backgorund.jpg") no-repeat center center fixed;
+    background-size: cover;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    color: white;
+}
+
+/* name logo font */
+#BioPotato {
+    font-family: Megrim, sans-serif;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+
+
+
+#contactNav {
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+#storeNav{
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+#aboutNav {
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+
+}
+
+
+/* text animations */
+@keyframes fadeIn {
+    0% {
+        opacity: 0;
+    }
+    100% {
+        opacity: 1;
+    }
+}
+
+.fade-text {
+    opacity: 0;
+    animation: fadeIn 4s ease-in forwards;
+}
+
+
+.fade-text {
+    animation: fadeIn 4s ease-in forwards;
+}
+
+
+.fade-text:nth-of-type(1) {
+    animation-delay: 3s;
+}
+
+.fade-text:nth-of-type(2) {
+    animation-delay: 3.5s;
+}
+
+.fade-text:nth-of-type(3) {
+    animation-delay: 4s;
+}
+
+
+a {
+    animation-delay: 4.5s;
+}
+
+.fadeIn {
+    font-family: "Microsoft JhengHei Light", sans-serif;
+}
+
+

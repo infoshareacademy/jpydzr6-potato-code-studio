@@ -1,0 +1,79 @@
+{% load static %}
+<html lang="pl">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>🥔BioPotato🥔</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'store/css/cover.css' %}">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Megrim&display=swap" rel="stylesheet">
+    <link rel="icon" type="image/ico" href="{% static 'store/images/PotatoFavicon.ico' %}">
+</head>
+<body class="d-flex h-100 text-center text-bg-dark">
+
+<!--You modify this at your own risk, it might explode-->
+<div class="cover-container d-flex flex-column h-100">
+
+    <!-- navbar -->
+    <header class="navbar navbar-expand-md fixed-top">
+        <div class="container-fluid d-flex justify-content-between align-items-center">
+            <h3 class="float-md-start mb-0" id="BioPotato">BioPotato</h3>
+            <nav class="nav nav-masthead justify-content-center float-md-end">
+                <a class="nav-link active" id="storeNav" href="">Store</a>
+                <a class="nav-link" id="aboutNav" href="{% url 'about-page' %}">About</a>
+                <a class="nav-link" id="contactNav" href="{% url 'contact-page'%}">Contact</a>
+            </nav>
+        </div>
+    </header>
+
+
+    <main class="d-flex flex-column justify-content-center align-items-center px-3 flex-grow-1">
+    <div class="typewriter">
+        <div id="siema">
+            <h1>
+                <p>Welcome to <span class="highlight">our</span> store!</p>
+                <style>
+                    .highlight {
+                        animation: changeColor 2s 1s forwards;
+                    }
+
+                    @keyframes changeColor {
+                        from {
+                            color: white;
+                        }
+                        to {
+                            color: #32de84;
+                        }
+                    }
+                </style>
+            </h1>
+        </div>
+    </div>
+
+    <div class="fadeIn">
+        <p class="fade-text large-text text-center">
+            BioPotato – Connecting Farmers with Consumers 🌿🚜
+            BioPotato is an innovative e-commerce platform designed to connect local farmers with health-conscious
+            consumers.
+            Our mission is to create a sustainable marketplace where farmers can sell fresh, organic products
+            directly to buyers,
+            ensuring quality, fair prices, and eco-friendly trade. With a user-friendly interface, secure payments,
+            and seamless
+            delivery options, BioPotato empowers farmers to reach a broader audience while giving customers access
+            to farm-to-table
+            goodness. Join us in supporting local agriculture and embracing a healthier lifestyle! 🍏🥕🌾
+        </p>
+    </div>
+</main>
+
+
+    <!-- footer -->
+    <footer class="mt-auto text-white-50">
+        <p>Julia Blaumann, Jakub Charkiewicz, Paweł Enerlich, Maciej Kusztal, Wojciech Wawrzyszko</p>
+    </footer>
+</div>
+
+</body>
+</html>

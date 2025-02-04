@@ -1,0 +1,161 @@
+
+html {
+    height: 100%;
+}
+
+body {
+    background: url("../images/backgorund.jpg") no-repeat center center fixed;
+    background-size: cover;
+    height: 100vh;
+    /*display: flex;*/
+    /*justify-content: center;*/
+    /*align-items: center;*/
+    /*text-align: center;*/
+    /*color: white;*/
+    font-family: 'Outfit', sans-serif;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+.contact-container {
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+}
+
+.contact-left {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+}
+
+.contact-left-title h2 {
+    font-weight: 600;
+    color: #fff;
+    font-size: 40px;
+    margin-bottom: 5px;
+}
+
+
+.contact-left-title hr {
+    border: none;
+    width: 200px;
+    height: 5px;
+    background: #32de84;
+    border-radius: 10px;
+    margin-bottom: 20px;
+}
+
+.contact-input {
+    width: 400px;
+    height: 50px;
+    border: none;
+    outline: none;
+    padding-left: 25px;
+    font-weight: 500;
+    color: gray;
+    border-radius: 50px;
+
+}
+
+.contact-left textarea {
+    height: 150px;
+    padding-top: 15px;
+    border-radius: 20px;
+}
+
+.contact-input:focus {
+    border: 2px solid #32de84;
+}
+
+.contact-input::placeholder {
+    color: gray;
+}
+
+.contact-left button {
+    display: flex;
+    align-items: center;
+    padding: 15px 30px;
+    font-size: 15px;
+    color: #fff;
+    gap: 10px;
+    border: none;
+    border-radius: 50px;
+    background: linear-gradient(to right, #32de84, forestgreen);
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.nav-masthead .nav-link {
+    color: rgba(255, 255, 255, 0.75);
+    border-bottom: 0.25rem solid transparent;
+}
+
+.nav-masthead .nav-link:hover,
+.nav-masthead .nav-link.active {
+    border-bottom-color: rgba(255, 255, 255, 0.75);
+}
+
+
+#crewName {
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+#crewText {
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+#BioPotato {
+    font-family: Megrim, sans-serif;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+#contactNav {
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+#storeNav {
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+#aboutNav {
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+
+}
+
+.typewriter {
+    display: flex;
+    justify-content: center;
+}
+
+.typewriter p {
+    font-size: 2rem;
+    margin-inline: auto ;
+    overflow: hidden;
+    white-space: nowrap;
+    border-right: 1px solid;
+    animation: typing 3s steps(22), blink 0.75s step-end infinite alternate;
+}
+
+
+@keyframes typing {
+    from {
+        width: 0;
+    }
+    to {
+        width: 100%;
+    }
+}
+
+
+@keyframes blink {
+    50% {
+        border-color: transparent;
+    }
+}

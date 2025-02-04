@@ -1,0 +1,118 @@
+{%load static%}
+<!doctype html>
+<html lang="en" data-bs-theme="auto">
+<head>
+    <title>🥔BioPotato - About Us🥔</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'store/css/about.css' %}">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Megrim&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'store/css/about.css' %}">
+    <link rel="icon" type="image/ico" href="{% static 'store/images/PotatoFavicon.ico' %}">
+
+</head>
+<body>
+
+
+<!--navbar-->
+<div class="cover-container d-flex w-100 h-100 p-3 mx-auto flex-column">
+
+    <header class="navbar navbar-expand-md fixed-top">
+        <div class="container-fluid d-flex justify-content-between align-items-center">
+            <h3 class="float-md-start mb-0" id="BioPotato">BioPotato</h3>
+            <nav class="nav nav-masthead justify-content-center float-md-end">
+                <a class="nav-link active" id="storeNav" href="">Store</a>
+                <a class="nav-link" id="aboutNav" href="{% url 'cover-page' %}">Home</a>
+                <a class="nav-link" id="contactNav" href="{% url 'contact-page' %}">Contact</a>
+            </nav>
+        </div>
+    </header>
+
+    <div class="container">
+        <h1 class="text-center mt-5" id="crewName">PotatoCodeStudio</h1>
+        <p class="lead text-center" id="crewText">This is our team</p>
+
+    </div>
+
+    <div class="container marketing">
+        <div class="row">
+            <div class="col-lg-4">
+                <svg class="bd-placeholder-img rounded-circle" width="140" height="140"
+                     xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Placeholder"
+                     preserveAspectRatio="xMidYMid slice" focusable="false"><title>Placeholder</title>
+                    <rect width="100%" height="100%" fill="var(--bs-secondary-color)"/>
+                </svg>
+                <h2 class="fw-normal">Julia Blaumann</h2>
+                <p>Some representative placeholder content for the three columns of text below the carousel. This is the
+                    first column.</p>
+                <p><a class="btn btn-secondary" href="https://github.com/Julbla23" target="_blank">GitHub &raquo;</a>
+                </p>
+            </div>
+            <div class="col-lg-4">
+                <svg class="bd-placeholder-img rounded-circle" width="140" height="140"
+                     xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Placeholder"
+                     preserveAspectRatio="xMidYMid slice" focusable="false"><title>Placeholder</title>
+                    <rect width="100%" height="100%" fill="var(--bs-secondary-color)"/>
+                </svg>
+                <h2 class="fw-normal">Jakub Charkiewicz</h2>
+                <p>Another exciting bit of representative placeholder content. This time, we've moved on to the second
+                    column.</p>
+                <p><a class="btn btn-secondary" href="https://github.com/JakubCharkiewicz" target="_blank">GitHub
+                    &raquo;</a></p>
+            </div>
+            <div class="col-lg-4">
+                <svg class="bd-placeholder-img rounded-circle" width="140" height="140"
+                     xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Placeholder"
+                     preserveAspectRatio="xMidYMid slice" focusable="false"><title>Placeholder</title>
+                    <rect width="100%" height="100%" fill="var(--bs-secondary-color)"/>
+                </svg>
+                <h2 class="fw-normal">Paweł Enerlich</h2>
+                <p>And lastly this, the third column of representative placeholder content.</p>
+                <p><a class="btn btn-secondary" href="https://github.com/PawelEnerlich" target="_blank">GitHub
+                    &raquo;</a></p>
+            </div>
+
+            <div class="container marketing" id="rowToMove">
+                <div class="row">
+                    <div class="col-lg-4" id="siema">
+                        <svg class="bd-placeholder-img rounded-circle" width="140" height="140"
+                             xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Placeholder"
+                             preserveAspectRatio="xMidYMid slice" focusable="false"><title>Placeholder</title>
+                            <rect width="100%" height="100%" fill="var(--bs-secondary-color)"/>
+                        </svg>
+                        <h2 class="fw-normal">Maciej Kusztal</h2>
+                        <p>Some representative placeholder content for the three columns of text below the carousel.
+                            This is the
+                            first column.</p>
+                        <p><a class="btn btn-secondary" href="https://github.com/mkusztal" target="_blank">GitHub
+                            &raquo;</a></p>
+                    </div>
+                    <div class="col-lg-4">
+                        <svg class="bd-placeholder-img rounded-circle" width="140" height="140"
+                             xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Placeholder"
+                             preserveAspectRatio="xMidYMid slice" focusable="false"><title>Placeholder</title>
+                            <rect width="100%" height="100%" fill="var(--bs-secondary-color)"/>
+                        </svg>
+                        <h2 class="fw-normal">Wojciech Wawrzyszko</h2>
+                        <p>Another exciting bit of representative placeholder content. This time, we've moved on to the
+                            second
+                            column.</p>
+                        <p><a class="btn btn-secondary" href="https://github.com/Wojciech-Wawrzyszko" target="_blank">GitHub
+                            &raquo;</a></p>
+                    </div>
+                </div>
+            </div>
+
+            <footer class="container">
+                <p class="float-end">
+                <p>&copy; 2024-2025 PotatoCodeStudio &middot; <a
+                        href="https://github.com/infoshareacademy/jpydzr6-potato-code-studio/blob/dev/README.md"
+                        target="_blank">Terms</a> &middot;
+                </p>
+            </footer>
+
+
+</body>
+</html>

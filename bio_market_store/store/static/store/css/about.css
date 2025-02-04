@@ -1,0 +1,77 @@
+
+
+html, body {
+    height: 100%;
+}
+
+
+.nav-masthead .nav-link {
+    color: rgba(255, 255, 255, 0.75);
+    border-bottom: 0.25rem solid transparent;
+}
+
+.nav-masthead .nav-link:hover,
+.nav-masthead .nav-link.active {
+    border-bottom-color: rgba(255, 255, 255, 0.75);
+}
+
+body {
+    background: url("../images/backgorund.jpg") no-repeat center center fixed;
+    background-size: cover;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    color: white;
+}
+
+#crewName {
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+#crewText {
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+#BioPotato {
+    font-family: Megrim, sans-serif;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+#contactNav {
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+#storeNav{
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+#aboutNav {
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+
+}
+
+
+#rowToMove{
+    position: relative;
+    left:210px;
+    bottom:-10px;
+
+}
+
+.center-row {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+
+.center-row .col-lg-4 {
+    text-align: center;
+}
+
+
+.container.marketing {
+    margin-top: 50px;
+}
