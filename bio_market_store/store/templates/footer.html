@@ -4,77 +4,42 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Bio Market Store</title>
-    <style>
-        html, body {
-            height: 100%;
-            margin: 0;
-            display: flex;
-            flex-direction: column;
-        }
-        .content {
-            flex: 1;
-        }
-        .footer {
-            background-color: #4CAF50;
-            color: white;
-            padding: 10px 0;
-            text-align: center;
-            font-size: 14px;
-            flex-shrink: 0;
-        }
-        .footer a {
-            color: white;
-            text-decoration: none;
-            margin: 0 5px;
-        }
-        .footer a:hover {
-            text-decoration: underline;
-        }
-        .footer .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 15px;
-        }
-        .footer hr {
-            border-color: white;
-            margin: 10px 0;
-        }
-    </style>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
 </head>
 <body>
     <div class="content">
-        
+
     </div>
 
     <footer class="footer">
         <div class="container">
             <div class="row">
                 <div class="col-md-4">
-                    <p style="margin: 0;">Fresh, healthy, and organic fruits and vegetables delivered to you.</p>
+                    <p>Fresh, healthy, and organic fruits and vegetables delivered to you.</p>
                 </div>
                 <div class="col-md-4">
-                    <h5 style="margin-bottom: 5px;">Quick Links</h5>
-                    <ul style="list-style: none; padding: 0; margin: 0;">
-                        <a href="/">Home</a>
-                        <a href="/products/">Products</a>
-                        <a href="/contact/">Contact</a>
+                    <h5>Quick Links</h5>
+                    <ul>
+                        <li><a href="/">Home</a></li>
+                        <li><a href="/products/">Products</a></li>
+                        <li><a href="/contact/">Contact</a></li>
                     </ul>
                 </div>
                 <div class="col-md-4">
-                    <h5 style="margin-bottom: 5px;">Contact</h5>
-                    <a style="margin: 0;">Email: info@biomarketstore.com &nbsp</a>
-                    <a style="margin: 0;">Phone: +48 500 500 500</a>
+                    <h5>Contact</h5>
+                    <p>Email: info@biomarketstore.com</p>
+                    <p>Phone: +48 500 500 500</p>
                 </div>
             </div>
             <hr>
             <div class="row">
                 <div class="col-md-12">
-                    <p style="margin: 0;">Follow us on:
+                    <p>Follow us on:
                         <a href="https://www.facebook.com/profile.php?id=61572705938682">Facebook</a>
                         <a href="https://www.x.com/potatopro">X</a>
                         <a href="https://www.instagram.com/bio_market_store">Instagram</a>
                     </p>
-                    <p style="margin: 0;">&copy; 2025 Bio Market Store. All rights reserved.</p>
+                    <p>&copy; 2025 Bio Market Store. All rights reserved.</p>
                 </div>
             </div>
         </div>

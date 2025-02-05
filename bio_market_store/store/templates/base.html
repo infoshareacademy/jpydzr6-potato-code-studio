@@ -1,4 +1,5 @@
-<!DOCTYPE html>
+{% load static %}
+{{ '<' }}{{ '!DOCTYPE html>' }}
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -7,7 +8,8 @@
 <body>
 {% block body_data %}{% endblock body_data %}
 
-{% include 'footer.html' %}
-
+    <footer>
+        {% include 'footer.html' %}
+    </footer>
 </body>
 </html>
