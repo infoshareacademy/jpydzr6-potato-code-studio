@@ -9,4 +9,3 @@ urlpatterns = [
     path('logout/', logout_view, name='logout'),
     path('add/', views.add_product, name="add"),
     path('product_list/', views.product_list, name="product_list"),
-]

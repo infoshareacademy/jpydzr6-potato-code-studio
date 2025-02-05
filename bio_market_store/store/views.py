@@ -53,13 +53,14 @@ def register_view(request):
         email = request.POST.get("email")
         password = request.POST.get("password")
 
+        
         if UserProfile.objects.filter(username=username).exists():
             messages.error(request, "Username already exists")
             return redirect("register")
-
+        
         new_user = UserProfile.objects.create_user(username=username, email=email, password=password)
         new_user.save()
-
+        
         messages.success(request, "User created successfully")
         return redirect("home_page")
 
@@ -70,6 +71,7 @@ def login_view(request):
         username = request.POST.get("username")
         password = request.POST.get("password")
 
+        
         user = authenticate(request, username=username, password=password)
 
         if user is not None:
@@ -77,8 +79,9 @@ def login_view(request):
             messages.success(request, "Login successful")
             return redirect("home_page")
 
+        
         return render(request, "login_page.html", {"error": "Invalid username or password"})
-
+            
     return render(request, "login_page.html")
 
 def logout_view(request):
