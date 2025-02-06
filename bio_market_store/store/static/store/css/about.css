@@ -110,3 +110,30 @@ body {
 .container.marketing {
     margin-top: 50px;
 }
+.button {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background-color: #444d56; /* Kolor GitHuba */
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background 0.3s ease;
+    margin: auto; /* Automatyczne centrowanie */
+}
+
+.button:hover {
+    background-color: #24292e;
+}
+
+.button svg {
+    fill: white;
+}
+
+.text {
+    margin: 0;
+    font-size: 16px;
+}
+
