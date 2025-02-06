@@ -3,19 +3,36 @@ html, body {
     margin: 0;
 }
 
-.mt-auto{
+.mt-auto {
     position: fixed;
     bottom: 0;
     width: 100vw;
 
 }
 
-/* Umieszcza linki po prawej */
+.text-box {
+    max-width: 800px;
+    margin: 0 auto;
+    text-align: center;
+}
+
+
+.footer {
+    position: absolute;
+    bottom: 10px; /* Możesz zmienić na 0, jeśli chcesz przy samym dole */
+    left: 50%;
+    transform: translateX(-50%);
+    text-align: center;
+    font-size: 14px;
+    color: white; /* Dostosuj do stylu strony */
+    width: 100%;
+}
+
 .nav {
     margin-left: auto;
 }
 
-/* Stylizacja linków */
+
 .nav-link {
     color: white;
     font-size: 18px;
@@ -44,6 +61,27 @@ html, body {
     padding: 10px 30px;
 }
 
+
+/* name logo font */
+#BioPotato {
+    font-family: Megrim, sans-serif;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+
+#contactNav {
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+#storeNav {
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+#aboutNav {
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+
+}
+
 /* bckground photo */
 body {
     background: url("../images/backgorund.jpg") no-repeat center center fixed;
@@ -63,13 +101,11 @@ body {
 }
 
 
-
-
 #contactNav {
     text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
 }
 
-#storeNav{
+#storeNav {
     text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
 }
 
@@ -122,3 +158,33 @@ a {
 }
 
 
+.typewriter {
+    display: flex;
+    justify-content: center;
+}
+
+.typewriter p {
+    font-size: 2rem;
+    margin-inline: auto ;
+    overflow: hidden;
+    white-space: nowrap;
+    border-right: 1px solid;
+    animation: typing 3s steps(22), blink 0.75s step-end infinite alternate;
+}
+
+/* Animacja pisania */
+@keyframes typing {
+    from {
+        width: 0;
+    }
+    to {
+        width: 100%;
+    }
+}
+
+/* Animacja migania kursora */
+@keyframes blink {
+    50% {
+        border-color: transparent;
+    }
+}

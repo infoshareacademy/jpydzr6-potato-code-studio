@@ -92,6 +92,22 @@ body {
     transition: all 0.3s ease;
 }
 
+.nav {
+    margin-left: auto;
+}
+
+
+.nav-link {
+    color: white;
+    font-size: 18px;
+    margin-left: 20px;
+}
+
+.nav-link:hover {
+    color: #32de84;
+}
+
+
 .nav-masthead .nav-link {
     color: rgba(255, 255, 255, 0.75);
     border-bottom: 0.25rem solid transparent;
@@ -101,6 +117,14 @@ body {
 .nav-masthead .nav-link.active {
     border-bottom-color: rgba(255, 255, 255, 0.75);
 }
+
+.nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 30px;
+}
+
 
 
 #crewName {
@@ -129,33 +153,3 @@ body {
 
 }
 
-.typewriter {
-    display: flex;
-    justify-content: center;
-}
-
-.typewriter p {
-    font-size: 2rem;
-    margin-inline: auto ;
-    overflow: hidden;
-    white-space: nowrap;
-    border-right: 1px solid;
-    animation: typing 3s steps(22), blink 0.75s step-end infinite alternate;
-}
-
-
-@keyframes typing {
-    from {
-        width: 0;
-    }
-    to {
-        width: 100%;
-    }
-}
-
-
-@keyframes blink {
-    50% {
-        border-color: transparent;
-    }
-}
