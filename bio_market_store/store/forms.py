@@ -1,6 +1,6 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
-from .models import UserProfile
+from .models import UserProfile, Product
 
 
 class UserCreatingForm(UserCreationForm):
@@ -21,3 +21,9 @@ class UserAuthenticationForm(AuthenticationForm):
     password = forms.CharField(
         label="Password", strip=False, widget=forms.PasswordInput
     )
+
+class ProductForm(forms.ModelForm):
+    class Meta:
+        model = Product
+        fields = ['category', 'name_tag', 'price', 'commission', 'weight', 'exp_date', 'amount', 'producer',
+                      'image']
