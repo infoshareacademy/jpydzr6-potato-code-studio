@@ -1,9 +1,7 @@
 
-
 html, body {
     height: 100%;
 }
-
 
 .nav-masthead .nav-link {
     color: rgba(255, 255, 255, 0.75);
@@ -15,7 +13,16 @@ html, body {
     border-bottom-color: rgba(255, 255, 255, 0.75);
 }
 
-
+/*idk why, but it is needed, lol*/
+footer {
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    text-align: center;
+    padding: 10px;
+    background: rgb(0 0 0 / 0%);
+    color: white;
+}
 
 body {
     background: url("../images/backgorund.jpg") no-repeat center center fixed;
@@ -114,14 +121,14 @@ body {
     display: flex;
     align-items: center;
     gap: 8px;
-    background-color: #444d56; /* Kolor GitHuba */
+    background-color: #444d56;
     color: white;
     border: none;
     padding: 8px 16px;
     border-radius: 5px;
     cursor: pointer;
     transition: background 0.3s ease;
-    margin: auto; /* Automatyczne centrowanie */
+    margin: auto;
 }
 
 .button:hover {

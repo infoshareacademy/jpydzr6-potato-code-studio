@@ -19,12 +19,12 @@ html, body {
 
 .footer {
     position: absolute;
-    bottom: 10px; /* Możesz zmienić na 0, jeśli chcesz przy samym dole */
+    bottom: 10px; /
     left: 50%;
     transform: translateX(-50%);
     text-align: center;
     font-size: 14px;
-    color: white; /* Dostosuj do stylu strony */
+    color: white;
     width: 100%;
 }
 
