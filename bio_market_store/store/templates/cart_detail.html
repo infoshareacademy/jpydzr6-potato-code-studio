@@ -1,0 +1,16 @@
+<!-- cart_detail.html -->
+<h1>Your Cart</h1>
+
+{% if cart_items %}
+    <ul>
+        {% for item in cart_items %}
+            <li>
+                {{ item.name }} - {{ item.quantity }} x ${{ item.price }} = ${{ item.price|floatformat:2 }}
+            </li>
+        {% endfor %}
+    </ul>
+    <p>Total Price: {{ total_price|floatformat:2 }} PLN</p>
+    <p>Number of Items: {{ num_of_items }}</p>
+{% else %}
+    <p>Your cart is empty.</p>
+{% endif %}
