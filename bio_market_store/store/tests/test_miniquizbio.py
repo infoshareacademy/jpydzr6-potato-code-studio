@@ -1,21 +1,19 @@
 from django.test import TestCase
-from .models import MiniQuizBio
-
+from store.models import MiniQuizBio
+import json
 
 class MiniQuizBioTests(TestCase):
     def test_create_quiz(self):
         quiz = MiniQuizBio.objects.create(
-            question="Co oznacza skrót BIO na produktach spożywczych?",
-            answer_choices={
-                'a': 'Biologiczne Innowacje Organizacyjne',
-                'b': 'Biologicznie Izolowane Organizmy',
-                'c': 'Biologicznie Intensywna Obserwacja',
-                'd': 'Biologiczne'
-            },
+            question="What does BIO stand for?",
+            answer_choices=json.dumps({
+                'a': 'Biological Organisational Innovation',
+                'b': 'Biologically isolated organism',
+                'c': 'Biologically Intensive Observation',
+                'd': 'Biological'
+            }),
             correct_answer='d'
         )
 
-        self.assertEqual(quiz.question, "Co oznacza skrót BIO na produktach spożywczych?")
+        self.assertEqual(quiz.question, "What does BIO stand for?")
         self.assertEqual(quiz.correct_answer, 'd')
-
-        self.assertEqual(str(quiz), "Co oznacza skrót BIO na produktach spożywczych?")

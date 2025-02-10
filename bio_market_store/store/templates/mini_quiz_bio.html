@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mini Quiz Bio</title>
+</head>
+<body>
+    <h1>Mini Quiz Bio</h1>
+
+    {% if question %}
+        <h2>{{ question.question }}</h2>
+
+        <form method="POST">
+            {% csrf_token %}
+
+            {% for choice in form.fields.answer.choices %}
+                <label>
+                    <input type="radio" name="answer" value="{{ choice.0 }}" {% if message %}disabled{% endif %}>
+                    {{ choice.1 }}
+                </label><br>
+            {% endfor %}
+
+            <br>
+
+            {% if message %}
+                <p><strong>{{ message }}</strong></p>
+            {% endif %}
+
+            <button type="submit" name="submit" {% if message %}disabled{% endif %}>Submit</button>
+            <button type="submit" name="next">Next</button>
+            <button type="submit" name="finish">Finish</button>
+        </form>
+
+        <p><strong>Score:</strong> {{ score }}</p>
+    {% else %}
+        <p>No questions available.</p>
+    {% endif %}
+</body>
+</html>
+
+
