@@ -57,3 +57,20 @@ class Product(models.Model):
 
 
 
+
+class MiniQuizBio(models.Model):
+    class AnswerChoices(models.TextChoices):
+        A = 'a', 'A'
+        B = 'b', 'B'
+        C = 'c', 'C'
+        D = 'd', 'D'
+
+    question = models.TextField()
+    answer_choices = models.JSONField()
+    correct_answer = models.CharField(
+        max_length=1,
+        choices=AnswerChoices.choices
+    )
+
+    def __str__(self):
+        return self.question
