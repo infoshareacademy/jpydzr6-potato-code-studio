@@ -7,11 +7,11 @@ body {
     background: url("../images/backgorund.jpg") no-repeat center center fixed;
     background-size: cover;
     height: 100vh;
-    /*display: flex;*/
-    /*justify-content: center;*/
-    /*align-items: center;*/
-    /*text-align: center;*/
-    /*color: white;*/
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    color: white;
     font-family: 'Outfit', sans-serif;
 }
 
@@ -153,3 +153,7 @@ body {
 
 }
 
+#BioPotato {
+    font-family: Megrim, sans-serif;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+}
