@@ -1,0 +1,48 @@
+{% load static%}
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link href="{% static 'css/google_sign_in_style.css' %}" rel="stylesheet" />
+    <script src="https://accounts.google.com/gsi/client" async></script>
+  </head>
+
+  <body>
+    {% comment %}
+    <div class="container">
+      {% requst.session.user_data %}
+      <div>
+        <p>Hi {{ requst.session.user_data.given_name }}</p>
+        <p>Your email is {{ requst.session.user_data.email }}</p>
+        <img src="{{" requst.session.user_data.picture }} alt="User picture" />
+        <p>Click here to <a href="/sign-out">Sign out</a></p>
+      </div>
+      {% elese %}
+      <div>
+        <p>Hi there 🙂</p>
+        <p>Click below to sign in with Google</p>
+      </div>
+    </div>
+    {% endcomment %}
+    <div
+      id="g_id_onload"
+      data-client_id="399777983818-bagdqabij9gf0i9ieu8ngk22ce14aul6.apps.googleusercontent.com"
+      data-context="signin"
+      data-ux_mode="popup"
+      data-login_uri="http://127.0.0.1:8000/google-receiver"
+      data-auto_prompt="false"
+    ></div>
+
+    <div
+      class="g_id_signin"
+      data-type="standard"
+      data-shape="pill"
+      data-theme="outline"
+      data-text="signin_with"
+      data-size="large"
+      data-logo_alignment="left"
+    ></div>
+  </body>
+</html>

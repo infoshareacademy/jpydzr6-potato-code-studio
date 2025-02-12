@@ -1,3 +1,5 @@
+{% load static %}
+
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -10,6 +12,9 @@
       integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH"
       crossorigin="anonymous"
     />
+    {% comment %} <link href="{% static 'css/google_sign_in_style.css' %}" rel="stylesheet" /> {% endcomment %}
+    <script src={% static 'js/auth_google.js' %}></script>
+   <script src="https://accounts.google.com/gsi/client" async defer></script>
   </head>
   <body>
     <div class="container mt-5">
@@ -26,6 +31,8 @@
 
         <a href="/login" type="submit" class="btn btn-primary">Sign In</a>
         <a href="/register" type="submit" class="btn btn-primary">Sign Up</a>
+        <div id="g_id_onload" data-client_id="{{ google_client_id }}" data-context="signin" data-ux_mode="popup" data-login_uri="https://127.0.0.1:8000/google-auth-receiver" data-auto_prompt="false">Google sign in</div>
+        <div class="g_id_signin" data-type="icon" data-shape="square" data-theme="outline" data-text="signin_with" data-size="large"></div>
       </div>
       {% endif %}
     </div>

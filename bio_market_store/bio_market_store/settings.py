@@ -11,6 +11,10 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 """
 
 from pathlib import Path
+import os
+from dotenv import load_dotenv
+
+load_dotenv()
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -37,6 +41,11 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+    "allauth",
+    "allauth.account",
+    "allauth.socialaccount",
+    "allauth.socialaccount.providers.google",
+    "sslserver",
     "store",
 ]
 
@@ -48,6 +57,7 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    "allauth.account.middleware.AccountMiddleware",
 ]
 
 ROOT_URLCONF = "bio_market_store.urls"
@@ -83,6 +93,7 @@ DATABASES = {
 
 # User
 AUTH_USER_MODEL = "store.UserProfile"
+GOOGLE_OAUTH_CLIENT_ID = os.getenv("GOOGLE_OAUTH_CLIENT_ID")
 
 # Password validation
 # https://docs.djangoproject.com/en/5.1/ref/settings/#auth-password-validators
@@ -106,8 +117,15 @@ AUTH_PASSWORD_VALIDATORS = [
 ]
 
 AUTHENTICATION_BACKENDS = [
+    "django.contrib.auth.backends.ModelBackend",
+    "allauth.account.auth_backends.AuthenticationBackend",
     "store.utils.user_authentication.UserProfileAuthentication",
 ]
+
+# Google login
+SOCIALACCOUNT_LOGIN_ON_GET = True
+SECURE_REFERRER_POLICY = "no-referrer-when-downgrade"
+SECURE_CROSS_ORIGIN_OPENER_POLICY = "same-origin-allow-popups"
 
 
 # Internationalization
@@ -131,19 +149,20 @@ STATIC_URL = "static/"
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
 
 
-DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
-#---mail-config---
+DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+# ---mail-config---
 
-import os
-from dotenv import load_dotenv
-load_dotenv()
-
-EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = 'smtp.wp.pl'
+EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
+EMAIL_HOST = "smtp.wp.pl"
 EMAIL_PORT = 465
 EMAIL_USE_TLS = False
 EMAIL_USE_SSL = True
-EMAIL_HOST_USER = 'biopotato@wp.pl'
-EMAIL_HOST_PASSWORD = os.getenv('mail_password')
+EMAIL_HOST_USER = "biopotato@wp.pl"
+EMAIL_HOST_PASSWORD = os.getenv("mail_password")
 DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
 
+
+# SSL
+SECURE_SSL_REDIRECT = False
+CSRF_COOKIE_SECURE = True
+SESSION_COOKIE_SECURE = True
