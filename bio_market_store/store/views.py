@@ -9,13 +9,13 @@ from django.utils.timezone import now
 
 
 def cover_page(request):
-    return render(request, 'store/cover.html')
+    return render(request, 'cover.html')
 
 def about_us(request):
-    return render(request, 'store/about.html')
+    return render(request, 'about.html')
 
 def contact_us(request):
-    return render(request, 'store/contact.html')
+    return render(request, 'contact.html')
 
 @login_required
 def add_product(request):
