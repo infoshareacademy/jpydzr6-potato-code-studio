@@ -6,6 +6,17 @@ from .models import Product
 from django.contrib.auth.decorators import login_required
 from django.utils.timezone import now
 
+
+
+def cover_page(request):
+    return render(request, 'store/cover.html')
+
+def about_us(request):
+    return render(request, 'store/about.html')
+
+def contact_us(request):
+    return render(request, 'store/contact.html')
+
 @login_required
 def add_product(request):
     if request.method == "POST":
