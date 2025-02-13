@@ -1,7 +1,4 @@
 from django.test import TestCase
-
-# store/tests.py
-from django.test import TestCase
 from django.urls import reverse
 from .models import Product, Cart
 
@@ -88,4 +85,3 @@ class StoreTests(TestCase):
 
         url = reverse('order_summary')
         self.assertEqual(url, '/order_summary/')
-
