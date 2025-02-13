@@ -1,0 +1,36 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Order Summary</title>
+    <link rel="stylesheet" href="{% static 'styles.css' %}">
+</head>
+<body>
+    <h2>Order Summary</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>Product</th>
+                <th>Quantity</th>
+                <th>Price (PLN)</th>
+                <th>Total (PLN)</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in cart_items %}
+            <tr>
+                <td>{{ item.product.name }}</td>
+                <td>{{ item.quantity }}</td>
+                <td>{{ item.product.price }}</td>
+                <td>{{ item.total_price }}</td>  <!-- Use the pre-calculated total price -->
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <h3>Total Price: {{ total_price }} PLN</h3>
+    <button onclick="window.location.href='{% url 'empty_cart' %}'">Empty Cart</button>
+    <button onclick="window.location.href='#'">Payment</button>
+</body>
+</html>

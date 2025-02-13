@@ -1,12 +1,9 @@
-from django.urls import path
-from .views import home_page, register_view, login_view, logout_view
+from django.urls import path, re_path
 from . import views
 
 urlpatterns = [
-    path('', home_page, name='home_page'),
-    path('register/', register_view, name='register'),
-    path('login/', login_view, name='login'),
-    path('logout/', logout_view, name='logout'),
-    path('add/', views.add_product, name="add"),
-    path('product_list/', views.product_list, name="product_list"),
-    ]
+    path('', views.product_list, name='product_list'),
+    re_path(r'^update_cart/(?P<product_id>\d+)/(?P<change>-?\d+)/$', views.update_cart, name='update_cart'),
+    path('order_summary/', views.order_summary, name='order_summary'),
+    path('empty_cart/', views.empty_cart, name='empty_cart'),
+]

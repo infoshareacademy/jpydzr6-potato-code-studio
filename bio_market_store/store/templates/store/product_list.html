@@ -1,0 +1,79 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bio Market Store</title>
+    <link rel="stylesheet" href="{% static 'styles.css' %}">
+</head>
+<body>
+    <nav>
+        <ul>
+            <li><a href="#home">Home</a></li>
+            <li><a href="#menu">Products</a></li>
+            <li><a href="#contact">Contact</a></li>
+        </ul>
+    </nav>
+
+    <section id="home">
+        <h1>Welcome to Bio Market Store</h1>
+        <p>Only Bio. Only fresh.</p>
+    </section>
+
+    <section id="menu">
+        <h2>Our Products</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Category</th>
+                    <th>Product</th>
+                    <th>Price (PLN)</th>
+                    <th>Commission</th>
+                    <th>Weight</th>
+                    <th>Exp. date</th>
+                    <th>Producer</th>
+                    <th>Quantity</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for product in products %}
+                <tr data-price="{{ product.price }}">
+                    <td>{{ product.category }}</td>
+                    <td>{{ product.name }}</td>
+                    <td>{{ product.price }}</td>
+                    <td>{{ product.commission }}</td>
+                    <td>{{ product.weight }}</td>
+                    <td>{{ product.exp_date }}</td>
+                    <td>{{ product.producer }}</td>
+                    <td>
+                        <button onclick="updateQuantity('{{ product.id }}', -1)">-</button>
+                        <span id="quantity-{{ product.id }}">{{ product.cart_quantity }}</span>
+                        <button onclick="updateQuantity('{{ product.id }}', 1)">+</button>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <h3>Total Price: <span id="total-price">0.00</span> PLN</h3>
+        <button onclick="window.location.href='{% url 'order_summary' %}'">View Cart</button>
+    </section>
+
+    <section id="contact">
+        <h2>Contact Us</h2>
+        <form>
+            <label for="name">Name:</label>
+            <input type="text" id="name" name="name" required><br><br>
+            <label for="phone">Phone Number:</label>
+            <input type="tel" id="phone" name="phone"><br><br>
+            <label for="email">Email:</label>
+            <input type="email" id="email" name="email" required><br><br>
+            <label for="content">Message:</label>
+            <textarea id="content" name="content" required></textarea><br><br>
+            <button type="submit">Submit</button>
+        </form>
+    </section>
+
+    <script src="{% static 'script.js' %}"></script>
+</body>
+</html>

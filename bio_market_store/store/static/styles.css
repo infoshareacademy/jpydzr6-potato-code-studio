@@ -1,0 +1,66 @@
+/* Set the background color for the entire page */
+body {
+    font-family: 'Arial', sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #32CD32; /* Lime green background */
+}
+
+/* Style the navbar */
+nav {
+    background-color: #8B4513; /* Brown background for the navbar */
+    color: white;
+    padding: 10px;
+}
+
+nav ul {
+    list-style: none;
+    padding: 0;
+    display: flex;
+    justify-content: space-around;
+}
+
+nav ul li a {
+    color: white;
+    text-decoration: none;
+}
+
+/* Style the sections */
+section {
+    padding: 20px;
+}
+
+/* Style the headings */
+h1, h2 {
+    font-family: 'Georgia', serif;
+}
+
+/* Style the table */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+
+table, th, td {
+    border: 1px solid #ddd;
+}
+
+th, td {
+    padding: 10px;
+    text-align: left;
+}
+
+/* Style the buttons */
+button {
+    padding: 5px 10px;
+    cursor: pointer;
+    background-color: #8B4513; /* Brown background for buttons */
+    color: white;
+    border: none;
+    border-radius: 3px;
+}
+
+button:hover {
+    background-color: #A0522D; /* Darker brown on hover */
+}

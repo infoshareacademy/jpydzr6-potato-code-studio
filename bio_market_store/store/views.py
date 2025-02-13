@@ -1,94 +1,57 @@
-from django.contrib import messages
-from store.models import UserProfile
-from django.contrib.auth import authenticate, login, logout
-from django.shortcuts import render, redirect
-from .models import Product
-from django.contrib.auth.decorators import login_required
-from django.utils.timezone import now
+from django.http import JsonResponse
+from django.shortcuts import render, get_object_or_404, redirect
+from .models import Product, Cart
 
-@login_required
-def add_product(request):
-    if request.method == "POST":
-        name_tag = request.POST.get("name_tag")
-        category = request.POST.get("category")
-        price = request.POST.get("price")
-        commission = request.POST.get("commission")
-        weight = request.POST.get("weight")
-        exp_date = request.POST.get("exp_date")
-        amount = request.POST.get("amount")
-        producer = request.POST.get("producer")
-
-        if not all([name_tag, category, price, commission, weight, exp_date, amount, producer]):
-            return render(request, "add_product.html")
-
-        product = Product(
-            user=request.user,
-            name_tag=name_tag,
-            category=category,
-            price=price,
-            commission=commission,
-            weight=weight,
-            exp_date=exp_date,
-            amount=amount,
-            producer=producer,
-            created_at=now(),
-        )
-
-        product.save()
-
-        return redirect("/product_list")
-
-    return render(request, "add_product.html")
 
 def product_list(request):
     products = Product.objects.all()
-    return render(request, "product_list.html", {"products": products})
 
-def home_page(request):
-    return render(request, "index.html")
+    # Get cart quantities for each product
+    for product in products:
+        cart_item = Cart.objects.filter(product=product).first()
+        product.cart_quantity = cart_item.quantity if cart_item else 0
 
-def register_view(request):
-    if request.method == "POST":
-        username = request.POST.get("username")
-        email = request.POST.get("email")
-        password = request.POST.get("password")
+    return render(request, 'store/product_list.html', {'products': products})
 
-        
-        if UserProfile.objects.filter(username=username).exists():
-            messages.error(request, "Username already exists")
-            return redirect("register")
-        
-        new_user = UserProfile.objects.create_user(username=username, email=email, password=password)
-        new_user.save()
-        
-        messages.success(request, "User created successfully")
-        return redirect("home_page")
 
-    return render(request, "register_page.html")
+def update_cart(request, product_id, change):
+    product = get_object_or_404(Product, id=product_id)
+    cart_item, created = Cart.objects.get_or_create(product=product)
 
-def login_view(request):
-    if request.method == "POST":
-        username = request.POST.get("username")
-        password = request.POST.get("password")
+    # Convert 'change' to an integer
+    change = int(change)
 
-        
-        user = authenticate(request, username=username, password=password)
+    cart_item.quantity += change
+    if cart_item.quantity < 0:
+        cart_item.quantity = 0
+    cart_item.save()
 
-        if user is not None:
-            login(request, user)
-            messages.success(request, "Login successful")
-            return redirect("home_page")
+    # Return the updated quantity and total price as JSON
+    return JsonResponse({
+        'quantity': cart_item.quantity,
+        'total_price': calculate_total_price(),  # You need to implement this function
+    })
 
-        
-        return render(request, "login_page.html", {"error": "Invalid username or password"})
-            
-    return render(request, "login_page.html")
+def calculate_total_price():
+    cart_items = Cart.objects.filter(quantity__gt=0)
+    total_price = sum(item.product.price * item.quantity for item in cart_items)
+    return total_price
 
-def logout_view(request):
-    if request.user.is_authenticated:
-        logout(request)
-        messages.success(request, "Logout successful")
-        return redirect("home_page")
-    else:
-        messages.error(request, "User is not authenticated")
-        return redirect("home_page")
+def order_summary(request):
+    cart_items = Cart.objects.filter(quantity__gt=0)
+
+    # Calculate the total price for each item and add it to the context
+    for item in cart_items:
+        item.total_price = item.product.price * item.quantity
+
+    # Calculate the overall total price
+    total_price = sum(item.total_price for item in cart_items)
+
+    return render(request, 'store/order_summary.html', {
+        'cart_items': cart_items,
+        'total_price': total_price,
+    })
+
+def empty_cart(request):
+    Cart.objects.all().delete()  # Empty the cart
+    return redirect('product_list')  # Redirect to the main page
