@@ -19,7 +19,7 @@ html, body {
 
 .footer {
     position: absolute;
-    bottom: 10px; /
+    bottom: 10px;
     left: 50%;
     transform: translateX(-50%);
     text-align: center;
@@ -61,6 +61,11 @@ html, body {
     padding: 10px 30px;
 }
 
+.dropdown-item:hover {
+    background-color: #4d534f;
+    color: #fff;               
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
 
 /* name logo font */
 #BioPotato {

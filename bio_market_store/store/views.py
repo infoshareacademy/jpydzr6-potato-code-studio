@@ -1,21 +1,60 @@
 from django.contrib import messages
-from store.models import UserProfile
 from django.contrib.auth import authenticate, login, logout
 from django.shortcuts import render, redirect
-from .models import Product
 from django.contrib.auth.decorators import login_required
 from django.utils.timezone import now
-
+from .models import UserProfile, Address, Product
+from .forms import UserProfileForm, AddressForm
 
 
 def cover_page(request):
-    return render(request, 'cover.html')
+    return render(request, "cover.html")
+
 
 def about_us(request):
-    return render(request, 'about.html')
+    return render(request, "about.html")
+
 
 def contact_us(request):
-    return render(request, 'contact.html')
+    return render(request, "contact.html")
+
+
+@login_required
+def user_profile(request):
+    user_profile = request.user  # UserProfile.objects.get(user=request.user)
+    address, created = Address.objects.get_or_create(id=user_profile.id)
+
+    if request.method == "POST":
+        user_profile_form = UserProfileForm(request.POST, instance=user_profile)
+        address_form = AddressForm(request.POST, instance=address)
+        if user_profile_form.is_valid() and address_form.is_valid():
+            user_profile_form.save()
+            address_form.save()
+            messages.success(request, "Profile updated successfully!")
+            return redirect("user_profile")
+    else:
+        user_profile_data = {
+            "first_name": user_profile.first_name if user_profile.first_name else "",
+            "last_name": user_profile.last_name if user_profile.last_name else "",
+            "email": user_profile.email if user_profile.email else "",
+        }
+        address_data = {
+            "street": address.street if address.street else "",
+            "postal_code": address.postal_code if address.postal_code else "",
+            "city": address.city if address.city else "",
+            "phone_number": address.phone_number if address.phone_number else "",
+        }
+        user_profile_form = UserProfileForm(
+            initial=user_profile_data, instance=user_profile
+        )
+        address_form = AddressForm(initial=address_data, instance=address)
+
+    return render(
+        request,
+        "user_profile.html",
+        {"user_profile_form": user_profile_form, "address_form": address_form},
+    )
+
 
 @login_required
 def add_product(request):
@@ -29,7 +68,9 @@ def add_product(request):
         amount = request.POST.get("amount")
         producer = request.POST.get("producer")
 
-        if not all([name_tag, category, price, commission, weight, exp_date, amount, producer]):
+        if not all(
+            [name_tag, category, price, commission, weight, exp_date, amount, producer]
+        ):
             return render(request, "add_product.html")
 
         product = Product(
@@ -51,12 +92,15 @@ def add_product(request):
 
     return render(request, "add_product.html")
 
+
 def product_list(request):
     products = Product.objects.all()
     return render(request, "product_list.html", {"products": products})
 
+
 def home_page(request):
     return render(request, "index.html")
+
 
 def register_view(request):
     if request.method == "POST":
@@ -64,25 +108,26 @@ def register_view(request):
         email = request.POST.get("email")
         password = request.POST.get("password")
 
-        
         if UserProfile.objects.filter(username=username).exists():
             messages.error(request, "Username already exists")
             return redirect("register")
-        
-        new_user = UserProfile.objects.create_user(username=username, email=email, password=password)
+
+        new_user = UserProfile.objects.create_user(
+            username=username, email=email, password=password
+        )
         new_user.save()
-        
+
         messages.success(request, "User created successfully")
         return redirect("home_page")
 
     return render(request, "register_page.html")
+
 
 def login_view(request):
     if request.method == "POST":
         username = request.POST.get("username")
         password = request.POST.get("password")
 
-        
         user = authenticate(request, username=username, password=password)
 
         if user is not None:
@@ -90,10 +135,12 @@ def login_view(request):
             messages.success(request, "Login successful")
             return redirect("home_page")
 
-        
-        return render(request, "login_page.html", {"error": "Invalid username or password"})
-            
+        return render(
+            request, "login_page.html", {"error": "Invalid username or password"}
+        )
+
     return render(request, "login_page.html")
+
 
 def logout_view(request):
     if request.user.is_authenticated:
