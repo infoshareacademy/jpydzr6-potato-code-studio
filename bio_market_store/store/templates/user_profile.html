@@ -20,59 +20,34 @@
   </head>
   <body>
     <header class="navbar navbar-expand-md fixed-top">
-      <div
-        class="container-fluid d-flex justify-content-between align-items-center"
-      >
-        <h3 class="float-md-start mb-0" id="BioPotato">BioPotato</h3>
-        <nav class="nav nav-masthead justify-content-center float-md-end">
-          <a class="nav-link active" id="storeNav" href="">Store</a>
-          <a class="nav-link" id="aboutNav" href="{% url 'cover-page' %}"
-            >Home</a
-          >
-          <a class="nav-link" id="contactNav" href="{% url 'contact-page' %}"
-            >Contact</a
-          >
-          <li class="nav-item dropdown">
-            <a
-              class="nav-link dropdown-toggle"
-              href="#"
-              id="userDropdown"
-              role="button"
-              data-bs-toggle="dropdown"
-              aria-expanded="false"
-            >
-              <i class="fas fa-user"></i>
-            </a>
-            <ul
-              class="dropdown-menu dropdown-menu-end"
-              aria-labelledby="userDropdown"
-            >
-              {% if user.is_authenticated %}
-              <li><a class="dropdown-item">Profile</a></li>
-              <li><hr class="dropdown-divider" /></li>
-              <li>
-                <a class="dropdown-item" href="{% url 'logout' %}">Logout</a>
-              </li>
-              {% else %}
-              <li>
-                <a href="{% url 'login' %}" type="submit" class="dropdown-item"
-                  >Sign In</a
-                >
-              </li>
-              <li><hr class="dropdown-divider" /></li>
-              <li>
-                <a
-                  href="{% url 'register' %}"
-                  type="submit"
-                  class="dropdown-item"
-                  >Sign Up</a
-                >
-              </li>
-              {% endif %}
-            </ul>
-          </li>
-        </nav>
-      </div>
+        <div class="container-fluid d-flex justify-content-between align-items-center">
+            <h3 class="float-md-start mb-0" id="BioPotato">BioPotato</h3>
+            <nav class="nav nav-masthead justify-content-center float-md-end">
+                <a class="nav-link active" id="storeNav" href="">Store</a>
+                <a class="nav-link" id="aboutNav" href="{% url 'cover-page' %}">Home</a>
+                <a class="nav-link" id="contactNav" href="{% url 'contact-page' %}">Contact</a>
+                <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                    <i class="fas fa-user"></i>
+                </a>
+                <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
+                    {% if user.is_authenticated %}
+                      <li><a class="dropdown-item" href="{% url 'user_profile' %}">Profile</a></li>
+                      <li><hr class="dropdown-divider"></li>
+                      <li><a class="dropdown-item" href="{% url 'logout' %}">Logout</a></li>
+                    {% else %}
+                      <li>
+                        <a href="{% url 'login' %}" type="submit" class="dropdown-item">Sign In</a>
+                      </li>
+                      <li><hr class="dropdown-divider"></li>
+                      <li>
+                        <a href="{% url 'register' %}" type="submit" class="dropdown-item">Sign Up</a>
+                      </li>
+                    {% endif %}
+                </ul>
+            </li>
+            </nav>
+        </div>
     </header>
     
     <div class="container mt-5">

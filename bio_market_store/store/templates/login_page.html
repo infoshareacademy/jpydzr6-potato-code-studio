@@ -11,8 +11,9 @@
       integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH"
       crossorigin="anonymous"
     />
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
     <link href="{% static 'css/register_page_styles.css' %}" rel="stylesheet" />
+    <script src="{% static 'js/alerts.js' %}"></script>
   </head>
   <body>
      <header class="navbar navbar-expand-md fixed-top">
@@ -47,6 +48,13 @@
     </header>
 
     <div class="container mt-5">
+      {% if messages %}
+        {% for message in messages %}
+          <div class="alert alert-{{ message.tags }} text-center fade show" role="alert">
+            {{ message }}
+          </div>
+        {% endfor %}
+      {% endif %}
       <div class="row justify-content-center">
         <div class="col-md-6">
           <div class="card shadow-lg">
