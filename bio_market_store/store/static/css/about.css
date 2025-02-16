@@ -1,40 +1,4 @@
 
-html, body {
-    height: 100%;
-}
-
-.nav-masthead .nav-link {
-    color: rgba(255, 255, 255, 0.75);
-    border-bottom: 0.25rem solid transparent;
-}
-
-.nav-masthead .nav-link:hover,
-.nav-masthead .nav-link.active {
-    border-bottom-color: rgba(255, 255, 255, 0.75);
-}
-
-/*idk why, but it is needed, lol*/
-footer {
-    position: fixed;
-    bottom: 0;
-    width: 100%;
-    text-align: center;
-    padding: 10px;
-    background: rgb(0 0 0 / 0%);
-    color: white;
-}
-
-body {
-    background: url("../images/backgorund.jpg") no-repeat center center fixed;
-    background-size: cover;
-    height: 100vh;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    text-align: center;
-    color: white;
-}
-
 #crewName {
     text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
 }
@@ -43,100 +7,27 @@ body {
     text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
 }
 
-#BioPotato {
-    font-family: Megrim, sans-serif;
-    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
-}
-
-#contactNav {
-    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
-}
-
-#storeNav{
-    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
-}
-
-#aboutNav {
-    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
-
-}
-
-.nav {
-    margin-left: auto;
-}
-
-
-.nav-link {
+.card {
+    background: none;
     color: white;
-    font-size: 18px;
-    margin-left: 20px;
 }
 
-.nav-link:hover {
-    color: #32de84;
-}
-
-
-.nav-masthead .nav-link {
-    color: rgba(255, 255, 255, 0.75);
-    border-bottom: 0.25rem solid transparent;
-}
-
-.nav-masthead .nav-link:hover,
-.nav-masthead .nav-link.active {
-    border-bottom-color: rgba(255, 255, 255, 0.75);
-}
-
-.nav {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 10px 30px;
-}
-
-
-#rowToMove{
-    position: relative;
-    left:210px;
-    bottom:-10px;
-
-}
-
-.center-row {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-
-
-.center-row .col-lg-4 {
+.link-github {
     text-align: center;
-}
-
-
-.container.marketing {
-    margin-top: 50px;
-}
-.button {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    background-color: #444d56;
-    color: white;
+    text-decoration: none;
     border: none;
-    padding: 8px 16px;
-    border-radius: 5px;
     cursor: pointer;
-    transition: background 0.3s ease;
+    /* transition: background 0.3s ease; */
     margin: auto;
 }
 
-.button:hover {
-    background-color: #24292e;
+i {
+    font-size: 1.5rem;
+    color: white
 }
 
-.button svg {
-    fill: white;
+.link-github:hover {
+    background-color: #24292e;
 }
 
 .text {

@@ -1,25 +1,4 @@
 
-html {
-    height: 100%;
-}
-
-body {
-    background: url("../images/backgorund.jpg") no-repeat center center fixed;
-    background-size: cover;
-    height: 100vh;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    text-align: center;
-    color: white;
-    font-family: 'Outfit', sans-serif;
-}
-
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-}
 
 .contact-container {
     height: 100vh;
@@ -90,70 +69,4 @@ body {
     background: linear-gradient(to right, #32de84, forestgreen);
     cursor: pointer;
     transition: all 0.3s ease;
-}
-
-.nav {
-    margin-left: auto;
-}
-
-
-.nav-link {
-    color: white;
-    font-size: 18px;
-    margin-left: 20px;
-}
-
-.nav-link:hover {
-    color: #32de84;
-}
-
-
-.nav-masthead .nav-link {
-    color: rgba(255, 255, 255, 0.75);
-    border-bottom: 0.25rem solid transparent;
-}
-
-.nav-masthead .nav-link:hover,
-.nav-masthead .nav-link.active {
-    border-bottom-color: rgba(255, 255, 255, 0.75);
-}
-
-.nav {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 10px 30px;
-}
-
-
-
-#crewName {
-    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
-}
-
-#crewText {
-    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
-}
-
-#BioPotato {
-    font-family: Megrim, sans-serif;
-    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
-}
-
-#contactNav {
-    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
-}
-
-#storeNav {
-    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
-}
-
-#aboutNav {
-    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
-
-}
-
-#BioPotato {
-    font-family: Megrim, sans-serif;
-    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
 }

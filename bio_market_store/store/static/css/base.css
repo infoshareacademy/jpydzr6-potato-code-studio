@@ -1,0 +1,77 @@
+html, body {
+    height: 100%;
+    margin: 0;
+}
+
+body {
+    background: url("../images/backgorund.jpg") no-repeat center center fixed;
+    background-size: cover;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    color: white;
+}
+
+.mt-auto {
+    position: fixed;
+    bottom: 0;
+    width: 100vw;
+
+}
+
+.text-box {
+    max-width: 800px;
+    margin: 0 auto;
+    text-align: center;
+}
+
+
+.footer {
+    position: absolute;
+    bottom: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+    text-align: center;
+    font-size: 14px;
+    color: white;
+    width: 100%;
+}
+
+.nav {
+    margin-left: auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 30px;
+}
+
+.navbar-brand {
+    color: white !important;
+    font-size: 2rem;
+    margin-left: 1rem;
+}
+
+
+.nav-link {
+    color: white;
+    font-size: 18px;
+    margin-left: 20px;
+}
+
+.nav-link:hover {
+    color: #32de84;
+    background: none;
+}
+
+
+.nav-masthead .nav-link {
+    color: rgba(255, 255, 255, 0.75);
+    border-bottom: 0.25rem solid transparent;
+}
+
+.nav-masthead .nav-link:hover,
+.nav-masthead .nav-link.active {
+    border-bottom-color: rgba(255, 255, 255, 0.75);
+}

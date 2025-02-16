@@ -7,16 +7,24 @@ from django.contrib.auth.decorators import login_required
 from django.utils.timezone import now
 
 
+# Pages
+def home_page(request):
+    return render(request, "base.html")
+
 
 def cover_page(request):
-    return render(request, 'cover.html')
+    return render(request, "cover.html")
+
 
 def about_us(request):
-    return render(request, 'about.html')
+    return render(request, "about.html")
+
 
 def contact_us(request):
-    return render(request, 'contact.html')
+    return render(request, "contact.html")
 
+
+# Product
 @login_required
 def add_product(request):
     if request.method == "POST":
@@ -29,7 +37,9 @@ def add_product(request):
         amount = request.POST.get("amount")
         producer = request.POST.get("producer")
 
-        if not all([name_tag, category, price, commission, weight, exp_date, amount, producer]):
+        if not all(
+            [name_tag, category, price, commission, weight, exp_date, amount, producer]
+        ):
             return render(request, "add_product.html")
 
         product = Product(
@@ -51,38 +61,39 @@ def add_product(request):
 
     return render(request, "add_product.html")
 
+
 def product_list(request):
     products = Product.objects.all()
     return render(request, "product_list.html", {"products": products})
 
-def home_page(request):
-    return render(request, "index.html")
 
+# User
 def register_view(request):
     if request.method == "POST":
         username = request.POST.get("username")
         email = request.POST.get("email")
         password = request.POST.get("password")
 
-        
         if UserProfile.objects.filter(username=username).exists():
             messages.error(request, "Username already exists")
             return redirect("register")
-        
-        new_user = UserProfile.objects.create_user(username=username, email=email, password=password)
+
+        new_user = UserProfile.objects.create_user(
+            username=username, email=email, password=password
+        )
         new_user.save()
-        
+
         messages.success(request, "User created successfully")
         return redirect("home_page")
 
     return render(request, "register_page.html")
+
 
 def login_view(request):
     if request.method == "POST":
         username = request.POST.get("username")
         password = request.POST.get("password")
 
-        
         user = authenticate(request, username=username, password=password)
 
         if user is not None:
@@ -90,10 +101,12 @@ def login_view(request):
             messages.success(request, "Login successful")
             return redirect("home_page")
 
-        
-        return render(request, "login_page.html", {"error": "Invalid username or password"})
-            
+        return render(
+            request, "login_page.html", {"error": "Invalid username or password"}
+        )
+
     return render(request, "login_page.html")
+
 
 def logout_view(request):
     if request.user.is_authenticated:
