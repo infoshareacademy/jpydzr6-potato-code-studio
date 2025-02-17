@@ -2,8 +2,8 @@ from django.db import models
 from django.contrib.auth.models import AbstractUser
 from django.contrib.auth.models import User
 from django.conf import settings
-from store.utils.user_validator import UserValidator
-
+from .utils.user_validator import UserValidator
+import json
 
 class UserProfile(AbstractUser):
     user_validation = UserValidator()
@@ -57,3 +57,21 @@ class Product(models.Model):
 
 
 
+class MiniQuizBio(models.Model):
+    question_text = models.TextField()
+    answer_choices = models.TextField()
+    correct_answer = models.CharField(max_length=255)
+
+    def save(self, *args, **kwargs):
+        if isinstance(self.answer_choices, list):
+            self.answer_choices = json.dumps(self.answer_choices)
+        super().save(*args, **kwargs)
+
+    def get_choices(self):
+        try:
+            return json.loads(self.answer_choices)
+        except json.JSONDecodeError:
+            return []
+
+    def __str__(self):
+        return self.question_text
