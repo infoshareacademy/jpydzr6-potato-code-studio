@@ -28,8 +28,9 @@ def add_product(request):
         exp_date = request.POST.get("exp_date")
         amount = request.POST.get("amount")
         producer = request.POST.get("producer")
+        image = request.FILES.get("image")
 
-        if not all([name_tag, category, price, commission, weight, exp_date, amount, producer]):
+        if not all([name_tag, category, price, commission, weight, exp_date, amount, producer, image]):
             return render(request, "add_product.html")
 
         product = Product(
@@ -42,6 +43,7 @@ def add_product(request):
             exp_date=exp_date,
             amount=amount,
             producer=producer,
+            image=image,
             created_at=now(),
         )
 

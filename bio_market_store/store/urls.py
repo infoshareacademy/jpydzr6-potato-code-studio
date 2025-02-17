@@ -7,6 +7,8 @@ from django.urls import path
 from .views import home_page, register_view, login_view, logout_view
 from .views import cover_page, about_us, contact_us
 from . import views
+from django.conf.urls.static import static
+from django.conf import settings
 
 urlpatterns = [
     path('', home_page, name='home_page'),
@@ -19,4 +21,7 @@ urlpatterns = [
     path("cover/about/", view=about_us, name="about-page"),
     path("cover/contact", view=contact_us, name="contact-page"),
     ]
+
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
