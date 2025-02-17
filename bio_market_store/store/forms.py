@@ -1,6 +1,7 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
-from .models import UserProfile, Product
+from .models import UserProfile, Product, MiniQuizBio
+import json
 
 
 class UserCreatingForm(UserCreationForm):
@@ -27,3 +28,34 @@ class ProductForm(forms.ModelForm):
         model = Product
         fields = ['category', 'name_tag', 'price', 'commission', 'weight', 'exp_date', 'amount', 'producer',
                       'image']
+
+class MiniQuizBioForm(forms.Form):
+    answer = forms.ChoiceField(
+        widget=forms.RadioSelect,  # Use radio buttons instead of checkboxes
+        choices=[],
+        required=True
+    )
+
+    def __init__(self, *args, **kwargs):
+        question = kwargs.pop("question", None)
+        super().__init__(*args, **kwargs)
+
+        if question:
+            if isinstance(question.answer_choices, str):
+                answer_choices = json.loads(question.answer_choices)
+            else:
+                answer_choices = question.answer_choices
+
+            self.fields["answer"].choices = [(key, value) for key, value in answer_choices.items()]
+
+class MiniQuizBioForm(forms.Form):
+    answer = forms.ChoiceField(widget=forms.RadioSelect, choices=[], required=True)
+
+    def __init__(self, *args, question=None, **kwargs):
+        super().__init__(*args, **kwargs)
+        if question:
+            try:
+                choices = json.loads(question.answer_choices) if isinstance(question.answer_choices, str) else question.answer_choices
+                self.fields["answer"].choices = choices.items()
+            except json.JSONDecodeError:
+                self.fields["answer"].choices = []
