@@ -1,7 +1,7 @@
 from django.contrib import messages
 from store.models import UserProfile
 from django.contrib.auth import authenticate, login, logout
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from .models import Product
 from django.contrib.auth.decorators import login_required
 from django.utils.timezone import now
@@ -105,3 +105,47 @@ def logout_view(request):
     else:
         messages.error(request, "User is not authenticated")
         return redirect("home_page")
+
+def add_to_cart(request, product_id):
+    product = get_object_or_404(Product, id=product_id)
+    cart = request.session.get('cart', {})
+
+    if str(product_id) in cart:
+        cart[str(product_id)]['quantity'] += 1
+    else:
+        cart[str(product_id)] = {
+            'quantity': 1,
+            'price': str(product.price),
+            'name': product.name_tag,
+            'image': product.image.url
+        }
+
+    request.session['cart'] = cart
+    return redirect('product_list')
+
+
+def empty_cart(request):
+    if 'cart' in request.session:
+        del request.session['cart']
+    return redirect('product_list')
+
+
+def payment(request):
+    # Add payment processing logic later
+    return render(request, 'payment.html')
+
+
+def product_list(request):
+    products = Product.objects.all()
+
+    # Calculate cart total
+    cart = request.session.get('cart', {})
+    cart_total = sum(
+        int(item['quantity']) * float(item['price'])
+        for item in cart.values()
+    )
+
+    return render(request, "product_list.html", {
+        "products": products,
+        "cart_total": cart_total
+    })

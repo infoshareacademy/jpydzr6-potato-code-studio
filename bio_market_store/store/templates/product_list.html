@@ -5,10 +5,24 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     {% load static %}
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
     <link rel="stylesheet" href="{% static 'css/product_list_style.css' %}">
     <title>Products List</title>
 </head>
 <body>
+
+<!-- Cart Icon Counter -->
+<div class="container mt-3">
+    <div class="d-flex justify-content-end mb-4">
+        <button type="button" class="btn btn-primary position-relative" data-bs-toggle="modal" data-bs-target="#cartModal">
+            <i class="bi bi-cart3"></i> Cart
+            <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                {{ total_items|default:"0" }}
+            </span>
+        </button>
+    </div>
+</div>
+
 <div class="container mt-5">
     <h1 class="text-center mb-4">Products List</h1>
     <div class="row">
@@ -31,7 +45,7 @@
                             <p class="card-text">Amount: <strong>{{ product.amount }}</strong></p>
                             <p class="card-text">Producer: <strong>{{ product.producer }}</strong></p>
 
-                            <a href="#" class="btn btn-success btn-lg">Add to Cart</a>
+                            <a href="{% url 'add_to_cart' product.id %}" class="btn btn-success btn-lg">Add to Cart</a>
                         </div>
                     </div>
                 </div>
@@ -41,7 +55,64 @@
     </div>
 </div>
 
+<!-- Cart Modal -->
+<div class="modal fade" id="cartModal" tabindex="-1" aria-labelledby="cartModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="cartModalLabel">Shopping Cart Summary</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                {% if request.session.cart %}
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Product</th>
+                                <th>Price</th>
+                                <th>Quantity</th>
+                                <th>Total</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for key, item in request.session.cart.items %}
+                            <tr>
+                                <td>
+                                    <img src="{{ item.image }}" alt="{{ item.name }}" style="width: 50px; height: 50px; object-fit: cover;">
+                                    {{ item.name }}
+                                </td>
+                                <td>{{ item.price }} zł</td>
+                                <td>{{ item.quantity }}</td>
+                                <td>{% widthratio item.price 1 item.quantity %} zł</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                    <div class="text-end fw-bold fs-4">
+                        Total: {{ cart_total }} zł
+                    </div>
+                {% else %}
+                    <p>Your cart is empty</p>
+                {% endif %}
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Continue Shopping</button>
+                <a href="{% url 'empty_cart' %}" class="btn btn-danger">Empty Cart</a>
+                <a href="{% url 'payment' %}" class="btn btn-success">Proceed to Payment</a>
+            </div>
+        </div>
+    </div>
+</div>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const urlParams = new URLSearchParams(window.location.search);
+    if(urlParams.has('show_cart')) {
+        const cartModal = new bootstrap.Modal(document.getElementById('cartModal'));
+        cartModal.show();
+    }
+});
+</script>
 </body>
 </html>
