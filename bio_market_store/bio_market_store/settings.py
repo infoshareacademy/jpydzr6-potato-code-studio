@@ -29,7 +29,7 @@ SECRET_KEY = "django-insecure-3kwf(gtqq*3y!y*x*%w+$+m6d6iejzo7j$ev0wp*frpu@4!8xg
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["*"]
 
 # Application definition
 
@@ -149,3 +149,6 @@ EMAIL_USE_SSL = True
 EMAIL_HOST_USER = "biopotato@wp.pl"
 EMAIL_HOST_PASSWORD = os.getenv("mail_password")
 DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
+
+MEDIA_URL = "/media/"
+MEDIA_ROOT = os.path.join(BASE_DIR, "media")
