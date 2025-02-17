@@ -56,16 +56,20 @@ def mini_quiz_bio_view(request):
     questions = list(MiniQuizBio.objects.all())
     index = request.session.get("question_index", 0)
     score = request.session.get("score", 0)
-    message = request.session.pop("message", "")
 
     if index >= len(questions):
         return redirect("quiz_result")
 
     question = questions[index]
-    try:
-        choices = json.loads(question.answer_choices) if isinstance(question.answer_choices, str) else question.answer_choices
-    except json.JSONDecodeError:
-        choices = {}
+    choices = question.get_choices()
+    # try:
+    #     choices = (
+    #         json.loads(question.answer_choices)
+    #         if isinstance(question.answer_choices, str)
+    #         else question.answer_choices
+    #     )
+    # except json.JSONDecodeError:
+    #     choices = {}
 
     if request.method == "POST":
         form = MiniQuizBioForm(request.POST, question=question)
@@ -75,12 +79,16 @@ def mini_quiz_bio_view(request):
             correct = question.correct_answer
 
             if selected == correct:
-                message = "✅ Correct!"
                 score += 5
+                request.session["score"] = score
+                messages.success(request,"✅ Correct!")
             else:
-                message = f"❌ Incorrect! Correct answer: {correct.upper()}) {choices.get(correct, 'Unknown')}"
+                correct_answer_text = correct if correct in choices else "Unknown"
+                messages.warning(
+                    request,
+                    f"❌ Incorrect! Correct answer: {correct.upper()} {correct_answer_text}"
+                )
 
-            request.session.update({"score": score, "message": message})
 
         elif "next" in request.POST:
             request.session["question_index"] = index + 1
@@ -92,7 +100,12 @@ def mini_quiz_bio_view(request):
     else:
         form = MiniQuizBioForm(question=question)
 
-    return render(request, "mini_quiz_bio.html", {"form": form, "question": question, "message": message, "score": score})
+    return render(
+        request,
+        "mini_quiz_bio.html",
+        {"form": form, "question": question, "score": score},
+    )
+
 
 def quiz_result_view(request):
     score = request.session.get("score", 0)

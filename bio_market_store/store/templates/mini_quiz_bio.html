@@ -9,15 +9,19 @@
     <h1>Mini Quiz Bio</h1>
 
     {% if question %}
-        <h2>{{ question.question }}</h2>
-
+<!--    <h2>{{ question.question_text }}</h2>-->
+         {% if messages %}
+            {% for message in messages %}
+                <p><strong>{{ message }}</strong></p>
+            {% endfor %}
+        {% endif %}
         <form method="POST">
             {% csrf_token %}
 
-            {% for choice in form.fields.answer.choices %}
+            {% for value, text in form.fields.answer.choices %}
                 <label>
-                    <input type="radio" name="answer" value="{{ choice.0 }}" {% if message %}disabled{% endif %}>
-                    {{ choice.1 }}
+                    <input type="radio" name="answer" value="{{ value }}" {% if messages %}disabled{% endif %}>
+                    {{ text }}
                 </label><br>
             {% endfor %}
 
@@ -27,7 +31,7 @@
                 <p><strong>{{ message }}</strong></p>
             {% endif %}
 
-            <button type="submit" name="submit" {% if message %}disabled{% endif %}>Submit</button>
+            <button type="submit" name="submit" {% if messages %}disabled{% endif %}>Submit</button>
             <button type="submit" name="next">Next</button>
             <button type="submit" name="finish">Finish</button>
         </form>

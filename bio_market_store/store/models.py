@@ -1,7 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 from store.utils.user_validator import UserValidator
-
+import json
 
 class UserProfile(AbstractUser):
     user_validation = UserValidator()
@@ -37,18 +37,20 @@ class Address(models.Model):
         return f"{self.street}, {self.city}, {self.postal_code}, {self.phone_number}"
 
 class MiniQuizBio(models.Model):
-    class AnswerChoices(models.TextChoices):
-        A = 'a', 'A'
-        B = 'b', 'B'
-        C = 'c', 'C'
-        D = 'd', 'D'
+    question_text = models.TextField()
+    answer_choices = models.TextField()
+    correct_answer = models.CharField(max_length=255)
 
-    question = models.TextField()
-    answer_choices = models.JSONField()
-    correct_answer = models.CharField(
-        max_length=1,
-        choices=AnswerChoices.choices
-    )
+    def save(self, *args, **kwargs):
+        if isinstance(self.answer_choices, list):
+            self.answer_choices = json.dumps(self.answer_choices)
+        super().save(*args, **kwargs)
+
+    def get_choices(self):
+        try:
+            return json.loads(self.answer_choices)
+        except json.JSONDecodeError:
+            return []
 
     def __str__(self):
-        return self.question
+        return self.question_text
