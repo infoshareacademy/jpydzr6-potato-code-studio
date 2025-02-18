@@ -7,7 +7,7 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('store', '0002_auto_add_questions'),
+        ('store', '0002_rename_question_miniquizbio_question_text_and_more'),
     ]
 
     operations = [
