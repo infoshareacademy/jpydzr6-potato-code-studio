@@ -2,12 +2,14 @@ from django.urls import path
 from django.conf.urls.static import static
 from django.conf import settings
 from .views import (
-    register_view,
-    login_view,
-    logout_view,
     cover_page,
     about_us,
     contact_us,
+    register_view,
+    login_view,
+    logout_view,
+    mini_quiz_bio_view,
+    quiz_result_view,
     add_product,
     product_list,
     mini_quiz_bio_view,

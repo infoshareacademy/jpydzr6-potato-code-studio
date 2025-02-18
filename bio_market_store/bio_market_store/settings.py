@@ -14,7 +14,6 @@ from pathlib import Path
 import os
 from dotenv import load_dotenv
 
-# Dotenv
 load_dotenv()
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -88,6 +87,11 @@ DATABASES = {
 # User
 AUTH_USER_MODEL = "store.UserProfile"
 
+# Session
+SESSION_ENGINE = "django.contrib.sessions.backends.db"
+SESSION_COOKIE_AGE = 1209600
+SESSION_COOKIE_SECURE = False
+SESSION_COOKIE_NAME = "sessionid"
 
 # Password validation
 # https://docs.djangoproject.com/en/5.1/ref/settings/#auth-password-validators
@@ -111,6 +115,7 @@ AUTH_PASSWORD_VALIDATORS = [
 ]
 
 AUTHENTICATION_BACKENDS = [
+    "django.contrib.auth.backends.ModelBackend",
     "store.utils.user_authentication.UserProfileAuthentication",
 ]
 
