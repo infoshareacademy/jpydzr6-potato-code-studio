@@ -15,18 +15,20 @@
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
     />
   <body>
-    <header class="navbar navbar-expand-md fixed-top">
+    <nav class="navbar navbar-expand-md fixed-top nav-masthead">
         <a class="navbar-brand" href="/">BioPotato</a>
-        <nav class="nav nav-masthead justify-content-center float-md-end">
-            <a class="nav-link active" id="storeNav" href="">Store</a>
+        <div class="collapse navbar-collapse justify-content-end" id="navbarNavAltMarkup">
+          <div class="navbar-nav">
+            <a class="nav-link" id="storeNav" href="">Store</a>
             <a class="nav-link" id="aboutNav" href="{% url 'about-page' %}">About</a>
             <a class="nav-link" id="contactNav" href="{% url 'contact-page'%}">Contact</a>
-        </nav>
-    </header>
+          </div>
+        </div>
+    </nav>
     
     <div class="container my-5">{% block content %}{% endblock %}</div>
 
-    <footer class="mt-auto text-white-50">
+    <footer class="mt-auto text-white-50 ">
         <p>Julia Blaumann, Jakub Charkiewicz, Paweł Enerlich, Maciej Kusztal, Wojciech Wawrzyszko</p>
     </footer>
   {% block extra_js %}

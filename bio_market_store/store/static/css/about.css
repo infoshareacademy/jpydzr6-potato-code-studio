@@ -10,6 +10,15 @@
 .card {
     background: none;
     color: white;
+    min-height: 25rem;
+}
+
+.card-body {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    height: 100%;
 }
 
 .link-github {
@@ -21,9 +30,19 @@
     margin: auto;
 }
 
+p {
+    min-height: 5rem;
+}
+
+a {
+    text-decoration: none;
+    color: white;
+    
+}
+
 i {
     font-size: 1.5rem;
-    color: white
+    /* color: white */
 }
 
 .link-github:hover {
