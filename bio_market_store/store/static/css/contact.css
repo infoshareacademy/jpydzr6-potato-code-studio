@@ -125,6 +125,12 @@ body {
     padding: 10px 30px;
 }
 
+.dropdown-item:hover {
+    background-color: #4d534f;
+    color: #fff;               
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
 
 
 #crewName {

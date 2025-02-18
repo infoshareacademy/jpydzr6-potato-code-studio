@@ -11,10 +11,50 @@
       integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH"
       crossorigin="anonymous"
     />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
     <link href="{% static 'css/register_page_styles.css' %}" rel="stylesheet" />
+    <script src="{% static 'js/alerts.js' %}"></script>
   </head>
   <body>
+     <header class="navbar navbar-expand-md fixed-top">
+        <div class="container-fluid d-flex justify-content-between align-items-center">
+            <h3 class="float-md-start mb-0" id="BioPotato">BioPotato</h3>
+            <nav class="nav nav-masthead justify-content-center float-md-end">
+                <a class="nav-link active" id="storeNav" href="">Store</a>
+                <a class="nav-link" id="aboutNav" href="{% url 'cover-page' %}">Home</a>
+                <a class="nav-link" id="contactNav" href="{% url 'contact-page' %}">Contact</a>
+                <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                    <i class="fas fa-user"></i>
+                </a>
+                <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
+                    {% if user.is_authenticated %}
+                      <li><a class="dropdown-item" href="{% url 'user_profile' %}">Profile</a></li>
+                      <li><hr class="dropdown-divider"></li>
+                      <li><a class="dropdown-item" href="{% url 'logout' %}">Logout</a></li>
+                    {% else %}
+                      <li>
+                        <a href="{% url 'login' %}" type="submit" class="dropdown-item">Sign In</a>
+                      </li>
+                      <li><hr class="dropdown-divider"></li>
+                      <li>
+                        <a href="{% url 'register' %}" type="submit" class="dropdown-item">Sign Up</a>
+                      </li>
+                    {% endif %}
+                </ul>
+            </li>
+            </nav>
+        </div>
+    </header>
+
     <div class="container mt-5">
+      {% if messages %}
+        {% for message in messages %}
+          <div class="alert alert-{{ message.tags }} text-center fade show" role="alert">
+            {{ message }}
+          </div>
+        {% endfor %}
+      {% endif %}
       <div class="row justify-content-center">
         <div class="col-md-6">
           <div class="card shadow-lg">
@@ -61,5 +101,17 @@
         </div>
       </div>
     </div>
+
+    <footer class="container">
+      <p class="float-end">
+      <p>&copy; 2024-2025 PotatoCodeStudio &middot; <a
+                    href="https://github.com/infoshareacademy/jpydzr6-potato-code-studio/blob/dev/README.md"
+                    target="_blank">Terms</a> &middot;
+      </p>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" 
+    integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" 
+    crossorigin="anonymous"></script>
   </body>
 </html>

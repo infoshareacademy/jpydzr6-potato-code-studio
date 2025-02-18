@@ -1,11 +1,15 @@
-from django.shortcuts import render, redirect
 from django.contrib import messages
-from .models import UserProfile, MiniQuizBio, Product
 from django.contrib.auth import authenticate, login, logout
+from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from django.utils.timezone import now
+from .models import UserProfile, Address, Product
+from .forms import UserProfileForm, AddressForm, MiniQuizBioForm
 import json
-from .forms import MiniQuizBioForm
+import logging
+
+logger = logging.getLogger(__name__)
+
 
 # Create your views here.
 def home_page(request):
@@ -13,13 +17,55 @@ def home_page(request):
 
 
 def cover_page(request):
-    return render(request, 'cover.html')
+    return render(request, "cover.html")
+
 
 def about_us(request):
-    return render(request, 'about.html')
+    return render(request, "about.html")
+
 
 def contact_us(request):
-    return render(request, 'contact.html')
+    return render(request, "contact.html")
+
+
+@login_required
+def user_profile(request):
+    user_profile = request.user
+    address, created = Address.objects.get_or_create(user=user_profile)
+
+    print(f"Current user: {request.user}")
+    print(f"Is authenticated: {request.user.is_authenticated}")
+    if request.method == "POST":
+        user_profile_form = UserProfileForm(request.POST, instance=user_profile)
+        address_form = AddressForm(request.POST, instance=address)
+        if user_profile_form.is_valid() and address_form.is_valid():
+            user_profile_form.save()
+            address_form.save()
+            messages.success(request, "Profile updated successfully!")
+            return redirect("user_profile")
+    else:
+        user_profile_data = {
+            "first_name": user_profile.first_name if user_profile.first_name else "",
+            "last_name": user_profile.last_name if user_profile.last_name else "",
+            "email": user_profile.email if user_profile.email else "",
+        }
+        address_data = {
+            "street": address.street if address.street else "",
+            "postal_code": address.postal_code if address.postal_code else "",
+            "city": address.city if address.city else "",
+            "phone_number": address.phone_number if address.phone_number else "",
+        }
+        user_profile_form = UserProfileForm(
+            initial=user_profile_data, instance=user_profile
+        )
+        address_form = AddressForm(initial=address_data, instance=address)
+
+    return render(
+        request,
+        "user_profile.html",
+        {"user_profile_form": user_profile_form, "address_form": address_form},
+    )
+
 
 @login_required
 def add_product(request):
@@ -34,7 +80,19 @@ def add_product(request):
         producer = request.POST.get("producer")
         image = request.FILES.get("image")
 
-        if not all([name_tag, category, price, commission, weight, exp_date, amount, producer, image]):
+        if not all(
+            [
+                name_tag,
+                category,
+                price,
+                commission,
+                weight,
+                exp_date,
+                amount,
+                producer,
+                image,
+            ]
+        ):
             return render(request, "add_product.html")
 
         product = Product(
@@ -57,12 +115,15 @@ def add_product(request):
 
     return render(request, "add_product.html")
 
+
 def product_list(request):
     products = Product.objects.all()
     return render(request, "product_list.html", {"products": products})
 
+
 def home_page(request):
     return render(request, "index.html")
+
 
 def register_view(request):
     if request.method == "POST":
@@ -70,41 +131,55 @@ def register_view(request):
         email = request.POST.get("email")
         password = request.POST.get("password")
 
-
         if UserProfile.objects.filter(username=username).exists():
             messages.error(request, "Username already exists")
             return redirect("register")
 
-        new_user = UserProfile.objects.create_user(username=username, email=email, password=password)
+        # new_user = UserProfile.objects.create_user(
+        #     username=username, email=email, password=password
+        # )
+        new_user = UserProfile(username=username, email=email, is_active=False)
+        new_user.set_password(password)
         new_user.save()
 
-        messages.success(request, "User created successfully")
+        logger.info(f"Username: {new_user}")
+        print(f"Username: {new_user}")
+        messages.success(
+            request,
+            "Zostałeś zarejestrowany, zaraz zostaniesz przeniesiony na Stronę Główną",
+        )
         return redirect("home_page")
 
     return render(request, "register_page.html")
+
 
 def login_view(request):
     if request.method == "POST":
         username = request.POST.get("username")
         password = request.POST.get("password")
 
-
+        logger.info(f"Username: {username}, Password: {password}")
         user = authenticate(request, username=username, password=password)
 
         if user is not None:
             login(request, user)
-            messages.success(request, "Login successful")
+            messages.success(
+                request,
+                "Zostałeś zalogowany, zaraz zostaniesz przeniesiony na Stronę Główną",
+            )
             return redirect("home_page")
 
-
-        return render(request, "login_page.html", {"error": "Invalid username or password"})
+        return render(
+            request, "login_page.html", {"error": "Invalid username or password"}
+        )
 
     return render(request, "login_page.html")
+
 
 def logout_view(request):
     if request.user.is_authenticated:
         logout(request)
-        messages.success(request, "Logout successful")
+        messages.success(request, "Zostałeś wylogowany")
         return redirect("home_page")
     else:
         messages.error(request, "User is not authenticated")
@@ -124,7 +199,11 @@ def mini_quiz_bio_view(request):
     correct_answer = question.correct_answer
 
     # Ensure answer choices are loaded properly
-    answer_choices = json.loads(question.answer_choices) if isinstance(question.answer_choices, str) else question.answer_choices
+    answer_choices = (
+        json.loads(question.answer_choices)
+        if isinstance(question.answer_choices, str)
+        else question.answer_choices
+    )
 
     if request.method == "POST":
         form = MiniQuizBioForm(request.POST, question=question)
@@ -137,7 +216,9 @@ def mini_quiz_bio_view(request):
                     message = "✅ Correct! Well done!"
                     score += 5
                 else:
-                    correct_answer_text = answer_choices.get(correct_answer, "Unknown Answer")
+                    correct_answer_text = answer_choices.get(
+                        correct_answer, "Unknown Answer"
+                    )
                     message = f"❌ Incorrect! The correct answer is {correct_answer.upper()}) {correct_answer_text}"
 
                 request.session["score"] = score
@@ -153,12 +234,12 @@ def mini_quiz_bio_view(request):
     else:
         form = MiniQuizBioForm(question=question)
 
-    return render(request, "mini_quiz_bio.html", {
-        "form": form,
-        "question": question,
-        "message": message,
-        "score": score
-    })
+    return render(
+        request,
+        "mini_quiz_bio.html",
+        {"form": form, "question": question, "message": message, "score": score},
+    )
+
 
 def quiz_result_view(request):
     """Display the final quiz score and reset session."""
@@ -170,6 +251,7 @@ def quiz_result_view(request):
 
     return render(request, "quiz_result.html", {"score": score})
 
+
 def register_view(request):
     if request.method == "POST":
         username = request.POST.get("username")
@@ -180,13 +262,16 @@ def register_view(request):
             messages.error(request, "Username already exists")
             return redirect("register")
 
-        new_user = UserProfile.objects.create_user(username=username, email=email, password=password)
+        new_user = UserProfile.objects.create_user(
+            username=username, email=email, password=password
+        )
         new_user.save()
 
         messages.success(request, "User created successfully")
         return redirect("home_page")
 
     return render(request, "register_page.html")
+
 
 def login_view(request):
     if request.method == "POST":
@@ -200,9 +285,12 @@ def login_view(request):
             messages.success(request, "Login successful")
             return redirect("home_page")
 
-        return render(request, "login_page.html", {"error": "Invalid username or password"})
+        return render(
+            request, "login_page.html", {"error": "Invalid username or password"}
+        )
 
     return render(request, "login_page.html")
+
 
 def logout_view(request):
     if request.user.is_authenticated:
@@ -212,6 +300,7 @@ def logout_view(request):
     else:
         messages.error(request, "User is not authenticated")
         return redirect("home_page")
+
 
 def mini_quiz_bio_view(request):
     questions = list(MiniQuizBio.objects.all())
@@ -242,14 +331,13 @@ def mini_quiz_bio_view(request):
             if selected == correct:
                 score += 5
                 request.session["score"] = score
-                messages.success(request,"✅ Correct!")
+                messages.success(request, "✅ Correct!")
             else:
                 correct_answer_text = correct if correct in choices else "Unknown"
                 messages.warning(
                     request,
-                    f"❌ Incorrect! Correct answer: {correct.upper()} {correct_answer_text}"
+                    f"❌ Incorrect! Correct answer: {correct.upper()} {correct_answer_text}",
                 )
-
 
         elif "next" in request.POST:
             request.session["question_index"] = index + 1
