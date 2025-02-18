@@ -1,48 +1,3 @@
-body {
-  background: url("../images/backgorund.jpg") no-repeat center center fixed;
-  background-size: cover;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: white;
-  height: 100vh;
-}
-
-.nav {
-    margin-left: auto;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 10px 30px;
-}
-
-.nav-link {
-    color: white;
-    font-size: 18px;
-    margin-left: 20px;
-}
-
-.nav-link:hover {
-    color: #32de84;
-}
-
-
-.nav-masthead .nav-link {
-    color: rgba(255, 255, 255, 0.75);
-    border-bottom: 0.25rem solid transparent;
-}
-
-.nav-masthead .nav-link:hover,
-.nav-masthead .nav-link.active {
-    border-bottom-color: rgba(255, 255, 255, 0.75);
-}
-
-.dropdown-item:hover {
-    background-color: #4d534f;
-    color: #fff;               
-    transition: background-color 0.3s ease, color 0.3s ease;
-}
-
 .card-header {
   background-color: #444d56 !important;
 }
@@ -53,15 +8,13 @@ div button {
 }
 
 div small a {
-  text-decoration: none;
+  text-decoration: underline;
 }
 
-footer {
-    position: fixed;
-    bottom: 0;
-    width: 100%;
-    text-align: center;
-    padding: 10px;
-    background: rgb(0 0 0 / 0%);
-    color: white;
+label {
+  color:#2c3136
+}
+
+.card-footer {
+  background-color: #444d56;
 }
