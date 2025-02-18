@@ -8,19 +8,19 @@ from .views import (
     register_view,
     login_view,
     logout_view,
+    user_profile,
     mini_quiz_bio_view,
     quiz_result_view,
     add_product,
     product_list,
-    mini_quiz_bio_view,
-    quiz_result_view,
 )
 
 urlpatterns = [
-    path("", cover_page, name="cover-page"),
+    path("", cover_page, name="cover_page"),
     path("register/", register_view, name="register"),
     path("login/", login_view, name="login"),
     path("logout/", logout_view, name="logout"),
+    path("profile/", user_profile, name="user_profile"),
     path("add/", add_product, name="add"),
     path("product_list/", product_list, name="product_list"),
     path("about/", about_us, name="about-page"),
