@@ -5,15 +5,18 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('store', '0001_initial'),
+        ("store", "0001_initial"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='userprofile',
-            name='password',
-            field=models.CharField(help_text='Your password must contain at least 8 characters, including one lowercase letter, one uppercase letter, one digit, and one special character.', max_length=128, validators=[store.utils.user_validator.UserValidator.validate]),
+            model_name="userprofile",
+            name="password",
+            field=models.CharField(
+                help_text="Your password must contain at least 8 characters, including one lowercase letter, one uppercase letter, one digit, and one special character.",
+                max_length=128,
+                validators=[store.utils.user_validator.UserValidator.validate],
+            ),
         ),
     ]

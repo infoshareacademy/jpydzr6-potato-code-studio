@@ -1,4 +1,4 @@
-from mini_quiz_bio.list_of_question import list_of_questions
+from bio_market_store.store.mini_quiz_bio.list_of_question import list_of_questions
 
 def quiz_bio():
 

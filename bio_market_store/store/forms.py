@@ -1,7 +1,8 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.contrib.auth import get_user_model
-from .models import UserProfile, Product, Address
+from .models import UserProfile, Product, Address, MiniQuizBio
+import json
 
 
 class UserCreatingForm(UserCreationForm):
@@ -63,3 +64,25 @@ class ProductForm(forms.ModelForm):
             "producer",
             "image",
         ]
+
+
+class MiniQuizBioForm(forms.Form):
+    answer = forms.ChoiceField(
+        widget=forms.RadioSelect,
+        choices=[],
+        required=True,
+    )
+
+    def __init__(self, *args, **kwargs):
+        question = kwargs.pop("question", None)
+        super().__init__(*args, **kwargs)
+
+        if question:
+            if isinstance(question.answer_choices, str):
+                answer_choices = json.loads(question.answer_choices)
+            else:
+                answer_choices = question.answer_choices
+
+            self.fields["answer"].choices = [
+                (key, value) for key, value in answer_choices.items()
+            ]
