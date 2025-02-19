@@ -34,7 +34,7 @@
                       {% if user.is_authenticated %}
                         <li><a class="dropdown-item" href="{% url 'user_profile' %}">Profile</a></li>
                         <li><hr class="dropdown-divider"></li>
-                        <li><a class="dropdown-item" href="{% url 'logout' %}?logout=true">Logout</a></li>
+                        <li><a class="dropdown-item" href="{% url 'logout' %}">Logout</a></li>
                       {% else %}
                         <li>
                           <a href="{% url 'login' %}" type="submit" class="dropdown-item">Sign In</a>
@@ -52,7 +52,13 @@
 
     {% if messages %}
       {% for message in messages %}
-        <div class="alert alert-{{ message.tags }} text-center fade show" role="alert">
+        <div class="alert 
+            {% if message.tags == 'error' %}alert-danger
+            {% elif message.tags == 'success' %}alert-success
+            {% elif message.tags == 'info' %}alert-info
+            {% elif message.tags == 'warning' %}alert-warning
+            {% else %}alert-secondary{% endif %}
+            text-center fade show" role="alert">
           {{ message }}
         </div>
       {% endfor %}
@@ -71,7 +77,7 @@
       ></script>
       {% if request.GET.logout %}
           <script src="{% static 'js/alerts.js' %}"></script>
-      {% elif request.path == '/profile/' or request.path == '/login/' or request.path == '/register/' %}
+      {% elif request.path == '/profile/' or request.path == '/login/' %}
           <script src="{% static 'js/user_profile.js' %}"></script>
       {% else %}
           <script src="{% static 'js/alerts.js' %}"></script>

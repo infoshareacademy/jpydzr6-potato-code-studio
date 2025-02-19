@@ -93,6 +93,7 @@ def register_view(request):
         if UserProfile.objects.filter(username=username).exists():
             messages.error(request, "Username already exists")
             return redirect("register")
+
         new_user = UserProfile(username=username, email=email, is_active=False)
         new_user.set_password(password)
         new_user.save()
@@ -101,8 +102,6 @@ def register_view(request):
             request,
             "You have been registered",
         )
-        return render(request, "register_page.html")
-
     return render(request, "register_page.html")
 
 
@@ -114,16 +113,14 @@ def login_view(request):
         logger.info(f"Username: {username}, Password: {password}")
         user = authenticate(request, username=username, password=password)
 
-        if user is not None:
-            login(request, user)
-            messages.success(
-                request,
-                "You have been logged in",
-            )
+        if user is None:
+            messages.error(request, "Invalid username or password.")
             return render(request, "login_page.html")
 
-        return render(
-            request, "login_page.html", {"error": "Invalid username or password"}
+        login(request, user)
+        messages.success(
+            request,
+            "You have been logged in",
         )
 
     return render(request, "login_page.html")
@@ -216,21 +213,14 @@ def user_profile_password(request):
             messages.success(request, "The password was changed successfully!")
             return redirect("user_profile")
         else:
-            for error in password_form.errors.get("__all__", []):
-                if "old password" in error:
-                    messages.error(request, "The old password is incorrect.")
-                elif "password_mismatch" in password_form.errors:
-                    messages.error(
-                        request, "New password and confirmation do not match."
-                    )
-                else:
-                    messages.error(
-                        request, "An error occurred while changing the password."
-                    )
+            if "old_password" in password_form.errors:
+                messages.error(request, "The old password is incorrect.")
+            if "new_password2" in password_form.errors:
+                messages.error(request, "New password and confirmation do not match.")
+
             return redirect("user_profile")
 
     password_form = UserPasswordChangeForm(request.user)
-
     return render(request, "user_profile.html", {"password_form": password_form})
 
 
