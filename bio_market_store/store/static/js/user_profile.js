@@ -1,4 +1,4 @@
-document.addEventListener("DOMContentLoaded", function () {
+document.addEventListener("DOMContentLoaded", () => {
     let alerts = document.querySelectorAll('.alert');
 
     if (alerts.length > 0) { 

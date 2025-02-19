@@ -86,6 +86,7 @@ DATABASES = {
 
 # User
 AUTH_USER_MODEL = "store.UserProfile"
+LOGOUT_REDIRECT_URL = "/"
 
 # Session
 SESSION_ENGINE = "django.contrib.sessions.backends.db"

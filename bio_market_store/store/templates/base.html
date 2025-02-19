@@ -16,8 +16,6 @@
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
     />
-    <script src="{% static 'js/alerts.js' %}"></script>
-    <script src="{% static 'js/user_profile.js' %}"></script>
   </head>
    
   <body>
@@ -36,7 +34,7 @@
                       {% if user.is_authenticated %}
                         <li><a class="dropdown-item" href="{% url 'user_profile' %}">Profile</a></li>
                         <li><hr class="dropdown-divider"></li>
-                        <li><a class="dropdown-item" href="{% url 'logout' %}">Logout</a></li>
+                        <li><a class="dropdown-item" href="{% url 'logout' %}?logout=true">Logout</a></li>
                       {% else %}
                         <li>
                           <a href="{% url 'login' %}" type="submit" class="dropdown-item">Sign In</a>
@@ -51,6 +49,14 @@
           </div>
         </div>
     </nav>
+
+    {% if messages %}
+      {% for message in messages %}
+        <div class="alert alert-{{ message.tags }} text-center fade show" role="alert">
+          {{ message }}
+        </div>
+      {% endfor %}
+    {% endif %}
     
     <div class="container my-5">{% block content %}{% endblock %}</div>
 
@@ -63,6 +69,13 @@
         integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
         crossorigin="anonymous"
       ></script>
+      {% if request.GET.logout %}
+          <script src="{% static 'js/alerts.js' %}"></script>
+      {% elif request.path == '/profile/' or request.path == '/login/' or request.path == '/register/' %}
+          <script src="{% static 'js/user_profile.js' %}"></script>
+      {% else %}
+          <script src="{% static 'js/alerts.js' %}"></script>
+      {% endif %}
     {% endblock %}
 
   </body>

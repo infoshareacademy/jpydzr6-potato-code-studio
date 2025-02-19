@@ -99,7 +99,7 @@ def register_view(request):
 
         messages.success(
             request,
-            "Zostałeś zarejestrowany, zaraz zostaniesz przeniesiony na Stronę Główną",
+            "You have been registered",
         )
         return render(request, "register_page.html")
 
@@ -118,9 +118,9 @@ def login_view(request):
             login(request, user)
             messages.success(
                 request,
-                "Zostałeś zalogowany, zaraz zostaniesz przeniesiony na Stronę Główną",
+                "You have been logged in",
             )
-            return render(request, "register_page.html")
+            return render(request, "login_page.html")
 
         return render(
             request, "login_page.html", {"error": "Invalid username or password"}
@@ -132,10 +132,7 @@ def login_view(request):
 def logout_view(request):
     if request.user.is_authenticated:
         logout(request)
-        messages.success(request, "Zostałeś wylogowany")
-        return redirect("cover_page")
-    else:
-        messages.error(request, "User is not authenticated")
+        messages.success(request, "You have been logged out")
         return redirect("cover_page")
 
 
@@ -164,7 +161,7 @@ def user_profile_personal_info(request):
         user_profile_form = UserProfileForm(request.POST, instance=user_profile)
         if user_profile_form.is_valid():
             user_profile_form.save()
-            messages.success(request, "Profil został zaktualizowany!")
+            messages.success(request, "Profile updated successfully!")
             return redirect("user_profile")
     else:
         user_profile_data = {
@@ -191,7 +188,7 @@ def user_profile_address(request):
         address_form = AddressForm(request.POST, instance=address)
         if address_form.is_valid():
             address_form.save()
-            messages.success(request, "Profil został zaktualizowany!")
+            messages.success(request, "Profile updated successfully!")
             return redirect("user_profile")
         else:
             address_data = {
@@ -216,10 +213,20 @@ def user_profile_password(request):
         if password_form.is_valid():
             user = password_form.save()
             update_session_auth_hash(request, user)
-            messages.success(request, "Hasło został zmienione pomyślnie!")
+            messages.success(request, "The password was changed successfully!")
             return redirect("user_profile")
         else:
-            messages.error(request, "Błąd podczas wprowadzania hasła!")
+            for error in password_form.errors.get("__all__", []):
+                if "old password" in error:
+                    messages.error(request, "The old password is incorrect.")
+                elif "password_mismatch" in password_form.errors:
+                    messages.error(
+                        request, "New password and confirmation do not match."
+                    )
+                else:
+                    messages.error(
+                        request, "An error occurred while changing the password."
+                    )
             return redirect("user_profile")
 
     password_form = UserPasswordChangeForm(request.user)

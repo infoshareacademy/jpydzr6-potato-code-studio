@@ -23,8 +23,12 @@ urlpatterns = [
     path("register/", register_view, name="register"),
     path("login/", login_view, name="login"),
     path("logout/", logout_view, name="logout"),
-    path("profile/", user_profile, name="user_profile"), 
-    path("profile/personal-info", user_profile_personal_info, name="user_profile_personal_info"),
+    path("profile/", user_profile, name="user_profile"),
+    path(
+        "profile/personal-info",
+        user_profile_personal_info,
+        name="user_profile_personal_info",
+    ),
     path("profile/address", user_profile_address, name="user_profile_address"),
     path("profile/password", user_profile_password, name="user_profile_password"),
     path("add/", add_product, name="add"),
@@ -35,5 +39,5 @@ urlpatterns = [
     path("quiz/result/", quiz_result_view, name="quiz_result"),
 ]
 
-if settings.DEBUG:
-    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+# if settings.DEBUG:
+#     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
