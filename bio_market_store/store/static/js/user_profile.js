@@ -12,7 +12,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
             if (successAlert) {
                 setTimeout(() => {
-                    window.location.href = "/";
+                    window.location.href = "/profile";
                 }, 1000);
             }
             

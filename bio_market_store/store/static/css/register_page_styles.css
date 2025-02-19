@@ -18,3 +18,7 @@ label {
 .card-footer {
   background-color: #444d56;
 }
+
+.login-join {
+  text-decoration: underline;
+}
