@@ -9,21 +9,46 @@ from .views import cover_page, about_us, contact_us
 from . import views
 from django.conf.urls.static import static
 from django.conf import settings
+from .views import (
+    cover_page,
+    about_us,
+    contact_us,
+    register_view,
+    login_view,
+    logout_view,
+    user_profile,
+    user_profile_personal_info,
+    user_profile_address,
+    user_profile_password,
+    mini_quiz_bio_view,
+    quiz_result_view,
+    add_product,
+    product_list,
+)
 
 urlpatterns = [
-    path('', home_page, name='home_page'),
-    path('register/', register_view, name='register'),
-    path('login/', login_view, name='login'),
-    path('logout/', logout_view, name='logout'),
-    path('add/', views.add_product, name="add"),
-    path('product_list/', views.product_list, name="product_list"),
-    path("cover/", view=cover_page, name="cover-page"),
-    path("cover/about/", view=about_us, name="about-page"),
-    path("cover/contact", view=contact_us, name="contact-page"),
+    path("", cover_page, name="cover_page"),
+    path("register/", register_view, name="register"),
+    path("login/", login_view, name="login"),
+    path("logout/", logout_view, name="logout"),
+    path("profile/", user_profile, name="user_profile"),
+    path(
+        "profile/personal-info",
+        user_profile_personal_info,
+        name="user_profile_personal_info",
+    ),
+    path("profile/address", user_profile_address, name="user_profile_address"),
+    path("profile/password", user_profile_password, name="user_profile_password"),
+    path("add/", add_product, name="add"),
+    path("product_list/", product_list, name="product_list"),
+    path("about/", about_us, name="about-page"),
+    path("contact", contact_us, name="contact-page"),
+    path("quiz/", mini_quiz_bio_view, name="mini_quiz_bio"),
+    path("quiz/result/", quiz_result_view, name="quiz_result"),
     path('add_to_cart/<int:product_id>/', views.add_to_cart, name='add_to_cart'),
     path('empty_cart/', views.empty_cart, name='empty_cart'),
     path('payment/', views.payment, name='payment'),
-    ]
+]
 
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

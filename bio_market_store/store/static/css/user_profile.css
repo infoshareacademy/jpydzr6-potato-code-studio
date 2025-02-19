@@ -1,0 +1,27 @@
+.dropdown-item:hover {
+  background-color: #444d56;
+  color: #fff;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.card-header {
+  background-color: #444d56 !important;
+}
+
+div button {
+  background-color: #444d56 !important;
+  border-color: #444d56 !important;
+}
+
+div small a {
+  text-decoration: none;
+}
+
+label {
+  color: white;
+}
+
+i {
+  font-size: 1rem;
+  margin-left: 0.5rem;
+}

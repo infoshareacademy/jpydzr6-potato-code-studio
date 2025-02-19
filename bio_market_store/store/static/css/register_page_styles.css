@@ -1,6 +1,24 @@
-body {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  height: 100vh;
+.card-header {
+  background-color: #444d56 !important;
+}
+
+div button {
+  background-color: #444d56 !important;
+  border-color: #444d56 !important;
+}
+
+div small a {
+  text-decoration: underline;
+}
+
+label {
+  color:#2c3136
+}
+
+.card-footer {
+  background-color: #444d56;
+}
+
+.login-join {
+  text-decoration: underline;
 }

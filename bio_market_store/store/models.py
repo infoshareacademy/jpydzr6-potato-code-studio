@@ -1,8 +1,10 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
-from django.contrib.auth.models import User
+
+# from django.contrib.auth.models import User
 from django.conf import settings
-from store.utils.user_validator import UserValidator
+from .utils.user_validator import UserValidator
+import json
 
 
 class UserProfile(AbstractUser):
@@ -40,7 +42,9 @@ class Address(models.Model):
 
 
 class Product(models.Model):
-    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="products")
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="products"
+    )
     category = models.CharField(max_length=255)
     name_tag = models.CharField(max_length=255)
     price = models.DecimalField(decimal_places=2, max_digits=10)
@@ -56,4 +60,21 @@ class Product(models.Model):
         return f"{self.name_tag} ({self.category})"
 
 
+class MiniQuizBio(models.Model):
+    question_text = models.TextField()
+    answer_choices = models.TextField()
+    correct_answer = models.CharField(max_length=255)
 
+    def save(self, *args, **kwargs):
+        if isinstance(self.answer_choices, list):
+            self.answer_choices = json.dumps(self.answer_choices)
+        super().save(*args, **kwargs)
+
+    def get_choices(self):
+        try:
+            return json.loads(self.answer_choices)
+        except json.JSONDecodeError:
+            return []
+
+    def __str__(self):
+        return self.question_text

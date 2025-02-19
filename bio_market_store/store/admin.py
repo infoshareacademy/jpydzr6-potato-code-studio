@@ -1,7 +1,7 @@
 from django.contrib import admin
 from django import forms
 from django.contrib.auth.forms import UserChangeForm, AdminPasswordChangeForm
-from .models import UserProfile, Address
+from .models import UserProfile, Address, MiniQuizBio
 from .forms import UserCreatingForm
 
 
@@ -65,3 +65,4 @@ class UserProfileAdmin(admin.ModelAdmin):
 
 
 admin.site.register(UserProfile, UserProfileAdmin)
+admin.site.register(MiniQuizBio)
