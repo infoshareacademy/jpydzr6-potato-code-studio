@@ -9,7 +9,7 @@ document.addEventListener("DOMContentLoaded", function () {
             });
             
             setTimeout(() => {
-                window.location.href = "/";
+                window.location.href = "/profile";
             }, 1000);
             
         }, 3000);

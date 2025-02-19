@@ -1,10 +1,11 @@
 from django.contrib import messages
-from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth import authenticate, login, logout, update_session_auth_hash
+from django.contrib.auth.forms import PasswordChangeForm
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from django.utils.timezone import now
 from .models import UserProfile, Address, Product, MiniQuizBio
-from .forms import UserProfileForm, AddressForm, MiniQuizBioForm
+from .forms import UserProfileForm, AddressForm, MiniQuizBioForm, UserPasswordChangeForm
 
 # import json
 import logging
@@ -92,21 +93,15 @@ def register_view(request):
         if UserProfile.objects.filter(username=username).exists():
             messages.error(request, "Username already exists")
             return redirect("register")
-
-        # new_user = UserProfile.objects.create_user(
-        #     username=username, email=email, password=password
-        # )
         new_user = UserProfile(username=username, email=email, is_active=False)
         new_user.set_password(password)
         new_user.save()
 
-        logger.info(f"Username: {new_user}")
-        print(f"Username: {new_user}")
         messages.success(
             request,
             "Zostałeś zarejestrowany, zaraz zostaniesz przeniesiony na Stronę Główną",
         )
-        return redirect("cover_page")
+        return render(request, "register_page.html")
 
     return render(request, "register_page.html")
 
@@ -125,7 +120,7 @@ def login_view(request):
                 request,
                 "Zostałeś zalogowany, zaraz zostaniesz przeniesiony na Stronę Główną",
             )
-            return redirect("cover_page")
+            return render(request, "register_page.html")
 
         return render(
             request, "login_page.html", {"error": "Invalid username or password"}
@@ -146,18 +141,30 @@ def logout_view(request):
 
 @login_required
 def user_profile(request):
-    user_profile = request.user
-    address, created = Address.objects.get_or_create(user=user_profile)
+    user_profile_form = UserProfileForm(instance=request.user)
+    address, created = Address.objects.get_or_create(user=request.user)
+    address_form = AddressForm(instance=address)
+    password_form = PasswordChangeForm(request.user)
 
-    print(f"Current user: {request.user}")
-    print(f"Is authenticated: {request.user.is_authenticated}")
+    return render(
+        request,
+        "user_profile.html",
+        {
+            "user_profile_form": user_profile_form,
+            "address_form": address_form,
+            "password_form": password_form,
+        },
+    )
+
+
+@login_required
+def user_profile_personal_info(request):
+    user_profile = request.user
     if request.method == "POST":
         user_profile_form = UserProfileForm(request.POST, instance=user_profile)
-        address_form = AddressForm(request.POST, instance=address)
-        if user_profile_form.is_valid() and address_form.is_valid():
+        if user_profile_form.is_valid():
             user_profile_form.save()
-            address_form.save()
-            messages.success(request, "Profile updated successfully!")
+            messages.success(request, "Profil został zaktualizowany!")
             return redirect("user_profile")
     else:
         user_profile_data = {
@@ -165,22 +172,59 @@ def user_profile(request):
             "last_name": user_profile.last_name if user_profile.last_name else "",
             "email": user_profile.email if user_profile.email else "",
         }
-        address_data = {
-            "street": address.street if address.street else "",
-            "postal_code": address.postal_code if address.postal_code else "",
-            "city": address.city if address.city else "",
-            "phone_number": address.phone_number if address.phone_number else "",
-        }
         user_profile_form = UserProfileForm(
             initial=user_profile_data, instance=user_profile
         )
-        address_form = AddressForm(initial=address_data, instance=address)
 
     return render(
         request,
         "user_profile.html",
-        {"user_profile_form": user_profile_form, "address_form": address_form},
+        {"user_profile_form": user_profile_form},
     )
+
+
+@login_required
+def user_profile_address(request):
+    user_profile = request.user
+    address, created = Address.objects.get_or_create(user=user_profile)
+    if request.method == "POST":
+        address_form = AddressForm(request.POST, instance=address)
+        if address_form.is_valid():
+            address_form.save()
+            messages.success(request, "Profil został zaktualizowany!")
+            return redirect("user_profile")
+        else:
+            address_data = {
+                "street": address.street if address.street else "",
+                "postal_code": address.postal_code if address.postal_code else "",
+                "city": address.city if address.city else "",
+                "phone_number": address.phone_number if address.phone_number else "",
+            }
+            address_form = AddressForm(initial=address_data, instance=address)
+
+    return render(
+        request,
+        "user_profile.html",
+        {"address_form": address_form},
+    )
+
+
+@login_required
+def user_profile_password(request):
+    if request.method == "POST":
+        password_form = UserPasswordChangeForm(request.user, request.POST)
+        if password_form.is_valid():
+            user = password_form.save()
+            update_session_auth_hash(request, user)
+            messages.success(request, "Hasło został zmienione pomyślnie!")
+            return redirect("user_profile")
+        else:
+            messages.error(request, "Błąd podczas wprowadzania hasła!")
+            return redirect("user_profile")
+
+    password_form = UserPasswordChangeForm(request.user)
+
+    return render(request, "user_profile.html", {"password_form": password_form})
 
 
 def mini_quiz_bio_view(request):
