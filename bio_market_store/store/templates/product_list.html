@@ -45,7 +45,12 @@
                             <p class="card-text">Amount: <strong>{{ product.amount }}</strong></p>
                             <p class="card-text">Producer: <strong>{{ product.producer }}</strong></p>
 
-                            <a href="{% url 'add_to_cart' product.id %}" class="btn btn-success btn-lg">Add to Cart</a>
+                            <!-- Add to Cart Button (Disabled if product is in cart) -->
+                            {% if product.id|stringformat:"s" in request.session.cart %}
+                                <button class="btn btn-secondary btn-lg" disabled>Added to Cart</button>
+                            {% else %}
+                                <a href="{% url 'add_to_cart' product.id %}" class="btn btn-success btn-lg">Add to Cart</a>
+                            {% endif %}
                         </div>
                     </div>
                 </div>
@@ -119,24 +124,30 @@ document.addEventListener('DOMContentLoaded', function() {
         cartModal.show();
     }
 
-    // AJAX for increment and decrement buttons
+    // AJAX for increment/decrement buttons
     $('.btn-sm').on('click', function(e) {
         e.preventDefault();
         const productId = $(this).data('product-id');
         const action = $(this).data('action');
-        const url = action === 'increment' ? "{% url 'increment_quantity' 0 %}".replace("0", productId) : "{% url 'decrement_quantity' 0 %}".replace("0", productId);
+        const url = action === 'increment'
+            ? "{% url 'increment_quantity' 0 %}".replace("0", productId)
+            : "{% url 'decrement_quantity' 0 %}".replace("0", productId);
 
         $.ajax({
             url: url,
             method: 'GET',
             success: function(response) {
-                // Update the quantity and total for the product
+                // Update cart modal values
                 $('#quantity-' + productId).text(response.quantity);
                 $('#total-' + productId).text(response.total + ' zł');
                 $('#cart-total').text(response.cart_total);
+                $('.badge').text(response.total_items); // Update cart icon
 
-                // Update the cart icon counter
-                $('.badge').text(response.total_items);
+                // Disable "Add to Cart" button if product exists in cart
+                const addToCartButton = $(`a[href="{% url 'add_to_cart' 0 %}".replace("0", productId)]`);
+                if (response.quantity >= 0) {
+                    addToCartButton.replaceWith('<button class="btn btn-secondary btn-lg" disabled>Added to Cart</button>');
+                }
             },
             error: function(xhr, status, error) {
                 console.error("Error updating cart:", error);
