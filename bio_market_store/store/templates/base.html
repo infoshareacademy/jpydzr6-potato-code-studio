@@ -11,6 +11,7 @@
     <link rel="stylesheet" href="{% static 'css/contact.css' %}">
     <link href="{% static 'css/register_page_styles.css' %}" rel="stylesheet" />
     <link href="{% static 'css/user_profile.css' %}" rel="stylesheet" />
+    <link rel="stylesheet" href="{% static 'css/product_list_style.css' %}">
     <link href="https://fonts.googleapis.com/css2?family=Megrim&display=swap" rel="stylesheet">
     <link
       rel="stylesheet"
@@ -26,6 +27,16 @@
             <a class="nav-link" id="storeNav" href="">Store</a>
             <a class="nav-link" id="aboutNav" href="{% url 'about-page' %}">About</a>
             <a class="nav-link" id="contactNav" href="{% url 'contact-page'%}">Contact</a>
+            {% comment %} <div class="container mt-3"> {% endcomment %}
+            {% if user.is_authenticated and request.path == '/product_list/' %}
+              <button type="button" class="btn-cart" data-bs-toggle="modal" data-bs-target="#cartModal">
+                <i class="fas fa-shopping-cart"></i> Cart
+                  <span>
+                      {{ total_items|default:"" }}
+                  </span>
+              </button>
+              {% endif %}
+            
             <li class="nav-item dropdown">
                   <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                       <i class="fas fa-user"></i>
@@ -63,6 +74,64 @@
         </div>
       {% endfor %}
     {% endif %}
+
+    <div class="modal fade" id="cartModal" tabindex="-1" aria-labelledby="cartModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="cartModalLabel">Shopping Cart Summary</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    {% if request.session.cart %}
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>Product</th>
+                                    <th>Price</th>
+                                    <th>Quantity</th>
+                                    <th>Adjust Quantity</th>
+                                    <th>Total</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for key, item in request.session.cart.items %}
+                                <tr>
+                                    <td>
+                                        <img src="{{ item.image }}" alt="{{ item.name }}" style="width: 50px; height: 50px; object-fit: cover;">
+                                        {{ item.name }}
+                                    </td>
+                                    <td>{{ item.price }} zł</td>
+                                    <td id="quantity-{{ key }}">{{ item.quantity }}</td>
+                                    <td>
+                                        <a href="#" class="btn btn-sm btn-danger me-1 decrement-btn" 
+                                            data-url="{% url 'decrement_quantity' product_id=key %}" 
+                                            data-product-id="{{ key }}">-</a>
+
+                                            <a href="#" class="btn btn-sm btn-success ms-1 increment-btn" 
+                                            data-url="{% url 'increment_quantity' product_id=key %}" 
+                                            data-product-id="{{ key }}">+</a>
+                                    </td>
+                                    <td id="total-{{ key }}">{% widthratio item.price 1 item.quantity %} zł</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                        <div class="text-end fw-bold fs-4 total-price">
+                            Total: <span id="cart-total">{{ cart_total }}</span> zł
+                        </div>
+                    {% else %}
+                        <p class='empty_cart'>Your cart is empty</p>
+                    {% endif %}
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Continue Shopping</button>
+                    <a href="{% url 'empty_cart' %}" class="btn btn-danger">Empty Cart</a>
+                    <a href="{% url 'payment' %}" class="btn btn-success">Proceed to Payment</a>
+                </div>
+            </div>
+        </div>
+    </div>
     
     <div class="container my-5">{% block content %}{% endblock %}</div>
 

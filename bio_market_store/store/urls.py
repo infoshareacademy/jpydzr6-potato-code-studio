@@ -16,6 +16,11 @@ from .views import (
     quiz_result_view,
     add_product,
     product_list,
+    add_to_cart,
+    empty_cart,
+    payment,
+    increment_quantity,
+    decrement_quantity,
 )
 
 urlpatterns = [
@@ -37,7 +42,13 @@ urlpatterns = [
     path("contact", contact_us, name="contact-page"),
     path("quiz/", mini_quiz_bio_view, name="mini_quiz_bio"),
     path("quiz/result/", quiz_result_view, name="quiz_result"),
+    path('add_to_cart/<int:product_id>/', add_to_cart, name='add_to_cart'),
+    path('empty_cart/', empty_cart, name='empty_cart'),
+    path('payment/', payment, name='payment'),
+    path('increment_quantity/<int:product_id>/', increment_quantity, name='increment_quantity'),
+    path('decrement_quantity/<int:product_id>/', decrement_quantity, name='decrement_quantity'),
 ]
 
-# if settings.DEBUG:
-#     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+

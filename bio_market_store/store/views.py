@@ -1,9 +1,10 @@
 from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout, update_session_auth_hash
 from django.contrib.auth.forms import PasswordChangeForm
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.utils.timezone import now
+from django.http import JsonResponse
 from .models import UserProfile, Address, Product, MiniQuizBio
 from .forms import UserProfileForm, AddressForm, MiniQuizBioForm, UserPasswordChangeForm
 
@@ -12,10 +13,7 @@ import logging
 
 logger = logging.getLogger(__name__)
 
-# Create your views here.
 
-
-# Pages
 def cover_page(request):
     return render(request, "cover.html")
 
@@ -28,7 +26,6 @@ def contact_us(request):
     return render(request, "contact.html")
 
 
-# Product
 @login_required
 def add_product(request):
     if request.method == "POST":
@@ -80,10 +77,23 @@ def add_product(request):
 
 def product_list(request):
     products = Product.objects.all()
-    return render(request, "product_list.html", {"products": products})
+    cart = request.session.get("cart", {})
+
+    total_items = 0
+    cart_total = 0.0
+
+    # Calculate total items and cart total
+    for item in cart.values():
+        total_items += item["quantity"]
+        cart_total += float(item["price"]) * item["quantity"]
+
+    return render(
+        request,
+        "product_list.html",
+        {"products": products, "cart_total": cart_total, "total_items": total_items},
+    )
 
 
-# User
 def register_view(request):
     if request.method == "POST":
         username = request.POST.get("username")
@@ -94,9 +104,13 @@ def register_view(request):
             messages.error(request, "Username already exists")
             return redirect("register")
 
-        new_user = UserProfile(username=username, email=email, is_active=False)
-        new_user.set_password(password)
+        new_user = UserProfile.objects.create_user(
+            username=username, email=email, password=password
+        )
         new_user.save()
+
+        messages.success(request, "User created successfully")
+        return redirect("home_page")
 
         messages.success(
             request,
@@ -110,7 +124,6 @@ def login_view(request):
         username = request.POST.get("username")
         password = request.POST.get("password")
 
-        logger.info(f"Username: {username}, Password: {password}")
         user = authenticate(request, username=username, password=password)
 
         if user is None:
@@ -121,6 +134,10 @@ def login_view(request):
         messages.success(
             request,
             "You have been logged in",
+        )
+
+        return render(
+            request, "login_page.html", {"error": "Invalid username or password"}
         )
 
     return render(request, "login_page.html")
@@ -283,3 +300,90 @@ def quiz_result_view(request):
     request.session["question_index"] = 0
 
     return render(request, "quiz_result.html", {"score": score})
+
+
+def add_to_cart(request, product_id):
+    product = get_object_or_404(Product, id=product_id)
+    cart = request.session.get("cart", {})
+
+    product_key = str(product_id)
+
+    if product_key in cart:
+        cart[product_key]["quantity"] += 1
+    else:
+        cart[product_key] = {
+            "quantity": 1,
+            "price": str(product.price),
+            "name": product.name_tag,
+            "image": product.image.url,
+        }
+
+    request.session["cart"] = cart
+    request.session.modified = True  # Critical fix
+    return redirect("product_list")
+
+
+def empty_cart(request):
+    if "cart" in request.session:
+        del request.session["cart"]
+    return redirect("product_list")
+
+
+def payment(request):
+    return render(request, "payment.html")
+
+
+def increment_quantity(request, product_id):
+    product_key = str(product_id)
+    cart = request.session.get("cart", {})
+    if product_key in cart:
+        cart[product_key]["quantity"] += 1
+        request.session["cart"] = cart
+        request.session.modified = True
+
+        # Calculate total items and cart total
+        total_items = sum(item["quantity"] for item in cart.values())
+        cart_total = sum(
+            float(item["price"]) * item["quantity"] for item in cart.values()
+        )
+
+        return JsonResponse(
+            {
+                "quantity": cart[product_key]["quantity"],
+                "total": float(cart[product_key]["price"])
+                * cart[product_key]["quantity"],
+                "cart_total": cart_total,
+                "total_items": total_items,
+            }
+        )
+    return JsonResponse({"error": "Product not found in cart"}, status=404)
+
+
+def decrement_quantity(request, product_id):
+    product_key = str(product_id)
+    cart = request.session.get("cart", {})
+    if product_key in cart:
+        if cart[product_key]["quantity"] > 1:
+            cart[product_key]["quantity"] -= 1
+        else:
+            # Instead of deleting the item, set its quantity to 0
+            cart[product_key]["quantity"] = 0
+        request.session["cart"] = cart
+        request.session.modified = True
+
+        # Calculate total items and cart total
+        total_items = sum(item["quantity"] for item in cart.values())
+        cart_total = sum(
+            float(item["price"]) * item["quantity"] for item in cart.values()
+        )
+
+        return JsonResponse(
+            {
+                "quantity": cart.get(product_key, {}).get("quantity", 0),
+                "total": float(cart.get(product_key, {}).get("price", 0))
+                * cart.get(product_key, {}).get("quantity", 0),
+                "cart_total": cart_total,
+                "total_items": total_items,
+            }
+        )
+    return JsonResponse({"error": "Product not found in cart"}, status=404)

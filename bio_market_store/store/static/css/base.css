@@ -86,3 +86,18 @@ body {
 .nav-masthead .nav-link.active {
     border-bottom-color: rgba(255, 255, 255, 0.75);
 }
+
+.btn-cart {
+    background: none !important;
+    color: rgba(255, 255, 255, 0.75);
+    border: none;
+    border-radius: 0;
+}
+
+.btn-cart:hover {
+    border-bottom: 0.25rem solid white !important;
+}
+
+.total-price{
+    color: black
+}
