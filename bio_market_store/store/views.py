@@ -251,14 +251,6 @@ def mini_quiz_bio_view(request):
 
     question = questions[index]
     choices = question.get_choices()
-    # try:
-    #     choices = (
-    #         json.loads(question.answer_choices)
-    #         if isinstance(question.answer_choices, str)
-    #         else question.answer_choices
-    #     )
-    # except json.JSONDecodeError:
-    #     choices = {}
 
     if request.method == "POST":
         form = MiniQuizBioForm(request.POST, question=question)
@@ -272,11 +264,18 @@ def mini_quiz_bio_view(request):
                 request.session["score"] = score
                 messages.success(request, "✅ Correct!")
             else:
-                correct_answer_text = correct if correct in choices else "Unknown"
+                correct_answer_text = choices.get(correct, "Unknown")
                 messages.warning(
                     request,
-                    f"❌ Incorrect! Correct answer: {correct.upper()} {correct_answer_text}",
+                    f"❌ Incorrect! Correct answer: {correct.upper()} - {correct_answer_text}",
                 )
+
+            # ✅ Stay on the same question (don't increment index)
+            return render(
+                request,
+                "mini_quiz_bio.html",
+                {"form": form, "question": question, "score": score},
+            )
 
         elif "next" in request.POST:
             request.session["question_index"] = index + 1
@@ -293,7 +292,6 @@ def mini_quiz_bio_view(request):
         "mini_quiz_bio.html",
         {"form": form, "question": question, "score": score},
     )
-
 
 def quiz_result_view(request):
     score = request.session.get("score", 0)
