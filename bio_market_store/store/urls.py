@@ -1,12 +1,4 @@
-
-from django.urls import  path
-from .views import cover_page, about_us, contact_us
-
-
 from django.urls import path
-from .views import home_page, register_view, login_view, logout_view
-from .views import cover_page, about_us, contact_us
-from . import views
 from django.conf.urls.static import static
 from django.conf import settings
 from .views import (
@@ -24,6 +16,9 @@ from .views import (
     quiz_result_view,
     add_product,
     product_list,
+    add_to_cart,
+    empty_cart,
+    payment,
 )
 
 urlpatterns = [
@@ -45,9 +40,9 @@ urlpatterns = [
     path("contact", contact_us, name="contact-page"),
     path("quiz/", mini_quiz_bio_view, name="mini_quiz_bio"),
     path("quiz/result/", quiz_result_view, name="quiz_result"),
-    path('add_to_cart/<int:product_id>/', views.add_to_cart, name='add_to_cart'),
-    path('empty_cart/', views.empty_cart, name='empty_cart'),
-    path('payment/', views.payment, name='payment'),
+    path('add_to_cart/<int:product_id>/', add_to_cart, name='add_to_cart'),
+    path('empty_cart/', empty_cart, name='empty_cart'),
+    path('payment/', payment, name='payment'),
 ]
 
 if settings.DEBUG:
