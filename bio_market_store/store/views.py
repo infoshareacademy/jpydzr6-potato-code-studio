@@ -55,7 +55,7 @@ def add_product(request):
                 image,
             ]
         ):
-            return render(request, "add_product.html")
+            return render(request, "add_product.html",{"error": "All fields are required"})
 
         product = Product(
             user=request.user,
