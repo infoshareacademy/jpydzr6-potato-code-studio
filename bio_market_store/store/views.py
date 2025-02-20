@@ -4,6 +4,7 @@ from django.contrib.auth.forms import PasswordChangeForm
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.utils.timezone import now
+from django.http import JsonResponse
 from .models import UserProfile, Address, Product, MiniQuizBio
 from .forms import UserProfileForm, AddressForm, MiniQuizBioForm, UserPasswordChangeForm
 
@@ -326,3 +327,48 @@ def empty_cart(request):
 
 def payment(request):
     return render(request, 'payment.html')
+
+
+def increment_quantity(request, product_id):
+    product_key = str(product_id)
+    cart = request.session.get('cart', {})
+    if product_key in cart:
+        cart[product_key]['quantity'] += 1
+        request.session['cart'] = cart
+        request.session.modified = True
+
+        # Calculate total items and cart total
+        total_items = sum(item['quantity'] for item in cart.values())
+        cart_total = sum(float(item['price']) * item['quantity'] for item in cart.values())
+
+        return JsonResponse({
+            'quantity': cart[product_key]['quantity'],
+            'total': float(cart[product_key]['price']) * cart[product_key]['quantity'],
+            'cart_total': cart_total,
+            'total_items': total_items,
+        })
+    return JsonResponse({'error': 'Product not found in cart'}, status=404)
+
+def decrement_quantity(request, product_id):
+    product_key = str(product_id)
+    cart = request.session.get('cart', {})
+    if product_key in cart:
+        if cart[product_key]['quantity'] > 1:
+            cart[product_key]['quantity'] -= 1
+        else:
+            # Instead of deleting the item, set its quantity to 0
+            cart[product_key]['quantity'] = 0
+        request.session['cart'] = cart
+        request.session.modified = True
+
+        # Calculate total items and cart total
+        total_items = sum(item['quantity'] for item in cart.values())
+        cart_total = sum(float(item['price']) * item['quantity'] for item in cart.values())
+
+        return JsonResponse({
+            'quantity': cart.get(product_key, {}).get('quantity', 0),
+            'total': float(cart.get(product_key, {}).get('price', 0)) * cart.get(product_key, {}).get('quantity', 0),
+            'cart_total': cart_total,
+            'total_items': total_items,
+        })
+    return JsonResponse({'error': 'Product not found in cart'}, status=404)

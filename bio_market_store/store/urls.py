@@ -19,6 +19,8 @@ from .views import (
     add_to_cart,
     empty_cart,
     payment,
+    increment_quantity,
+    decrement_quantity,
 )
 
 urlpatterns = [
@@ -43,6 +45,8 @@ urlpatterns = [
     path('add_to_cart/<int:product_id>/', add_to_cart, name='add_to_cart'),
     path('empty_cart/', empty_cart, name='empty_cart'),
     path('payment/', payment, name='payment'),
+    path('increment_quantity/<int:product_id>/', increment_quantity, name='increment_quantity'),
+    path('decrement_quantity/<int:product_id>/', decrement_quantity, name='decrement_quantity'),
 ]
 
 if settings.DEBUG:

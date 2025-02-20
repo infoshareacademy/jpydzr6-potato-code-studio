@@ -71,6 +71,7 @@
                                 <th>Product</th>
                                 <th>Price</th>
                                 <th>Quantity</th>
+                                <th>Adjust Quantity</th>
                                 <th>Total</th>
                             </tr>
                         </thead>
@@ -82,14 +83,18 @@
                                     {{ item.name }}
                                 </td>
                                 <td>{{ item.price }} zł</td>
-                                <td>{{ item.quantity }}</td>
-                                <td>{% widthratio item.price 1 item.quantity %} zł</td>
+                                <td id="quantity-{{ key }}">{{ item.quantity }}</td>
+                                <td>
+                                    <a href="{% url 'decrement_quantity' product_id=key|add:0 %}" class="btn btn-sm btn-danger me-1" data-product-id="{{ key }}" data-action="decrement">-</a>
+                                    <a href="{% url 'increment_quantity' product_id=key|add:0 %}" class="btn btn-sm btn-success ms-1" data-product-id="{{ key }}" data-action="increment">+</a>
+                                </td>
+                                <td id="total-{{ key }}">{% widthratio item.price 1 item.quantity %} zł</td>
                             </tr>
                             {% endfor %}
                         </tbody>
                     </table>
                     <div class="text-end fw-bold fs-4">
-                        Total: {{ cart_total }} zł
+                        Total: <span id="cart-total">{{ cart_total }}</span> zł
                     </div>
                 {% else %}
                     <p>Your cart is empty</p>
@@ -105,6 +110,7 @@
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
 document.addEventListener('DOMContentLoaded', function() {
     const urlParams = new URLSearchParams(window.location.search);
@@ -112,6 +118,31 @@ document.addEventListener('DOMContentLoaded', function() {
         const cartModal = new bootstrap.Modal(document.getElementById('cartModal'));
         cartModal.show();
     }
+
+    // AJAX for increment and decrement buttons
+    $('.btn-sm').on('click', function(e) {
+        e.preventDefault();
+        const productId = $(this).data('product-id');
+        const action = $(this).data('action');
+        const url = action === 'increment' ? "{% url 'increment_quantity' 0 %}".replace("0", productId) : "{% url 'decrement_quantity' 0 %}".replace("0", productId);
+
+        $.ajax({
+            url: url,
+            method: 'GET',
+            success: function(response) {
+                // Update the quantity and total for the product
+                $('#quantity-' + productId).text(response.quantity);
+                $('#total-' + productId).text(response.total + ' zł');
+                $('#cart-total').text(response.cart_total);
+
+                // Update the cart icon counter
+                $('.badge').text(response.total_items);
+            },
+            error: function(xhr, status, error) {
+                console.error("Error updating cart:", error);
+            }
+        });
+    });
 });
 </script>
 </body>
