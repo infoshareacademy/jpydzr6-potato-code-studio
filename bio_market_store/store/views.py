@@ -15,13 +15,16 @@ logger = logging.getLogger(__name__)
 
 
 def cover_page(request):
-    return render(request, 'cover.html')
+    return render(request, "cover.html")
+
 
 def about_us(request):
-    return render(request, 'about.html')
+    return render(request, "about.html")
+
 
 def contact_us(request):
-    return render(request, 'contact.html')
+    return render(request, "contact.html")
+
 
 @login_required
 def add_product(request):
@@ -71,23 +74,24 @@ def add_product(request):
 
     return render(request, "add_product.html")
 
+
 def product_list(request):
     products = Product.objects.all()
-    cart = request.session.get('cart', {})
+    cart = request.session.get("cart", {})
 
     total_items = 0
     cart_total = 0.0
 
     # Calculate total items and cart total
     for item in cart.values():
-        total_items += item['quantity']
-        cart_total += float(item['price']) * item['quantity']
+        total_items += item["quantity"]
+        cart_total += float(item["price"]) * item["quantity"]
 
-    return render(request, "product_list.html", {
-        "products": products,
-        "cart_total": cart_total,
-        "total_items": total_items
-    })
+    return render(
+        request,
+        "product_list.html",
+        {"products": products, "cart_total": cart_total, "total_items": total_items},
+    )
 
 
 def register_view(request):
@@ -96,14 +100,15 @@ def register_view(request):
         email = request.POST.get("email")
         password = request.POST.get("password")
 
-        
         if UserProfile.objects.filter(username=username).exists():
             messages.error(request, "Username already exists")
             return redirect("register")
-        
-        new_user = UserProfile.objects.create_user(username=username, email=email, password=password)
+
+        new_user = UserProfile.objects.create_user(
+            username=username, email=email, password=password
+        )
         new_user.save()
-        
+
         messages.success(request, "User created successfully")
         return redirect("home_page")
 
@@ -119,7 +124,6 @@ def login_view(request):
         username = request.POST.get("username")
         password = request.POST.get("password")
 
-        
         user = authenticate(request, username=username, password=password)
 
         if user is None:
@@ -132,10 +136,12 @@ def login_view(request):
             "You have been logged in",
         )
 
-        
-        return render(request, "login_page.html", {"error": "Invalid username or password"})
-            
+        return render(
+            request, "login_page.html", {"error": "Invalid username or password"}
+        )
+
     return render(request, "login_page.html")
+
 
 def logout_view(request):
     if request.user.is_authenticated:
@@ -300,75 +306,86 @@ def quiz_result_view(request):
 
 def add_to_cart(request, product_id):
     product = get_object_or_404(Product, id=product_id)
-    cart = request.session.get('cart', {})
+    cart = request.session.get("cart", {})
 
     product_key = str(product_id)
 
     if product_key in cart:
-        cart[product_key]['quantity'] += 1
+        cart[product_key]["quantity"] += 1
     else:
         cart[product_key] = {
-            'quantity': 1,
-            'price': str(product.price),
-            'name': product.name_tag,
-            'image': product.image.url
+            "quantity": 1,
+            "price": str(product.price),
+            "name": product.name_tag,
+            "image": product.image.url,
         }
 
-    request.session['cart'] = cart
+    request.session["cart"] = cart
     request.session.modified = True  # Critical fix
-    return redirect('product_list')
+    return redirect("product_list")
 
 
 def empty_cart(request):
-    if 'cart' in request.session:
-        del request.session['cart']
-    return redirect('product_list')
+    if "cart" in request.session:
+        del request.session["cart"]
+    return redirect("product_list")
 
 
 def payment(request):
-    return render(request, 'payment.html')
+    return render(request, "payment.html")
 
 
 def increment_quantity(request, product_id):
     product_key = str(product_id)
-    cart = request.session.get('cart', {})
+    cart = request.session.get("cart", {})
     if product_key in cart:
-        cart[product_key]['quantity'] += 1
-        request.session['cart'] = cart
+        cart[product_key]["quantity"] += 1
+        request.session["cart"] = cart
         request.session.modified = True
 
         # Calculate total items and cart total
-        total_items = sum(item['quantity'] for item in cart.values())
-        cart_total = sum(float(item['price']) * item['quantity'] for item in cart.values())
+        total_items = sum(item["quantity"] for item in cart.values())
+        cart_total = sum(
+            float(item["price"]) * item["quantity"] for item in cart.values()
+        )
 
-        return JsonResponse({
-            'quantity': cart[product_key]['quantity'],
-            'total': float(cart[product_key]['price']) * cart[product_key]['quantity'],
-            'cart_total': cart_total,
-            'total_items': total_items,
-        })
-    return JsonResponse({'error': 'Product not found in cart'}, status=404)
+        return JsonResponse(
+            {
+                "quantity": cart[product_key]["quantity"],
+                "total": float(cart[product_key]["price"])
+                * cart[product_key]["quantity"],
+                "cart_total": cart_total,
+                "total_items": total_items,
+            }
+        )
+    return JsonResponse({"error": "Product not found in cart"}, status=404)
+
 
 def decrement_quantity(request, product_id):
     product_key = str(product_id)
-    cart = request.session.get('cart', {})
+    cart = request.session.get("cart", {})
     if product_key in cart:
-        if cart[product_key]['quantity'] > 1:
-            cart[product_key]['quantity'] -= 1
+        if cart[product_key]["quantity"] > 1:
+            cart[product_key]["quantity"] -= 1
         else:
             # Instead of deleting the item, set its quantity to 0
-            cart[product_key]['quantity'] = 0
-        request.session['cart'] = cart
+            cart[product_key]["quantity"] = 0
+        request.session["cart"] = cart
         request.session.modified = True
 
         # Calculate total items and cart total
-        total_items = sum(item['quantity'] for item in cart.values())
-        cart_total = sum(float(item['price']) * item['quantity'] for item in cart.values())
+        total_items = sum(item["quantity"] for item in cart.values())
+        cart_total = sum(
+            float(item["price"]) * item["quantity"] for item in cart.values()
+        )
 
-        return JsonResponse({
-            'quantity': cart.get(product_key, {}).get('quantity', 0),
-            'total': float(cart.get(product_key, {}).get('price', 0)) * cart.get(product_key, {}).get('quantity', 0),
-            'cart_total': cart_total,
-            'total_items': total_items,
-        })
-    return JsonResponse({'error': 'Product not found in cart'}, status=404)
+        return JsonResponse(
+            {
+                "quantity": cart.get(product_key, {}).get("quantity", 0),
+                "total": float(cart.get(product_key, {}).get("price", 0))
+                * cart.get(product_key, {}).get("quantity", 0),
+                "cart_total": cart_total,
+                "total_items": total_items,
+            }
+        )
+    return JsonResponse({"error": "Product not found in cart"}, status=404)
