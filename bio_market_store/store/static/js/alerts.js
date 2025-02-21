@@ -1,7 +1,9 @@
+let disableTimer = false;
+
 document.addEventListener("DOMContentLoaded", () => {
     let alerts = document.querySelectorAll(".alert");
 
-    if (alerts.length > 0) { 
+    if (alerts.length > 0 && !disableTimer) {
         setTimeout(() => {
             alerts.forEach(alert => {
                 alert.classList.add("fade");
@@ -15,7 +17,7 @@ document.addEventListener("DOMContentLoaded", () => {
                     window.location.href = "/";
                 }, 1000);
             }
-            
+
         }, 3000);
     }
 });

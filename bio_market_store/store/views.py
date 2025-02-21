@@ -7,7 +7,8 @@ from django.utils.timezone import now
 from django.http import JsonResponse
 from .models import UserProfile, Address, Product, MiniQuizBio
 from .forms import UserProfileForm, AddressForm, MiniQuizBioForm, UserPasswordChangeForm
-
+from django.core.mail import send_mail
+from django.conf import settings
 # import json
 import logging
 
@@ -23,7 +24,25 @@ def about_us(request):
 
 
 def contact_us(request):
+    if request.method == "POST":
+        name = request.POST.get("name")
+        email = request.POST.get("email")
+        subject = request.POST.get("subject")
+        message = request.POST.get("message")
+
+        full_message = f"Od: {name} <{email}>\n Temat: {subject}\n\n{message}"
+
+        send_mail(
+            subject,
+            full_message,
+            settings.DEFAULT_FROM_EMAIL,
+            ["biopotato@wp.pl"],
+        )
+
+        return render(request, "contact.html", {"success": True})
+
     return render(request, "contact.html")
+
 
 
 @login_required
