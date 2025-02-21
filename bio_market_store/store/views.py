@@ -133,10 +133,6 @@ def login_view(request):
             "You have been logged in",
         )
 
-        return render(
-            request, "login_page.html", {"error": "Invalid username or password"}
-        )
-
     return render(request, "login_page.html")
 
 
