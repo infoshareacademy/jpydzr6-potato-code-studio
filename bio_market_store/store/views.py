@@ -109,9 +109,6 @@ def register_view(request):
         )
         new_user.save()
 
-        messages.success(request, "User created successfully")
-        return redirect("home_page")
-
         messages.success(
             request,
             "You have been registered",
@@ -134,10 +131,6 @@ def login_view(request):
         messages.success(
             request,
             "You have been logged in",
-        )
-
-        return render(
-            request, "login_page.html", {"error": "Invalid username or password"}
         )
 
     return render(request, "login_page.html")
@@ -265,7 +258,7 @@ def mini_quiz_bio_view(request):
                 messages.success(request, "✅ Correct!")
             else:
                 correct_answer_text = choices.get(correct, "Unknown")
-                messages.warning(
+                messages.error(
                     request,
                     f"❌ Incorrect! Correct answer: {correct.upper()} - {correct_answer_text}",
                 )
@@ -292,6 +285,7 @@ def mini_quiz_bio_view(request):
         "mini_quiz_bio.html",
         {"form": form, "question": question, "score": score},
     )
+
 
 def quiz_result_view(request):
     score = request.session.get("score", 0)
