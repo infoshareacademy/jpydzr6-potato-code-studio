@@ -248,7 +248,7 @@ def mini_quiz_bio_view(request):
                 messages.success(request, "✅ Correct!")
             else:
                 correct_answer_text = choices.get(correct, "Unknown")
-                messages.warning(
+                messages.error(
                     request,
                     f"❌ Incorrect! Correct answer: {correct.upper()} - {correct_answer_text}",
                 )
@@ -275,6 +275,7 @@ def mini_quiz_bio_view(request):
         "mini_quiz_bio.html",
         {"form": form, "question": question, "score": score},
     )
+
 
 def quiz_result_view(request):
     score = request.session.get("score", 0)
