@@ -12,6 +12,7 @@
     <link href="{% static 'css/register_page_styles.css' %}" rel="stylesheet" />
     <link href="{% static 'css/user_profile.css' %}" rel="stylesheet" />
     <link rel="stylesheet" href="{% static 'css/product_list_style.css' %}">
+    <link rel="stylesheet" href="{% static 'css/add_product_style.css' %}">
     <link href="https://fonts.googleapis.com/css2?family=Megrim&display=swap" rel="stylesheet">
     <link
       rel="stylesheet"
@@ -24,7 +25,7 @@
         <a class="navbar-brand" href="/">BioPotato</a>
         <div class="collapse navbar-collapse justify-content-end" id="navbarNavAltMarkup">
           <div class="navbar-nav">
-            <a class="nav-link" id="storeNav" href="">Store</a>
+            <a class="nav-link" id="storeNav" href="{% url 'product_list' %}">Store</a>
             <a class="nav-link" id="aboutNav" href="{% url 'about-page' %}">About</a>
             <a class="nav-link" id="contactNav" href="{% url 'contact-page'%}">Contact</a>
             {% comment %} <div class="container mt-3"> {% endcomment %}
@@ -35,6 +36,9 @@
                       {{ total_items|default:"" }}
                   </span>
               </button>
+              {% endif %}
+              {% if user.is_authenticated %}
+                <a class="nav-link" href="{% url 'add' %}">Add Product</a>
               {% endif %}
             
             <li class="nav-item dropdown">
