@@ -71,10 +71,13 @@ class MiniQuizBio(models.Model):
         super().save(*args, **kwargs)
 
     def get_choices(self):
+        if not self.answer_choices:
+            return {}
+
         try:
             return json.loads(self.answer_choices)
         except json.JSONDecodeError:
-            return []
+            return {}
 
     def __str__(self):
         return self.question_text
