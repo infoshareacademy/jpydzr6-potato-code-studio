@@ -1,7 +1,7 @@
 from django.contrib import admin
 from django import forms
 from django.contrib.auth.forms import UserChangeForm, AdminPasswordChangeForm
-from .models import UserProfile, Address, MiniQuizBio
+from .models import UserProfile, Address, MiniQuizBio, Product  # Import the Product model
 from .forms import UserCreatingForm
 
 
@@ -64,5 +64,15 @@ class UserProfileAdmin(admin.ModelAdmin):
         super().save_model(request, obj, form, change)
 
 
+# Register the Product model
+@admin.register(Product)
+class ProductAdmin(admin.ModelAdmin):
+    list_display = ('name_tag', 'category', 'price', 'amount', 'producer', 'created_at')  # Fields to display in the list view
+    list_filter = ('category', 'created_at')  # Filters for the right sidebar
+    search_fields = ('name_tag', 'producer')  # Search bar fields
+    ordering = ('-created_at',)  # Default ordering (newest first)
+
+
+# Register other models
 admin.site.register(UserProfile, UserProfileAdmin)
 admin.site.register(MiniQuizBio)
