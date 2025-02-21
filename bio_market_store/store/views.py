@@ -109,9 +109,6 @@ def register_view(request):
         )
         new_user.save()
 
-        messages.success(request, "User created successfully")
-        return redirect("home_page")
-
         messages.success(
             request,
             "You have been registered",
