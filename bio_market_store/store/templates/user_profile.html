@@ -13,21 +13,6 @@
 {% endblock %} {% block content %}
 
 <div class="container my-5">
-
-  {% if messages %}
-    {% for message in messages %}
-      <div class="alert 
-          {% if message.tags == 'error' %}alert-danger
-          {% elif message.tags == 'success' %}alert-success
-          {% elif message.tags == 'info' %}alert-info
-          {% elif message.tags == 'warning' %}alert-warning
-          {% else %}alert-secondary{% endif %}
-          text-center fade show" role="alert">
-        {{ message }}
-      </div>
-    {% endfor %}
-  {% endif %}
-
   <div class="row">
     <!-- Sidebar -->
     <div class="col-md-3">
