@@ -14,13 +14,11 @@
             </div>
         {% endif %}
 
-        <!-- Quiz card with increased width; removed extra bottom padding -->
         <div class="card p-4 mt-4 shadow-lg text-center position-relative" style="max-width: 1000px; margin: auto;">
             <h2>{{ question.question_text }}</h2>
             <form method="POST">
                 {% csrf_token %}
 
-                <!-- Aesthetic answer boxes arranged vertically -->
                 <div class="form-check text-center mt-3">
                     <div class="d-flex flex-column align-items-center">
                         {% for value, text in form.fields.answer.choices %}
@@ -32,7 +30,6 @@
                     </div>
                 </div>
 
-                <!-- Button container positioned flush with the bottom border -->
                 <div class="button-group" style="position: absolute; bottom: 0; left: 0; right: 0;">
                     <button type="submit" name="submit" class="btn btn-primary" {% if messages %}disabled{% endif %}>Submit</button>
                     <button type="submit" name="next" class="btn btn-success">Next</button>
