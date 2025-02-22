@@ -26,9 +26,12 @@
         <a class="navbar-brand" href="/">BioPotato</a>
         <div class="collapse navbar-collapse justify-content-end" id="navbarNavAltMarkup">
           <div class="navbar-nav">
-            <a class="nav-link" id="storeNav" href="">Store</a>
-            <a class="nav-link" id="aboutNav" href="{% url 'about-page' %}">About</a>
+            <a class="nav-link" id="storeNav" href="{% url 'product_list' %}">Store</a>
+            {% if user.is_authenticated %}
+            <a class="nav-link" href="{% url 'add' %}">Add Product</a>
+            {% endif %}
             <a class="nav-link" id="contactNav" href="{% url 'contact-page'%}">Contact</a>
+            <a class="nav-link" id="aboutNav" href="{% url 'about-page' %}">About</a>
             {% comment %} <div class="container mt-3"> {% endcomment %}
             {% if user.is_authenticated and request.path == '/product_list/' %}
               <button type="button" class="btn-cart" data-bs-toggle="modal" data-bs-target="#cartModal">
@@ -137,7 +140,7 @@
     
     <div class="container my-5">{% block content %}{% endblock %}</div>
 
-    <footer class="mt-auto text-white-50 ">
+    <footer class="footer text-white-50 mt-5">
         <p>Julia Blaumann, Jakub Charkiewicz, Paweł Enerlich, Maciej Kusztal, Wojciech Wawrzyszko</p>
     </footer>
     {% block extra_js %}

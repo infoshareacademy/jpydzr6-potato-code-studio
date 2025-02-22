@@ -15,7 +15,6 @@
 {% block content %}
 <div class="container mt-5">
     <h1 class="text-center">Mini Quiz Bio</h1>
-
     {% if question %}
         {% if messages %}
             {% for message in messages %}
@@ -31,7 +30,7 @@
             {% endfor %}
         {% endif %}
 
-        <div class="card p-4 mt-4 shadow-lg text-center mx-auto">
+        <div class="card p-4 mt-4 shadow-lg text-center mx-auto" style="max-width: 50%; min-height: 0;">
             <h2>{{ question.question_text }}</h2>
             <form method="POST">
                 {% csrf_token %}
