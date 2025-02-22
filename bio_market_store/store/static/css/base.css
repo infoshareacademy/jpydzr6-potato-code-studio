@@ -35,7 +35,7 @@ body {
 }
 
 .container {
-    margin-top: 15rem !important;
+    /* margin-top: 5rem !important; */
     /* margin-bottom: 15rem !important; */
     flex: 1;
 }
