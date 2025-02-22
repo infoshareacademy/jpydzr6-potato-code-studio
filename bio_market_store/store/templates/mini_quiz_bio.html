@@ -10,18 +10,19 @@
 <link href="{% static 'css/mini_quiz.css' %}" rel="stylesheet" />
 {% endblock %}
 {% block extra_js %}
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" 
-    integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" 
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
     crossorigin="anonymous"></script>
 <script src="{% static 'js/mini_quiz.js' %}"></script>
 {% endblock %}
 {% block content %}
 <div class="container mt-5">
     <h1 class="text-center">Mini Quiz Bio</h1>
+
     {% if question %}
         {% if messages %}
             {% for message in messages %}
-            <div class="alert 
+            <div class="alert
                 {% if message.tags == 'error' %}alert-danger
                 {% elif message.tags == 'success' %}alert-success
                 {% elif message.tags == 'info' %}alert-info
@@ -33,21 +34,23 @@
             {% endfor %}
         {% endif %}
 
-        <div class="card p-4 mt-4 shadow-lg text-center mx-auto" style="max-width: 50%; min-height: 0;">
+        <div class="card p-4 mt-4 shadow-lg text-center position-relative" style="max-width: 1000px; margin: auto;">
             <h2>{{ question.question_text }}</h2>
             <form method="POST">
                 {% csrf_token %}
 
-                <div class="form-check text-start mt-3">
-                    {% for value, text in form.fields.answer.choices %}
-                        <label class="form-check-label d-block">
-                            <input type="radio" class="form-check-input" name="answer" value="{{ value }}" {% if messages %}disabled{% endif %}>
-                            {{ text }}
-                        </label>
-                    {% endfor %}
+                <div class="form-check text-center mt-3">
+                    <div class="d-flex flex-column align-items-center">
+                        {% for value, text in form.fields.answer.choices %}
+                            <label class="form-check-label d-flex align-items-center p-3 mb-3" style="cursor: pointer; width: 75%; background: rgba(255, 255, 255, 0.1); border-radius: 8px;">
+                                <input type="radio" class="form-check-input me-2" name="answer" value="{{ value }}" {% if messages %}disabled{% endif %}>
+                                {{ text }}
+                            </label>
+                        {% endfor %}
+                    </div>
                 </div>
 
-                <div class="mt-3">
+                <div class="button-group" style="position: absolute; bottom: 0; left: 0; right: 0;">
                     <button type="submit" name="submit" class="btn btn-primary" {% if messages %}disabled{% endif %}>Submit</button>
                     <button type="submit" name="next" class="btn btn-success">Next</button>
                     <button type="submit" name="finish" class="btn btn-danger">Finish</button>
