@@ -16,39 +16,24 @@
 <script src="{% static 'js/mini_quiz.js' %}"></script>
 {% endblock %}
 {% block content %}
-<div class="container mt-5">
-    <h1 class="text-center">Mini Quiz Bio</h1>
+{% if question %}
+    <div class="container mt-5">
+        <h1 class="text-center">Mini Quiz Bio</h1>
+            <div class="card p-4 mt-4 shadow-lg text-center position-relative" style="max-width: 1000px; margin: auto;">
+                <h2>{{ question.question_text }}</h2>
+                <form method="POST">
+                    {% csrf_token %}
 
-    {% if question %}
-        {% if messages %}
-            {% for message in messages %}
-            <div class="alert
-                {% if message.tags == 'error' %}alert-danger
-                {% elif message.tags == 'success' %}alert-success
-                {% elif message.tags == 'info' %}alert-info
-                {% elif message.tags == 'warning' %}alert-warning
-                {% else %}alert-secondary{% endif %}
-                text-center fade show" role="alert">
-                {{ message }}
-            </div>
-            {% endfor %}
-        {% endif %}
-
-        <div class="card p-4 mt-4 shadow-lg text-center position-relative" style="max-width: 1000px; margin: auto;">
-            <h2>{{ question.question_text }}</h2>
-            <form method="POST">
-                {% csrf_token %}
-
-                <div class="form-check text-center mt-3">
-                    <div class="d-flex flex-column align-items-center">
-                        {% for value, text in form.fields.answer.choices %}
-                            <label class="form-check-label d-flex align-items-center p-3 mb-3" style="cursor: pointer; width: 75%; background: rgba(255, 255, 255, 0.1); border-radius: 8px;">
-                                <input type="radio" class="form-check-input me-2" name="answer" value="{{ value }}" {% if messages %}disabled{% endif %}>
-                                {{ text }}
-                            </label>
-                        {% endfor %}
+                    <div class="form-check text-center mt-3">
+                        <div class="d-flex flex-column align-items-center">
+                            {% for value, text in form.fields.answer.choices %}
+                                <label class="form-check-label d-flex align-items-center p-3 mb-3" style="cursor: pointer; width: 75%; background: rgba(255, 255, 255, 0.1); border-radius: 8px;">
+                                    <input type="radio" class="form-check-input me-2" name="answer" value="{{ value }}" {% if messages %}disabled{% endif %}>
+                                    {{ text }}
+                                </label>
+                            {% endfor %}
+                        </div>
                     </div>
-                </div>
 
                 <div class="button-group" style="position: absolute; bottom: 0; left: 0; right: 0;">
                     <button type="submit" name="submit" class="btn btn-primary" {% if messages %}disabled{% endif %}>Submit</button>

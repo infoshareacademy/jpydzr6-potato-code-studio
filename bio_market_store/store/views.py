@@ -9,6 +9,7 @@ from .models import UserProfile, Address, Product, MiniQuizBio
 from .forms import UserProfileForm, AddressForm, MiniQuizBioForm, UserPasswordChangeForm
 from django.core.mail import send_mail
 from django.conf import settings
+
 # import json
 import logging
 
@@ -50,7 +51,7 @@ def add_product(request):
         name_tag = request.POST.get("name_tag")
         category = request.POST.get("category")
         price = request.POST.get("price")
-        commission = request.POST.get("commission")
+        commission = 10
         weight = request.POST.get("weight")
         exp_date = request.POST.get("exp_date")
         amount = request.POST.get("amount")
@@ -58,17 +59,17 @@ def add_product(request):
         image = request.FILES.get("image")
 
         if not all(
-                [
-                    name_tag,
-                    category,
-                    price,
-                    commission,
-                    weight,
-                    exp_date,
-                    amount,
-                    producer,
-                    image,
-                ]
+            [
+                name_tag,
+                category,
+                price,
+                commission,
+                weight,
+                exp_date,
+                amount,
+                producer,
+                image,
+            ]
         ):
             return render(request, "add_product.html")
 
@@ -353,13 +354,15 @@ def payment(request):
         cart_total += total
         total_items += item["quantity"]
 
-        cart_items.append({
-            "id": product_id,
-            "name": item["name"],
-            "price": float(item["price"]),
-            "quantity": item["quantity"],
-            "total": total,
-        })
+        cart_items.append(
+            {
+                "id": product_id,
+                "name": item["name"],
+                "price": float(item["price"]),
+                "quantity": item["quantity"],
+                "total": total,
+            }
+        )
 
     context = {
         "cart_items": cart_items,
@@ -367,21 +370,23 @@ def payment(request):
         "total_items": total_items,
     }
 
-    if request.method == 'POST':
-        first_name = request.POST.get('firstName')
-        last_name = request.POST.get('lastName')
-        phone = request.POST.get('phoneNumber')
-        email = request.POST.get('email')
-        address = request.POST.get('address')
-        address2 = request.POST.get('address2', '')
-        country = request.POST.get('country')
-        state = request.POST.get('state')
-        zip_code = request.POST.get('zip')
-        payment_method = request.POST.get('paymentMethod')
-        products_info = "\n".join([
-            f"{idx + 1}. {item['name']} - {item['quantity']} szt. - {item['total']} PLN"
-            for idx, item in enumerate(cart_items)
-        ])
+    if request.method == "POST":
+        first_name = request.POST.get("firstName")
+        last_name = request.POST.get("lastName")
+        phone = request.POST.get("phoneNumber")
+        email = request.POST.get("email")
+        address = request.POST.get("address")
+        address2 = request.POST.get("address2", "")
+        country = request.POST.get("country")
+        state = request.POST.get("state")
+        zip_code = request.POST.get("zip")
+        payment_method = request.POST.get("paymentMethod")
+        products_info = "\n".join(
+            [
+                f"{idx + 1}. {item['name']} - {item['quantity']} szt. - {item['total']} PLN"
+                for idx, item in enumerate(cart_items)
+            ]
+        )
 
         message_body = f"""
         New order from BioMarket Store:
@@ -400,26 +405,22 @@ def payment(request):
         Oreder details:
         \n{products_info}
 
-        Oder value: {sum(item['total'] for item in cart_items):.2f} PLN
+        Oder value: {sum(item["total"] for item in cart_items):.2f} PLN
         """
 
         send_mail(
-            subject='Nowe zamówienie',
+            subject="Nowe zamówienie",
             message=message_body,
             from_email=settings.EMAIL_HOST_USER,
-            recipient_list=['biopotato@wp.pl'],
+            recipient_list=["biopotato@wp.pl"],
             fail_silently=False,
         )
 
-
         request.session["cart"] = {}
 
+        return redirect("product_list")
 
-        return redirect('product_list')
-
-
-
-    return render(request, 'payment.html', context=context)
+    return render(request, "payment.html", context=context)
 
 
 def increment_quantity(request, product_id):
@@ -440,7 +441,7 @@ def increment_quantity(request, product_id):
             {
                 "quantity": cart[product_key]["quantity"],
                 "total": float(cart[product_key]["price"])
-                         * cart[product_key]["quantity"],
+                * cart[product_key]["quantity"],
                 "cart_total": cart_total,
                 "total_items": total_items,
             }
@@ -470,7 +471,7 @@ def decrement_quantity(request, product_id):
             {
                 "quantity": cart.get(product_key, {}).get("quantity", 0),
                 "total": float(cart.get(product_key, {}).get("price", 0))
-                         * cart.get(product_key, {}).get("quantity", 0),
+                * cart.get(product_key, {}).get("quantity", 0),
                 "cart_total": cart_total,
                 "total_items": total_items,
             }
