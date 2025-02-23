@@ -1,3 +1,7 @@
+.product-list {
+    margin-top: 25rem !important;
+}
+
 .product-card {
     border-radius: 10px;
     overflow: hidden;
@@ -9,9 +13,9 @@
 }
 
 .product-img {
-    height: 15rem;
     width: 100%;
-    border-radius: 10px 0 0 10px;
+    height: auto;
+    max-height: 200px;
     object-fit: fill;
 }
 
@@ -37,4 +41,9 @@ p {
 
 .empty_cart {
     color: black
+}
+
+.product-item {
+    max-width: 20% !important;
+    /* flex: 0 0 20% !important;  */
 }

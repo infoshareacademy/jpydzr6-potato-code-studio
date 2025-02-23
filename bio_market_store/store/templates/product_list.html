@@ -8,14 +8,14 @@
 />
 {% endblock %}
 {% block content %}
-<div class="container mt-5">
-    <h1 class="text-center mb-4">Products List</h1>
+<div class="container product-list">
+    <h1 class="text-center mb-5">Products List</h1>
     {% if products %}
-    <div class="row">
+    <div class="row d-flex">
         {% for product in products %}
-        <div class="col-4 mb-4">
-            <div class="card h-100 shadow-sm product-card">
-                <div class="row g-0">
+        <div class="col-md-4 mb-4 product-item">
+            <div class="card shadow-sm product-card">
+                {% comment %} <div class="row g-0"> {% endcomment %}
                     <img src="{{ product.image.url }}" class="product-img" alt="{{ product.name }}">
                     <div class="card-body">
                         <h3 class="card-title">{{ product.name_tag }}</h3>
@@ -31,12 +31,12 @@
                         <p class="card-text text-primary fw-bold">Price: {{ product.price }} zł</p>
                         <!-- Add to Cart Button (Disabled if product is in cart) -->
                         {% if product.id|stringformat:"s" in request.session.cart %}
-                        <button class="btn btn-secondary btn-lg" disabled>Added to Cart</button>
+                        <button class="btn btn-secondary btn" disabled>Added to Cart</button>
                         {% else %}
-                        <a href="{% url 'add_to_cart' product.id %}" class="btn btn-success btn-lg">Add to Cart</a>
+                        <a href="{% url 'add_to_cart' product.id %}" class="btn btn-success btn">Add to Cart</a>
                         {% endif %}
                     </div>
-                </div>
+                {% comment %} </div> {% endcomment %}
             </div>
         </div>
         {% endfor %}

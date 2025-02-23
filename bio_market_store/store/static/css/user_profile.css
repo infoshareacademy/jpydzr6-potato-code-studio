@@ -1,3 +1,7 @@
+.user-profile {
+  margin-top: 10rem !important;
+}
+
 .dropdown-item:hover {
   background-color: #444d56;
   color: #fff;
