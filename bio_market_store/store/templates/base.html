@@ -72,20 +72,6 @@
     </div>
 </nav>
 
-{% if messages %}
-    {% for message in messages %}
-    <div class="alert
-        {% if message.tags == 'error' %}alert-danger
-        {% elif message.tags == 'success' %}alert-success
-        {% elif message.tags == 'info' %}alert-info
-        {% elif message.tags == 'warning' %}alert-warning
-        {% else %}alert-secondary{% endif %}
-        text-center fade show main-alert" role="alert">
-        {{ message }}
-    </div>
-    {% endfor %}
-{% endif %}
-
 <div class="modal fade" id="cartModal" tabindex="-1" aria-labelledby="cartModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-lg">
         <div class="modal-content">
@@ -145,7 +131,20 @@
     </div>
 </div>
 
-<div class="container my-5">{% block content %}{% endblock %}</div>
+{% if messages %}
+        {% for message in messages %}
+        <div class="alert
+            {% if message.tags == 'error' %}alert-danger
+            {% elif message.tags == 'success' %}alert-success
+            {% elif message.tags == 'info' %}alert-info
+            {% elif message.tags == 'warning' %}alert-warning
+            {% else %}alert-secondary{% endif %}
+            text-center fade show main-alert" role="alert">
+            {{ message }}
+        </div>
+        {% endfor %}
+    {% endif %}
+    <div class="container my-5">{% block content %}{% endblock %}</div>
 
 {% comment %} <footer class="footer text-white-50 mt-5">
     <p>Julia Blaumann, Jakub Charkiewicz, Paweł Enerlich, Maciej Kusztal, Wojciech Wawrzyszko</p>

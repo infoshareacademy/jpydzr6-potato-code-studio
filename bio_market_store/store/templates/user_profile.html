@@ -82,6 +82,19 @@
                     {{ user_profile_form.email }}
                   </div>
                 </div>
+                <div class="row mb-3">
+                  <div class="col-md-12 d-flex flex-column">
+                    <label class="form-label"
+                      >{{ user_profile_form.role.label_tag }}</label
+                    >
+                    <div class="input-group">
+                      {{ user_profile_form.role }}
+                      <span class="input-group-text">
+                        <i class="fa-solid fa-arrow-down"></i>
+                      </span>
+                    </div>
+                  </div>
+                </div>
                 <button
                   type="submit"
                   class="btn btn-success w-100"

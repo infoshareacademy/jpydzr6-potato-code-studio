@@ -8,19 +8,22 @@ import json
 
 
 class UserProfile(AbstractUser):
-    user_validation = UserValidator()
-    username = models.CharField(
-        max_length=150,
-        unique=True,
-        error_messages={
-            "unique": "Username already exists",
-        },
-    )
-    password = models.CharField(
-        max_length=128,
-        help_text=user_validation.get_help_text(),
-        validators=[user_validation.validate],
-    )
+    base_roles = [("seller", "Seller"), ("client", "Client")]
+
+    # user_validation = UserValidator()
+    # username = models.CharField(
+    #     max_length=150,
+    #     unique=True,
+    #     error_messages={
+    #         "unique": "Username already exists",
+    #     },
+    # )
+    # password = models.CharField(
+    #     max_length=128,
+    #     help_text=user_validation.get_help_text(),
+    #     validators=[user_validation.validate],
+    # )
+    role = models.CharField(max_length=20, choices=base_roles, default="client")
 
     def __str__(self):
         return f"{self.username}"
