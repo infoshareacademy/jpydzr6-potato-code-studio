@@ -254,7 +254,7 @@ def user_profile_password(request):
 
 
 def mini_quiz_bio_view(request):
-    questions = list(MiniQuizBio.objects.all())
+    questions = list(MiniQuizBio.objects.all().order_by('?')[:5])
     index = request.session.get("question_index", 0)
     score = request.session.get("score", 0)
 
