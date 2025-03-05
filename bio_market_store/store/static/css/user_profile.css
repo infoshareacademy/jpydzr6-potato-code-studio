@@ -1,5 +1,6 @@
 .user-profile {
   margin-top: 10rem !important;
+  max-height: 480px
 }
 
 .dropdown-item:hover {

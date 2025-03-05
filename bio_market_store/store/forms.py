@@ -9,6 +9,24 @@ from django.contrib.auth import get_user_model
 from .models import UserProfile, Product, Address, MiniQuizBio
 import json
 
+# Voivodeship choices for address forms
+VOIVODESHIPS = [
+    ('', 'Choose...'),
+    ('Lower Silesia', 'Lower Silesia'),
+    ('Kuyavia-Pomerania', 'Kuyavia-Pomerania'),
+    ('Lodzkie', 'Lodzkie'),
+    ('Lublin', 'Lublin'),
+    ('Lubusz', 'Lubusz'),
+    ('Lesser Poland', 'Lesser Poland'),
+    ('Masovia', 'Masovia'),
+    ('Subcarpathian', 'Subcarpathian'),
+    ('Pomerania', 'Pomerania'),
+    ('West Pomerania', 'West Pomerania'),
+    ('Greater Poland', 'Greater Poland'),
+    ('Podlaskie', 'Podlaskie'),
+    ('Świętokrzyskie', 'Świętokrzyskie'),
+    ('Opolskie', 'Opolskie'),
+]
 
 class UserCreatingForm(UserCreationForm):
     class Meta(UserCreationForm.Meta):
@@ -20,7 +38,6 @@ class UserCreatingForm(UserCreationForm):
         self.fields["password1"].widget = forms.PasswordInput()
         self.fields["password2"].widget = forms.PasswordInput()
 
-
 class UserAuthenticationForm(AuthenticationForm):
     username = forms.CharField(
         max_length=254, widget=forms.TextInput(attrs={"autofocus": True})
@@ -28,7 +45,6 @@ class UserAuthenticationForm(AuthenticationForm):
     password = forms.CharField(
         label="Password", strip=False, widget=forms.PasswordInput
     )
-
 
 class UserProfileForm(forms.ModelForm):
     class Meta:
@@ -40,20 +56,41 @@ class UserProfileForm(forms.ModelForm):
             "email": forms.EmailInput(attrs={"class": "form-control"}),
         }
 
-
 class AddressForm(forms.ModelForm):
+    state = forms.ChoiceField(
+        choices=VOIVODESHIPS,
+        widget=forms.Select(attrs={'class': 'form-control'}),
+        label="Voivodeship"
+    )
+
     class Meta:
         model = Address
-        fields = ["street", "postal_code", "city", "phone_number"]
+        fields = '__all__'
         widgets = {
-            "street": forms.TextInput(attrs={"class": "form-control"}),
-            "postal_code": forms.TextInput(attrs={"class": "form-control"}),
-            "city": forms.TextInput(attrs={"class": "form-control"}),
-            "phone_number": forms.TextInput(
-                attrs={"class": "form-control", "type": "tel", "pattern": "[0-9]{9}"}
+            'name': forms.TextInput(attrs={
+                'class': 'form-control',
+                'placeholder': 'Home, Office, etc.'
+            }),
+            'street': forms.TextInput(attrs={'class': 'form-control'}),
+            'postal_code': forms.TextInput(attrs={'class': 'form-control'}),
+            'city': forms.TextInput(attrs={'class': 'form-control'}),
+            'country': forms.TextInput(attrs={'class': 'form-control'}),
+            'phone_number': forms.TextInput(
+                attrs={
+                    'class': 'form-control',
+                    'type': 'tel',
+                    'pattern': '[0-9]{9}',
+                    'placeholder': '123456789'
+                }
             ),
+            'address2': forms.TextInput(attrs={
+                'class': 'form-control',
+                'placeholder': 'Optional'
+            }),
         }
-
+        labels = {
+            'address2': 'Address Line 2 (Optional)'
+        }
 
 class UserPasswordChangeForm(PasswordChangeForm):
     def __init__(self, *args, **kwargs):
@@ -67,7 +104,6 @@ class UserPasswordChangeForm(PasswordChangeForm):
         self.fields["new_password2"].widget = forms.PasswordInput(
             attrs={"class": "form-control"}
         )
-
 
 class ProductForm(forms.ModelForm):
     class Meta:
@@ -83,7 +119,6 @@ class ProductForm(forms.ModelForm):
             "producer",
             "image",
         ]
-
 
 class MiniQuizBioForm(forms.Form):
     answer = forms.ChoiceField(
@@ -106,13 +141,12 @@ class MiniQuizBioForm(forms.Form):
                 (key, value) for key, value in answer_choices.items()
             ]
 
-
+# Updated formset using the custom AddressForm
 AddressFormSet = inlineformset_factory(
     UserProfile,
     Address,
-    fields=('name', 'street', 'postal_code', 'city', 'country', 'state', 'phone_number', 'address2'),
+    form=AddressForm,
     extra=1,
     max_num=2,
-    can_delete=True,
-    widgets={'name': forms.TextInput(attrs={'placeholder': 'Home, Office, etc.'})}
+    can_delete=True
 )
