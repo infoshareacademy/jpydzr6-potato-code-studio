@@ -68,9 +68,6 @@
                         <label for="addressSelect" class="form-label">Saved Addresses</label>
                         <select class="form-select" id="addressSelect">
                             <option value="">Choose a saved address...</option>
-                            {% for address in addresses %}
-                            <option value="{{ address.id }}">{{ address.name|default:"Address "|add:forloop.counter }}</option>
-                            {% endfor %}
                         </select>
                         <small class="form-text text-muted">Select to auto-fill address details</small>
                     </div>
@@ -86,7 +83,7 @@
                             <input type="text" class="form-control" id="lastName" name="lastName" required>
                         </div>
                         <div class="col-12">
-                            <label for="username" class="form-label">Phone number</label>
+                            <label for="phoneNumber" class="form-label">Phone number</label>
                             <div class="input-group has-validation">
                                 <span class="input-group-text">+48</span>
                                 <input type="text" class="form-control" id="phoneNumber" name="phoneNumber" required>
@@ -124,7 +121,19 @@
                             <select class="form-select" id="state" name="state" required>
                                 <option value="">Choose...</option>
                                 <option>Lower Silesia</option>
-                                <!-- Other options remain the same -->
+                                <option>Kuyavia-Pomerania</option>
+                                <option>Lodzkie</option>
+                                <option>Lublin</option>
+                                <option>Lubusz</option>
+                                <option>Lesser Poland</option>
+                                <option>Masovia</option>
+                                <option>Subcarpathian</option>
+                                <option>Pomerania</option>
+                                <option>West Pomerania</option>
+                                <option>Greater Poland</option>
+                                <option>Podlaskie</option>
+                                <option>Świętokrzyskie</option>
+                                <option>Opolskie</option>
                             </select>
                         </div>
                     </div>
@@ -139,7 +148,6 @@
                     </div>
                     {% endif %}
 
-                    <!-- Rest of the payment form remains the same -->
                     <hr class="my-4">
                     <div class="form-check">
                         <input type="checkbox" class="form-check-input" id="same-address">
@@ -149,7 +157,18 @@
                     </div>
                     <hr class="my-4">
                     <h4 class="mb-3">Payment</h4>
-                    <!-- Payment method inputs remain the same -->
+                    <div class="my-3">
+                        <div class="form-check">
+                            <input id="credit" name="paymentMethod" value="credit" type="radio" class="form-check-input"
+                                   checked required>
+                            <label class="form-check-label" for="credit">Credit card</label>
+                        </div>
+                        <div class="form-check">
+                            <input id="debit" name="paymentMethod" value="debit" type="radio" class="form-check-input"
+                                   required>
+                            <label class="form-check-label" for="debit">Debit card</label>
+                        </div>
+                    </div>
 
                     <button class="w-100 btn btn-primary btn-lg" type="submit">
                         Continue to checkout
@@ -166,21 +185,35 @@ document.addEventListener('DOMContentLoaded', function() {
     const addressSelect = document.getElementById('addressSelect');
 
     if (addressSelect) {
+        // Clear existing options except the first
+        while (addressSelect.options.length > 1) {
+            addressSelect.remove(1);
+        }
+
+        // Add validated options
+        addresses.forEach(address => {
+            if (address.name && address.name.trim() !== '') {
+                const option = new Option(address.name, address.id);
+                addressSelect.add(option);
+            }
+        });
+
+        // Handle address selection
         addressSelect.addEventListener('change', function() {
-            const addressId = this.value;
-            const selected = addresses.find(a => a.pk === addressId);
+            const addressId = parseInt(this.value);
+            const selected = addresses.find(a => a.id === addressId);
+
             if (selected) {
-                const fields = selected.fields;
                 document.getElementById('firstName').value = '{{ request.user.first_name }}';
                 document.getElementById('lastName').value = '{{ request.user.last_name }}';
                 document.getElementById('email').value = '{{ request.user.email }}';
-                document.getElementById('phoneNumber').value = fields.phone_number;
-                document.getElementById('address').value = fields.street;
-                document.getElementById('address2').value = fields.address2 || '';
-                document.getElementById('city').value = fields.city;
-                document.getElementById('country').value = fields.country;
-                document.getElementById('state').value = fields.state;
-                document.getElementById('zip').value = fields.postal_code;
+                document.getElementById('phoneNumber').value = selected.phone_number;
+                document.getElementById('address').value = selected.street;
+                document.getElementById('address2').value = selected.address2 || '';
+                document.getElementById('city').value = selected.city;
+                document.getElementById('country').value = selected.country;
+                document.getElementById('state').value = selected.state;
+                document.getElementById('zip').value = selected.postal_code;
             }
         });
     }

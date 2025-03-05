@@ -36,6 +36,14 @@ class Address(models.Model):
     state = models.CharField(max_length=100, default='mazowieckie')
     phone_number = models.CharField(max_length=10)
     address2 = models.CharField(max_length=255, blank=True, null=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def save(self, *args, **kwargs):
+        # Get existing count before saving
+        if not self.pk:  # Only for new instances
+            count = Address.objects.filter(user=self.user).count()
+            self.name = f"Address {count + 1}"
+        super().save(*args, **kwargs)
 
     def clean(self):
         if not self.pk and self.user.addresses.count() >= 2:

@@ -344,11 +344,21 @@ def payment(request):
     addresses_json = '[]'
 
     if request.user.is_authenticated:
-        addresses = Address.objects.filter(user=request.user)[:2]
-        addresses_json = serializers.serialize('json', addresses, fields=(
-            'name', 'street', 'postal_code', 'city',
-            'country', 'state', 'phone_number', 'address2'
-        ))
+        # Get addresses ordered by creation date
+        addresses = Address.objects.filter(user=request.user).order_by('created_at')[:2]
+
+        # Create custom JSON structure
+        addresses_json = json.dumps([{
+            'id': addr.id,
+            'name': addr.name or f"Address {i+1}",
+            'street': addr.street,
+            'postal_code': addr.postal_code,
+            'city': addr.city,
+            'country': addr.country,
+            'state': addr.state,
+            'phone_number': addr.phone_number,
+            'address2': addr.address2 or ''
+        } for i, addr in enumerate(addresses)])
 
     # Cart calculations
     cart_items = []

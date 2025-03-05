@@ -113,5 +113,6 @@ AddressFormSet = inlineformset_factory(
     fields=('name', 'street', 'postal_code', 'city', 'country', 'state', 'phone_number', 'address2'),
     extra=1,
     max_num=2,
-    can_delete=True
+    can_delete=True,
+    widgets={'name': forms.TextInput(attrs={'placeholder': 'Home, Office, etc.'})}
 )
