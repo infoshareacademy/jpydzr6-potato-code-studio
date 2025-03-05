@@ -1,6 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
-
+from django.core.exceptions import ValidationError
 # from django.contrib.auth.models import User
 from django.conf import settings
 from .utils.user_validator import UserValidator
@@ -27,18 +27,22 @@ class UserProfile(AbstractUser):
 
 
 class Address(models.Model):
+    user = models.ForeignKey(UserProfile, on_delete=models.CASCADE, related_name="addresses")
+    name = models.CharField(max_length=50, blank=True, help_text="e.g., Home, Office")
     street = models.CharField(max_length=255)
     postal_code = models.CharField(max_length=20)
     city = models.CharField(max_length=100)
+    country = models.CharField(max_length=100, default='Poland')
+    state = models.CharField(max_length=100, default='mazowieckie')
     phone_number = models.CharField(max_length=10)
-    user = models.OneToOneField(
-        UserProfile,
-        on_delete=models.CASCADE,
-        related_name="address",
-    )
+    address2 = models.CharField(max_length=255, blank=True, null=True)
+
+    def clean(self):
+        if not self.pk and self.user.addresses.count() >= 2:
+            raise ValidationError("User cannot have more than two addresses.")
 
     def __str__(self):
-        return f"{self.street}, {self.city}, {self.postal_code}, {self.phone_number}"
+        return f"{self.name}: {self.street}, {self.city}"
 
 
 class Product(models.Model):

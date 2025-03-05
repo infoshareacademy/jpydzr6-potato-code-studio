@@ -21,7 +21,9 @@ class UserPanelChangeForm(UserChangeForm):
 
 class AddressInline(admin.StackedInline):
     model = Address
-    can_delete = False
+    extra = 0
+    max_num = 2
+
 
 
 class UserProfileAdmin(admin.ModelAdmin):

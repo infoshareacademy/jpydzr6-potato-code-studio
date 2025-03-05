@@ -1,4 +1,5 @@
 from django import forms
+from django.forms import inlineformset_factory
 from django.contrib.auth.forms import (
     UserCreationForm,
     AuthenticationForm,
@@ -104,3 +105,13 @@ class MiniQuizBioForm(forms.Form):
             self.fields["answer"].choices = [
                 (key, value) for key, value in answer_choices.items()
             ]
+
+
+AddressFormSet = inlineformset_factory(
+    UserProfile,
+    Address,
+    fields=('name', 'street', 'postal_code', 'city', 'country', 'state', 'phone_number', 'address2'),
+    extra=1,
+    max_num=2,
+    can_delete=True
+)

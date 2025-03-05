@@ -6,11 +6,13 @@ from django.contrib.auth.decorators import login_required
 from django.utils.timezone import now
 from django.http import JsonResponse
 from .models import UserProfile, Address, Product, MiniQuizBio
-from .forms import UserProfileForm, AddressForm, MiniQuizBioForm, UserPasswordChangeForm
+from .forms import UserProfileForm, AddressForm, MiniQuizBioForm, UserPasswordChangeForm, AddressFormSet
 from django.core.mail import send_mail
+from django.core.exceptions import ValidationError
+from django.core import serializers
 from django.conf import settings
 
-# import json
+import json
 import logging
 
 logger = logging.getLogger(__name__)
@@ -165,16 +167,17 @@ def logout_view(request):
 @login_required
 def user_profile(request):
     user_profile_form = UserProfileForm(instance=request.user)
-    address, created = Address.objects.get_or_create(user=request.user)
-    address_form = AddressForm(instance=address)
     password_form = PasswordChangeForm(request.user)
+
+    # Initialize address formset
+    address_formset = AddressFormSet(instance=request.user)
 
     return render(
         request,
         "user_profile.html",
         {
             "user_profile_form": user_profile_form,
-            "address_form": address_form,
+            "address_formset": address_formset,
             "password_form": password_form,
         },
     )
@@ -208,29 +211,22 @@ def user_profile_personal_info(request):
 
 @login_required
 def user_profile_address(request):
-    user_profile = request.user
-    address, created = Address.objects.get_or_create(user=user_profile)
     if request.method == "POST":
-        address_form = AddressForm(request.POST, instance=address)
-        if address_form.is_valid():
-            address_form.save()
-            messages.success(request, "Profile updated successfully!")
-            return redirect("user_profile")
-        else:
-            address_data = {
-                "street": address.street if address.street else "",
-                "postal_code": address.postal_code if address.postal_code else "",
-                "city": address.city if address.city else "",
-                "phone_number": address.phone_number if address.phone_number else "",
-            }
-            address_form = AddressForm(initial=address_data, instance=address)
+        formset = AddressFormSet(request.POST, instance=request.user)
+        try:
+            if formset.is_valid():
+                instances = formset.save(commit=False)
+                for instance in instances:
+                    instance.user = request.user
+                    instance.full_clean()  # Triggers validation including clean()
+                    instance.save()
+                messages.success(request, "Addresses updated successfully!")
+                return redirect("user_profile")
+        except ValidationError as e:
+            messages.error(request, e.messages[0])
+            formset = AddressFormSet(request.POST, instance=request.user)
 
-    return render(
-        request,
-        "user_profile.html",
-        {"address_form": address_form},
-    )
-
+    return redirect("user_profile")
 
 @login_required
 def user_profile_password(request):
@@ -344,83 +340,72 @@ def empty_cart(request):
 
 def payment(request):
     cart = request.session.get("cart", {})
+    addresses = []
+    addresses_json = '[]'
 
+    if request.user.is_authenticated:
+        addresses = Address.objects.filter(user=request.user)[:2]
+        addresses_json = serializers.serialize('json', addresses, fields=(
+            'name', 'street', 'postal_code', 'city',
+            'country', 'state', 'phone_number', 'address2'
+        ))
+
+    # Cart calculations
     cart_items = []
     cart_total = 0
     total_items = 0
 
     for product_id, item in cart.items():
-        total = float(item["price"]) * item["quantity"]
-        cart_total += total
-        total_items += item["quantity"]
+        try:
+            total = float(item["price"]) * item["quantity"]
+            cart_total += total
+            total_items += item["quantity"]
 
-        cart_items.append(
-            {
+            cart_items.append({
                 "id": product_id,
                 "name": item["name"],
                 "price": float(item["price"]),
                 "quantity": item["quantity"],
                 "total": total,
-            }
-        )
+            })
+        except KeyError as e:
+            logger.error(f"Missing key in cart item: {e}")
+            continue
 
     context = {
         "cart_items": cart_items,
         "cart_total": cart_total,
         "total_items": total_items,
+        "addresses": addresses,
+        "addresses_json": addresses_json,
     }
 
     if request.method == "POST":
-        first_name = request.POST.get("firstName")
-        last_name = request.POST.get("lastName")
-        phone = request.POST.get("phoneNumber")
-        email = request.POST.get("email")
-        address = request.POST.get("address")
-        address2 = request.POST.get("address2", "")
-        country = request.POST.get("country")
-        state = request.POST.get("state")
-        zip_code = request.POST.get("zip")
-        payment_method = request.POST.get("paymentMethod")
-        products_info = "\n".join(
-            [
-                f"{idx + 1}. {item['name']} - {item['quantity']} szt. - {item['total']} PLN"
-                for idx, item in enumerate(cart_items)
-            ]
-        )
+        # Handle address saving
+        if request.user.is_authenticated and request.POST.get('save_address'):
+            try:
+                if Address.objects.filter(user=request.user).count() < 2:
+                    Address.objects.create(
+                        user=request.user,
+                        name=f"Address {Address.objects.filter(user=request.user).count() + 1}",
+                        street=request.POST.get('address'),
+                        postal_code=request.POST.get('zip'),
+                        city=request.POST.get('city'),
+                        country=request.POST.get('country'),
+                        state=request.POST.get('state'),
+                        phone_number=request.POST.get('phoneNumber'),
+                        address2=request.POST.get('address2', '')
+                    )
+                    messages.success(request, "New address saved successfully!")
+            except ValidationError as e:
+                messages.error(request, e.messages[0])
 
-        message_body = f"""
-        New order from BioMarket Store:
-
-        First Name: {first_name}
-        Last Name: {last_name}
-        Contact Number: {phone}
-        Email: {email}
-        Address: {address}
-        Address 2: {address2}
-        Country: {country}
-        State: {state}
-        Zip: {zip_code}
-        Payment method: {payment_method}
-
-        Oreder details:
-        \n{products_info}
-
-        Oder value: {sum(item["total"] for item in cart_items):.2f} PLN
-        """
-
-        send_mail(
-            subject="Nowe zamówienie",
-            message=message_body,
-            from_email=settings.EMAIL_HOST_USER,
-            recipient_list=["biopotato@wp.pl"],
-            fail_silently=False,
-        )
-
+        # Clear cart and redirect
         request.session["cart"] = {}
-
         return redirect("product_list")
 
-    return render(request, "payment.html", context=context)
+    # Always return response for GET requests
+    return render(request, "payment.html", context)
 
 
 def increment_quantity(request, product_id):
