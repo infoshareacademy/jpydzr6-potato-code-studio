@@ -1,16 +1,23 @@
 {% extends 'base.html' %}
+{% load static %}
 {% block title %}Quiz Result{% endblock %}
 
 {% block content %}
+<script src="{% static 'js/mini_quiz.js' %"></script>
 <div class="container mt-5">
     <div class="card p-4 mt-4 shadow-lg text-center mx-auto">
         <h1 class="mb-3">🎉 Quiz Completed! 🎉</h1>
         <p class="fs-4"><strong>Your final score:</strong> <span class="text-success">{{ score }}</span></p>
 
         <div class="mt-4">
-            <a href="{% url 'mini_quiz_bio' %}" class="btn btn-primary">🔄 Retry Quiz</a>
+            <a href="{% url 'mini_quiz_bio' %}" id="retryBtn" class="btn btn-primary">🔄 Retry Quiz</a>
             <a href="/" class="btn btn-secondary">🏠 Return Home</a>
         </div>
     </div>
 </div>
+
+{% block extra_js %}
+<script src="{% static 'js/mini_quiz.js' %}"></script>
+{% endblock %}
+
 {% endblock %}

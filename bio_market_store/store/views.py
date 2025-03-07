@@ -282,11 +282,12 @@ def mini_quiz_bio_view(request):
                     f"❌ Incorrect! Correct answer: {correct.upper()} - {correct_answer_text}",
                 )
 
-            # ✅ Stay on the same question (don't increment index)
             return render(
                 request,
                 "mini_quiz_bio.html",
-                {"form": form, "question": question, "score": score},
+                {"form": form,
+                 "question": question,
+                 "score": score,}
             )
 
         elif "next" in request.POST:
