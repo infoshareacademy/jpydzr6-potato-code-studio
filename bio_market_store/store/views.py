@@ -341,28 +341,25 @@ def empty_cart(request):
         del request.session["cart"]
     return redirect("product_list")
 
-
+@login_required
 def payment(request):
     cart = request.session.get("cart", {})
-
     cart_items = []
     cart_total = 0
     total_items = 0
 
+    # Process cart items
     for product_id, item in cart.items():
         total = float(item["price"]) * item["quantity"]
         cart_total += total
         total_items += item["quantity"]
-
-        cart_items.append(
-            {
-                "id": product_id,
-                "name": item["name"],
-                "price": float(item["price"]),
-                "quantity": item["quantity"],
-                "total": total,
-            }
-        )
+        cart_items.append({
+            "id": product_id,
+            "name": item["name"],
+            "price": float(item["price"]),
+            "quantity": item["quantity"],
+            "total": total,
+        })
 
     context = {
         "cart_items": cart_items,
@@ -375,49 +372,78 @@ def payment(request):
         last_name = request.POST.get("lastName")
         phone = request.POST.get("phoneNumber")
         email = request.POST.get("email")
-        address = request.POST.get("address")
+        street = request.POST.get("address")
         address2 = request.POST.get("address2", "")
         country = request.POST.get("country")
         state = request.POST.get("state")
         zip_code = request.POST.get("zip")
         payment_method = request.POST.get("paymentMethod")
+
+        # Update user profile and address for authenticated users
+        if request.user.is_authenticated:
+            try:
+                # Update user's name
+                user = request.user
+                user.first_name = first_name
+                user.last_name = last_name
+                user.save()
+
+                # Create or update address
+                full_street = f"{street}, {address2}" if address2 else street
+                address, created = Address.objects.get_or_create(user=user)
+                address.street = full_street
+                address.postal_code = zip_code
+                address.city = state
+                address.phone_number = phone
+                address.save()
+
+            except Exception as e:
+                logger.error(f"Error updating user profile/address: {str(e)}")
+                messages.error(request, "Error saving address information. Please try again.")
+                return render(request, "payment.html", context=context)
+
+        # Prepare email content
         products_info = "\n".join(
-            [
-                f"{idx + 1}. {item['name']} - {item['quantity']} szt. - {item['total']} PLN"
-                for idx, item in enumerate(cart_items)
-            ]
+            [f"{idx + 1}. {item['name']} - {item['quantity']} szt. - {item['total']:.2f} PLN"
+             for idx, item in enumerate(cart_items)]
         )
 
         message_body = f"""
-        New order from BioMarket Store:
+        New order from BioPotato Store:
+        {'-' * 40}
+        Customer: {first_name} {last_name}
+        Contact: {phone} | {email}
 
-        First Name: {first_name}
-        Last Name: {last_name}
-        Contact Number: {phone}
-        Email: {email}
-        Address: {address}
-        Address 2: {address2}
-        Country: {country}
-        State: {state}
-        Zip: {zip_code}
-        Payment method: {payment_method}
+        Billing Address:
+        {street}
+        {address2 + ', ' if address2 else ''}
+        {zip_code} {state}
+        {country}
 
-        Oreder details:
-        \n{products_info}
+        Payment Method: {payment_method}
 
-        Oder value: {sum(item["total"] for item in cart_items):.2f} PLN
+        Order Details:
+        {products_info}
+
+        Total Order Value: {cart_total:.2f} PLN
         """
 
-        send_mail(
-            subject="Nowe zamówienie",
-            message=message_body,
-            from_email=settings.EMAIL_HOST_USER,
-            recipient_list=["biopotato@wp.pl"],
-            fail_silently=False,
-        )
+        # Send confirmation email
+        try:
+            send_mail(
+                subject="New Order - BioPotato",
+                message=message_body,
+                from_email=settings.DEFAULT_FROM_EMAIL,
+                recipient_list=[settings.ADMIN_EMAIL, email],
+                fail_silently=False,
+            )
+        except Exception as e:
+            logger.error(f"Error sending email: {str(e)}")
+            messages.warning(request, "Order processed, but confirmation email failed to send.")
 
+        # Clear cart and redirect
         request.session["cart"] = {}
-
+        messages.success(request, "Order completed successfully! Thank you for your purchase.")
         return redirect("product_list")
 
     return render(request, "payment.html", context=context)
