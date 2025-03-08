@@ -31,6 +31,7 @@ class Address(models.Model):
     postal_code = models.CharField(max_length=20)
     city = models.CharField(max_length=100)
     phone_number = models.CharField(max_length=10)
+    state = models.CharField(max_length=50)
     user = models.OneToOneField(
         UserProfile,
         on_delete=models.CASCADE,

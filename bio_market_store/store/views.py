@@ -368,35 +368,23 @@ def payment(request):
     }
 
     if request.method == "POST":
-        first_name = request.POST.get("firstName")
-        last_name = request.POST.get("lastName")
-        phone = request.POST.get("phoneNumber")
-        email = request.POST.get("email")
-        street = request.POST.get("address")
-        address2 = request.POST.get("address2", "")
-        country = request.POST.get("country")
+        street = request.POST.get("street")
+        postal_code = request.POST.get("postal_code")
+        city = request.POST.get("city")
+        phone_number = request.POST.get("phone_number")
         state = request.POST.get("state")
-        zip_code = request.POST.get("zip")
         payment_method = request.POST.get("paymentMethod")
 
         # Update user profile and address for authenticated users
         if request.user.is_authenticated:
             try:
-                # Update user's name
-                user = request.user
-                user.first_name = first_name
-                user.last_name = last_name
-                user.save()
-
-                # Create or update address
-                full_street = f"{street}, {address2}" if address2 else street
-                address, created = Address.objects.get_or_create(user=user)
-                address.street = full_street
-                address.postal_code = zip_code
-                address.city = state
-                address.phone_number = phone
+                address, created = Address.objects.get_or_create(user=request.user)
+                address.street = street
+                address.postal_code = postal_code
+                address.city = city
+                address.phone_number = phone_number
+                address.state = state
                 address.save()
-
             except Exception as e:
                 logger.error(f"Error updating user profile/address: {str(e)}")
                 messages.error(request, "Error saving address information. Please try again.")
@@ -411,14 +399,13 @@ def payment(request):
         message_body = f"""
         New order from BioPotato Store:
         {'-' * 40}
-        Customer: {first_name} {last_name}
-        Contact: {phone} | {email}
+        Customer: {UserProfile}
+        Contact: {phone_number}
 
         Billing Address:
         {street}
-        {address2 + ', ' if address2 else ''}
-        {zip_code} {state}
-        {country}
+        {state}
+        
 
         Payment Method: {payment_method}
 
@@ -434,7 +421,7 @@ def payment(request):
                 subject="New Order - BioPotato",
                 message=message_body,
                 from_email=settings.DEFAULT_FROM_EMAIL,
-                recipient_list=[settings.ADMIN_EMAIL, email],
+                recipient_list=[settings.ADMIN_EMAIL],
                 fail_silently=False,
             )
         except Exception as e:
