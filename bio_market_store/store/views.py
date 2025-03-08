@@ -347,65 +347,61 @@ def payment(request):
     cart_items = []
     cart_total = 0
     total_items = 0
+    user_profile = request.user
+    address, created = Address.objects.get_or_create(user=request.user)
 
     # Process cart items
     for product_id, item in cart.items():
         total = float(item["price"]) * item["quantity"]
         cart_total += total
         total_items += item["quantity"]
-        cart_items.append({
-            "id": product_id,
-            "name": item["name"],
-            "price": float(item["price"]),
-            "quantity": item["quantity"],
-            "total": total,
-        })
+        cart_items.append(
+            {
+                "id": product_id,
+                "name": item["name"],
+                "price": float(item["price"]),
+                "quantity": item["quantity"],
+                "total": total,
+            }
+        )
 
     context = {
         "cart_items": cart_items,
         "cart_total": cart_total,
         "total_items": total_items,
+        "user_profile": user_profile,
+        "address": address,
     }
 
     if request.method == "POST":
-        street = request.POST.get("street")
-        postal_code = request.POST.get("postal_code")
-        city = request.POST.get("city")
-        phone_number = request.POST.get("phone_number")
-        state = request.POST.get("state")
         payment_method = request.POST.get("paymentMethod")
-
-        # Update user profile and address for authenticated users
-        if request.user.is_authenticated:
-            try:
-                address, created = Address.objects.get_or_create(user=request.user)
-                address.street = street
-                address.postal_code = postal_code
-                address.city = city
-                address.phone_number = phone_number
-                address.state = state
-                address.save()
-            except Exception as e:
-                logger.error(f"Error updating user profile/address: {str(e)}")
-                messages.error(request, "Error saving address information. Please try again.")
-                return render(request, "payment.html", context=context)
+        try:
+            address.save()
+        except Exception as e:
+            logger.error(f"Error updating user profile/address: {str(e)}")
+            messages.error(
+                request, "Error saving address information. Please try again."
+            )
+            return render(request, "payment.html", context=context)
 
         # Prepare email content
         products_info = "\n".join(
-            [f"{idx + 1}. {item['name']} - {item['quantity']} szt. - {item['total']:.2f} PLN"
-             for idx, item in enumerate(cart_items)]
+            [
+                f"{idx + 1}. {item['name']} - {item['quantity']} szt. - {item['total']:.2f} PLN"
+                for idx, item in enumerate(cart_items)
+            ]
         )
 
         message_body = f"""
         New order from BioPotato Store:
-        {'-' * 40}
-        Customer: {UserProfile}
-        Contact: {phone_number}
+        {"-" * 40}
+        Customer: {user_profile.first_name}, {user_profile.last_name}
+        Contact: {address.phone_number}
 
         Billing Address:
-        {street}
-        {state}
-        
+        {address.street}
+        {address.state}
+
 
         Payment Method: {payment_method}
 
@@ -426,11 +422,15 @@ def payment(request):
             )
         except Exception as e:
             logger.error(f"Error sending email: {str(e)}")
-            messages.warning(request, "Order processed, but confirmation email failed to send.")
+            messages.warning(
+                request, "Order processed, but confirmation email failed to send."
+            )
 
         # Clear cart and redirect
         request.session["cart"] = {}
-        messages.success(request, "Order completed successfully! Thank you for your purchase.")
+        messages.success(
+            request, "Order completed successfully! Thank you for your purchase."
+        )
         return redirect("product_list")
 
     return render(request, "payment.html", context=context)
