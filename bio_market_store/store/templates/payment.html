@@ -4,13 +4,9 @@
 <link rel="canonical" href="https://getbootstrap.com/docs/5.3/examples/checkout/">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
           integrity="..." crossorigin="anonymous">
-
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@docsearch/css@3">
-<link href="/docs/5.3/dist/css/bootstrap.min.css" rel="stylesheet"
-      integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
 {% endblock %}
 {% block content %}
-<body class="bg-body-tertiary">
 
 <div class="container">
     <a href="{% url 'cover_page' %}" class="d-flex align-items-center mb-3 link-dark text-decoration-none">
@@ -19,18 +15,12 @@
                 <path d="M 24.962891 1.0546875 A 1.0001 1.0001 0 0 0 24.384766 1.2636719 L 1.3847656 19.210938 A 1.0005659 1.0005659 0 0 0 2.6152344 20.789062 L 4 19.708984 L 4 46 A 1.0001 1.0001 0 0 0 5 47 L 18.832031 47 A 1.0001 1.0001 0 0 0 19.158203 47 L 30.832031 47 A 1.0001 1.0001 0 0 0 31.158203 47 L 45 47 A 1.0001 1.0001 0 0 0 46 46 L 46 19.708984 L 47.384766 20.789062 A 1.0005657 1.0005657 0 1 0 48.615234 19.210938 L 41 13.269531 L 41 6 L 35 6 L 35 8.5859375 L 25.615234 1.2636719 A 1.0001 1.0001 0 0 0 24.962891 1.0546875 z M 25 3.3222656 L 44 18.148438 L 44 45 L 32 45 L 32 26 L 18 26 L 18 45 L 6 45 L 6 18.148438 L 25 3.3222656 z M 37 8 L 39 8 L 39 11.708984 L 37 10.146484 L 37 8 z M 20 28 L 30 28 L 30 45 L 20 45 L 20 28 z"></path>
             </svg>
         </button>
-
     </a>
-
     <main>
         <div class="py-5 text-center">
-
         </div>
-
         <div class="row g-5 justify-content-end">
-
             <div class="col-md-5 col-lg-4 cart-container">
-
                 <h4 class="d-flex justify-content-between align-items-center mb-3">
                     <span class="text-primary">Your cart</span>
                     <span class="badge bg-primary rounded-pill">{{ total_items }}</span>
@@ -42,7 +32,6 @@
                             <h6 class="my-0">{{ forloop.counter }}. {{ item.name }}</h6>
                         </div>
                         <span class="text-body-secondary">{{ item.total|floatformat:2 }} PLN</span>
-
                         {% endfor %}
                     <li class="list-group-item d-flex justify-content-between text-end">
                         <strong class="text-end">Total (PLN)</strong>
@@ -51,10 +40,7 @@
                 </ul>
             </div>
 
-
             <div class="col-md-7 col-lg-8">
-
-
                 <h4 class="mb-3">Billing address</h4>
                 <form class="needs-validation" method="POST" action="{% url 'payment' %}">
                     {% csrf_token %}
@@ -207,11 +193,9 @@
 {% block extra_js %}
 <script src="{% static 'js/states.js' %}"></script>
 <script src="/docs/5.3/assets/js/color-modes.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js" integrity="..."
-            crossorigin="anonymous"></script>
-<script src="/docs/5.3/dist/js/bootstrap.bundle.min.js"
-        integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
-        crossorigin="anonymous"></script>
+<script
+  src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+  integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
+  crossorigin="anonymous"
+></script>
 {% endblock %}
-</body>
-
