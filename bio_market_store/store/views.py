@@ -375,14 +375,33 @@ def payment(request):
 
     if request.method == "POST":
         payment_method = request.POST.get("paymentMethod")
-        try:
+        same_address = request.POST.get("same_address")
+
+        first_name = request.POST.get("firstName")
+        last_name = request.POST.get("lastName")
+        email = request.POST.get("email")
+        street = request.POST.get("address")
+        postal_code = request.POST.get("zip")
+        state = request.POST.get("state")
+        city = request.POST.get("city")
+        phone_number = request.POST.get("phoneNumber")
+        # address2 = request.POST.get("address2", "")
+        # country = request.POST.get("country")
+
+        if same_address:
+            # user profile data
+            user_profile.first_name = first_name
+            user_profile.last_name = last_name
+            user_profile.email = email
+            # address data
+            address.street = street
+            address.postal_code = postal_code
+            address.state = state
+            address.city = city
+            address.phone_number = phone_number
+
+            user_profile.save()
             address.save()
-        except Exception as e:
-            logger.error(f"Error updating user profile/address: {str(e)}")
-            messages.error(
-                request, "Error saving address information. Please try again."
-            )
-            return render(request, "payment.html", context=context)
 
         # Prepare email content
         products_info = "\n".join(

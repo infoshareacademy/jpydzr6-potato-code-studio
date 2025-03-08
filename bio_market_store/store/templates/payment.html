@@ -97,6 +97,13 @@
                                 Please enter your shipping address.
                             </div>
                         </div>
+                        <div class="col-12">
+                            <label for="address" class="form-label">City</label>
+                            <input type="text" class="form-control" id="city" name="city" value="{{ address.city }}" required>
+                            <div class="invalid-feedback">
+                                Please enter your shipping address.
+                            </div>
+                        </div>
                         {% comment %} <div class="col-12">
                             <label for="address2" class="form-label">Address 2 (Optional)</label>
                             <input type="text" class="form-control" id="address2" name="address2">
@@ -111,15 +118,15 @@
                                 Please select a valid country.
                             </div>
                         </div> {% endcomment %}
-                        {% comment %} <div class="col-md-4">
-                            <label for="state" class="form-label">Voivodeship</label>
+                        <div class="col-md-4">
+                            <label for="state" class="form-label">State</label>
                             <select class="form-select" id="state" name="state" required>
                                 <option value="">Choose...</option>
                             </select>
                             <div class="invalid-feedback">
                                 Please provide a valid state.
                             </div>
-                        </div> {% endcomment %}
+                        </div>
                         <div class="col-md-3">
                             <label for="zip" class="form-label">Zip</label>
                             <input type="text" class="form-control" id="zip" name="zip" value="{{ address.postal_code }}" required>
@@ -130,7 +137,7 @@
                     </div>
                     <hr class="my-4">
                     <div class="form-check">
-                        <input type="checkbox" class="form-check-input" id="same-address">
+                        <input type="checkbox" class="form-check-input" id="same-address" name="same_address">
                         <label class="form-check-label" for="same-address">
                             Shipping address is the same as my billing address
                         </label>
