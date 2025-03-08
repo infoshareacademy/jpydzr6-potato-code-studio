@@ -9,6 +9,8 @@ from .models import UserProfile, Address, Product, MiniQuizBio
 from .forms import UserProfileForm, AddressForm, MiniQuizBioForm, UserPasswordChangeForm
 from django.core.mail import send_mail
 from django.conf import settings
+from django.contrib.auth.password_validation import validate_password
+from django.core.exceptions import ValidationError
 
 # import json
 import logging
@@ -118,20 +120,35 @@ def register_view(request):
         username = request.POST.get("username")
         email = request.POST.get("email")
         password = request.POST.get("password")
+        confirm_password = request.POST.get("confirm_password")
+        role = request.POST.get("role")
 
         if UserProfile.objects.filter(username=username).exists():
             messages.error(request, "Username already exists")
             return redirect("register")
 
-        new_user = UserProfile.objects.create_user(
-            username=username, email=email, password=password
-        )
-        new_user.save()
+        if password != confirm_password:
+            messages.error(request, "Passwords do not match")
+            return redirect("register")
 
-        messages.success(
-            request,
-            "You have been registered",
-        )
+        try:
+            validate_password(password)
+
+            new_user = UserProfile.objects.create(
+                username=username, email=email, role=role
+            )
+            new_user.set_password(password)
+            new_user.save()
+
+            messages.success(
+                request,
+                "You have been registered",
+            )
+        except ValidationError as e:
+            for error in e.messages:
+                messages.error(request, error)
+            return redirect("register")
+
     return render(request, "register_page.html")
 
 
