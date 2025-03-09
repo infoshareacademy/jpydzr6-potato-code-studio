@@ -12,6 +12,7 @@ from .views import (
     user_profile_personal_info,
     user_profile_address,
     user_profile_password,
+    user_profile_delete_user,
     mini_quiz_bio_view,
     quiz_result_view,
     add_product,
@@ -36,19 +37,28 @@ urlpatterns = [
     ),
     path("profile/address", user_profile_address, name="user_profile_address"),
     path("profile/password", user_profile_password, name="user_profile_password"),
+    path("profile/password", user_profile_password, name="user_profile_password"),
+    path("profile/delete", user_profile_delete_user, name="user_profile_delete_user"),
     path("add/", add_product, name="add"),
     path("product_list/", product_list, name="product_list"),
     path("about/", about_us, name="about-page"),
     path("contact", contact_us, name="contact-page"),
     path("quiz/", mini_quiz_bio_view, name="mini_quiz_bio"),
     path("quiz/result/", quiz_result_view, name="quiz_result"),
-    path('add_to_cart/<int:product_id>/', add_to_cart, name='add_to_cart'),
-    path('empty_cart/', empty_cart, name='empty_cart'),
-    path('payment/', payment, name='payment'),
-    path('increment_quantity/<int:product_id>/', increment_quantity, name='increment_quantity'),
-    path('decrement_quantity/<int:product_id>/', decrement_quantity, name='decrement_quantity'),
+    path("add_to_cart/<int:product_id>/", add_to_cart, name="add_to_cart"),
+    path("empty_cart/", empty_cart, name="empty_cart"),
+    path("payment/", payment, name="payment"),
+    path(
+        "increment_quantity/<int:product_id>/",
+        increment_quantity,
+        name="increment_quantity",
+    ),
+    path(
+        "decrement_quantity/<int:product_id>/",
+        decrement_quantity,
+        name="decrement_quantity",
+    ),
 ]
 
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
-

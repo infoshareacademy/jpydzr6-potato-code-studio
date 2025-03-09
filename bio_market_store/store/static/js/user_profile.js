@@ -19,3 +19,32 @@ document.addEventListener("DOMContentLoaded", () => {
         }, 3000);
     }
 });
+
+
+document.addEventListener("DOMContentLoaded", () => {
+    const togglePassword1 = document.getElementById("togglePassword1");
+    const password = document.getElementById("confirm-delete-password");
+
+    const toggleVisibility = (inputField, icon) => {
+      if (inputField.type === "confirm-delete-password") {
+        inputField.type = "text";
+        icon.classList.remove("fa-eye");
+        icon.classList.add("fa-eye-slash");
+      } else {
+        inputField.type = "confirm-delete-password";
+        icon.classList.remove("fa-eye-slash");
+        icon.classList.add("fa-eye");
+      }
+    }
+
+    togglePassword1.addEventListener("click", () => {
+        toggleVisibility(password, togglePassword1)
+    })
+})
+
+
+const toggleDeleteButton = () => {
+    const inputPasswordField = document.getElementById("confirm-delete-password")
+    const deleteButton = document.getElementById("delete-button")
+    deleteButton.disabled = inputPasswordField.value.trim() === ""
+}
