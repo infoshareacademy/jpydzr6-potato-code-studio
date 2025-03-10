@@ -1,5 +1,6 @@
 from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout, update_session_auth_hash
+from django.contrib.auth.hashers import check_password
 from django.contrib.auth.forms import PasswordChangeForm
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
@@ -268,6 +269,39 @@ def user_profile_password(request):
 
     password_form = UserPasswordChangeForm(request.user)
     return render(request, "user_profile.html", {"password_form": password_form})
+
+
+@login_required
+def user_profile_delete_user(request):
+    if "delete_attempts" not in request.session:
+        request.session["delete_attempts"] = 0
+
+    if request.method == "POST":
+        input_password = request.POST.get("confirm-delete-password")
+        user = request.user
+
+        print("POST data:", request.POST)
+        if check_password(input_password, user.password):
+            user.delete()
+            logout(request)
+            messages.success(request, "Your account has been deleted successully!")
+            request.session.pop("delete_attempts", None)
+            return redirect("cover_page")
+        else:
+            request.session["delete_attempts"] += 1
+            messages.error(
+                request,
+                f"Incorrect password. Attempt {request.session['delete_attempts']} of 3.",
+            )
+
+            if request.session["delete_attempts"] >= 3:
+                logout(request)
+                messages.error(
+                    request, "Too many failed attempts. You have been logged out."
+                )
+                request.session.pop("delete_attempts", None)
+                return redirect("cover_page")
+    return redirect("user_profile")
 
 
 def mini_quiz_bio_view(request):
