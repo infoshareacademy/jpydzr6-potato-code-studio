@@ -42,6 +42,22 @@ class Address(models.Model):
         return f"{self.street}, {self.city}, {self.postal_code}, {self.phone_number}"
 
 
+class AddressOptional(models.Model):
+    street = models.CharField(max_length=255)
+    postal_code = models.CharField(max_length=20)
+    city = models.CharField(max_length=100)
+    phone_number = models.CharField(max_length=10)
+    state = models.CharField(max_length=50)
+    user = models.OneToOneField(
+        UserProfile,
+        on_delete=models.CASCADE,
+        related_name="address_optional",
+    )
+
+    def __str__(self):
+        return f"{self.street}, {self.city}, {self.postal_code}, {self.phone_number}"
+
+
 class Product(models.Model):
     user = models.ForeignKey(
         settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="products"

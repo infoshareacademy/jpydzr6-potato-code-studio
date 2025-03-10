@@ -5,7 +5,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.utils.timezone import now
 from django.http import JsonResponse
-from .models import UserProfile, Address, Product, MiniQuizBio
+from .models import UserProfile, Address, Product, MiniQuizBio, AddressOptional
 from .forms import UserProfileForm, AddressForm, MiniQuizBioForm, UserPasswordChangeForm
 from django.core.mail import send_mail
 from django.conf import settings
@@ -166,7 +166,9 @@ def logout_view(request):
 def user_profile(request):
     user_profile_form = UserProfileForm(instance=request.user)
     address, created = Address.objects.get_or_create(user=request.user)
+    address_optional, created = AddressOptional.objects.get_or_create(user=request.user)
     address_form = AddressForm(instance=address)
+    address_optional_form = AddressForm(instance=address_optional)
     password_form = PasswordChangeForm(request.user)
 
     return render(
@@ -175,6 +177,7 @@ def user_profile(request):
         {
             "user_profile_form": user_profile_form,
             "address_form": address_form,
+            "address_optional_form": address_optional_form,
             "password_form": password_form,
         },
     )
@@ -230,6 +233,22 @@ def user_profile_address(request):
         "user_profile.html",
         {"address_form": address_form},
     )
+
+
+@login_required
+def user_profile_address_optional(request):
+    address_optional, _ = AddressOptional.objects.get_or_create(user=request.user)
+
+    if request.method == "POST":
+        form = AddressForm(request.POST, instance=address_optional)
+        if form.is_valid():
+            form.save()
+            messages.success(request, "Alternative address updated successfully.")
+            return redirect("user_profile")  # Przekierowanie z powrotem do profilu
+    else:
+        form = AddressForm(instance=address_optional)
+
+    return render(request, "user_profile.html", {"address_optional_form": form})
 
 
 @login_required
@@ -349,6 +368,7 @@ def payment(request):
     total_items = 0
     user_profile = request.user
     address, created = Address.objects.get_or_create(user=request.user)
+    address_optional, created = AddressOptional.objects.get_or_create(user=request.user)
 
     # Process cart items
     for product_id, item in cart.items():
@@ -371,37 +391,25 @@ def payment(request):
         "total_items": total_items,
         "user_profile": user_profile,
         "address": address,
+        "address_optional": address_optional,
     }
 
     if request.method == "POST":
         payment_method = request.POST.get("paymentMethod")
-        same_address = request.POST.get("same_address")
+        same_address = request.POST.get("same_address", "0")
+        selected_address = address if same_address == "1" else address_optional
 
-        first_name = request.POST.get("firstName")
-        last_name = request.POST.get("lastName")
-        email = request.POST.get("email")
-        street = request.POST.get("address")
-        postal_code = request.POST.get("zip")
-        state = request.POST.get("state")
-        city = request.POST.get("city")
-        phone_number = request.POST.get("phoneNumber")
-        # address2 = request.POST.get("address2", "")
-        # country = request.POST.get("country")
+        user_profile.first_name = request.POST.get("firstName")
+        user_profile.last_name = request.POST.get("lastName")
+        user_profile.email = request.POST.get("email")
+        user_profile.save()
 
-        if same_address:
-            # user profile data
-            user_profile.first_name = first_name
-            user_profile.last_name = last_name
-            user_profile.email = email
-            # address data
-            address.street = street
-            address.postal_code = postal_code
-            address.state = state
-            address.city = city
-            address.phone_number = phone_number
-
-            user_profile.save()
-            address.save()
+        selected_address.street = request.POST.get("address")
+        selected_address.postal_code = request.POST.get("zip")
+        selected_address.state = request.POST.get("state")
+        selected_address.city = request.POST.get("city")
+        selected_address.phone_number = request.POST.get("phoneNumber")
+        selected_address.save()
 
         # Prepare email content
         products_info = "\n".join(
@@ -415,12 +423,10 @@ def payment(request):
         New order from BioPotato Store:
         {"-" * 40}
         Customer: {user_profile.first_name}, {user_profile.last_name}
-        Contact: {address.phone_number}
+        Contact: {selected_address.phone_number}
 
-        Billing Address:
-        {address.street}
-        {address.state}
-
+        Shipping Address:
+        {selected_address.street}, {selected_address.city}, {selected_address.state}, {selected_address.postal_code}
 
         Payment Method: {payment_method}
 

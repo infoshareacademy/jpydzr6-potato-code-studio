@@ -94,45 +94,38 @@
 
             <!-- Address Tab -->
             <div class="tab-pane fade" id="address">
-              <form method="POST" action="{% url 'user_profile_address' %}">
-                {% csrf_token %}
-                <h5>Address</h5>
-                <div class="row mb-3">
-                  <div class="col-md-12 d-flex flex-column">
-                    <label class="form-label"
-                      >{{ address_form.street.label_tag }}</label
-                    >
-                    {{ address_form.street }}
-                  </div>
-                  <div class="col-md-12 d-flex flex-column">
-                    <label class="form-label"
-                      >{{ address_form.postal_code.label_tag }}</label
-                    >
-                    {{ address_form.postal_code }}
-                  </div>
-                </div>
-                <div class="row mb-3">
-                  <div class="col-md-12 d-flex flex-column">
-                    <label class="form-label"
-                      >{{ address_form.city.label_tag }}</label
-                    >
-                    {{ address_form.city }}
-                  </div>
-                  <div class="col-md-12 d-flex flex-column">
-                    <label class="form-label"
-                      >{{ address_form.phone_number.label_tag }}</label
-                    >
-                    {{ address_form.phone_number }}
-                  </div>
-                </div>
-                <button
-                  type="submit"
-                  class="btn btn-success w-100"
-                  onclick="success_alert('Address updated successfully')"
-                >
-                  Save <i class="fas fa-save"></i>
-                </button>
-              </form>
+              <!-- Wybór adresu -->
+              <div class="mb-3">
+                <label for="address-type" class="form-label">Choose Address</label>
+                <select class="form-select" id="address-type" onchange="toggleAddressForm()">
+                  <option value="main" selected>Billing Address</option>
+                  <option value="optional">Alternative Address</option>
+                </select>
+              </div>
+
+              <!-- Formularz adresu głównego -->
+              <div id="billing-address">
+                <form method="POST" action="{% url 'user_profile_address' %}">
+                  {% csrf_token %}
+                  <h5>Billing Address</h5>
+                  {{ address_form.as_p }}
+                  <button type="submit" class="btn btn-success w-100">
+                    Save <i class="fas fa-save"></i>
+                  </button>
+                </form>
+              </div>
+
+              <!-- Formularz alternatywnego adresu (ukryty domyślnie) -->
+              <div id="alternative-address" style="display: none;">
+                <form method="POST" action="{% url 'user_profile_address_optional' %}">
+                  {% csrf_token %}
+                  <h5>Alternative Address</h5>
+                  {{ address_optional_form.as_p }}
+                  <button type="submit" class="btn btn-success w-100">
+                    Save <i class="fas fa-save"></i>
+                  </button>
+                </form>
+              </div>
             </div>
 
             <!-- Security Settings Tab -->
@@ -207,4 +200,11 @@
   crossorigin="anonymous"
 ></script>
 <script src="{% static 'js/user_profile.js' %}"></script>
+<script>
+  function toggleAddressForm() {
+    let selected = document.getElementById("address-type").value;
+    document.getElementById("billing-address").style.display = selected === "main" ? "block" : "none";
+    document.getElementById("alternative-address").style.display = selected === "optional" ? "block" : "none";
+  }
+</script>
 {% endblock %}

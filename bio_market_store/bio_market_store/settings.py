@@ -147,7 +147,7 @@ STATICFILES_DIRS = [BASE_DIR / "store" / "static"]
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 # ---mail-config---
 
-
+ADMIN_EMAIL = "biopotato@wp.pl"
 EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
 EMAIL_HOST = "smtp.wp.pl"
 EMAIL_PORT = 465
