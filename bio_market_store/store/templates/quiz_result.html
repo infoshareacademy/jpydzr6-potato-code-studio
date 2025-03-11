@@ -10,7 +10,7 @@
         <p class="fs-4"><strong>Your final score:</strong> <span class="text-success">{{ score }}</span></p>
 
         <div class="mt-4">
-            <a href="{% url 'mini_quiz_bio' %}" id="retryBtn" class="btn btn-primary">🔄 Retry Quiz</a>
+            <a href="{% url 'mini_quiz_bio' %}?retry=true" id="retryBtn" class="btn btn-primary">🔄 Retry Quiz</a>
             <a href="/" class="btn btn-secondary">🏠 Return Home</a>
         </div>
     </div>

@@ -254,14 +254,23 @@ def user_profile_password(request):
 
 
 def mini_quiz_bio_view(request):
-    questions = list(MiniQuizBio.objects.all().order_by('?')[:5])
+    if "retry" in request.GET:
+        request.session.clear()
+
+    if "questions" not in request.session:
+        questions = list(MiniQuizBio.objects.all().order_by('?')[:5])
+        request.session["questions"] = [q.id for q in questions]
+        request.session["question_index"] = 0
+        request.session["score"] = 0
+
     index = request.session.get("question_index", 0)
     score = request.session.get("score", 0)
 
-    if index >= len(questions):
+    if index >= len(request.session["questions"]):
         return redirect("quiz_result")
 
-    question = questions[index]
+    question_id = request.session["questions"][index]
+    question = MiniQuizBio.objects.get(id=question_id)
     choices = question.get_choices()
 
     if request.method == "POST":
@@ -282,30 +291,41 @@ def mini_quiz_bio_view(request):
                     f"❌ Incorrect! Correct answer: {correct.upper()} - {correct_answer_text}",
                 )
 
-            return render(
-                request,
-                "mini_quiz_bio.html",
-                {"form": form,
-                 "question": question,
-                 "score": score,}
-            )
+            request.session["current_question_id"] = question_id
+            return redirect("mini_quiz_bio")
 
         elif "next" in request.POST:
-            request.session["question_index"] = index + 1
+            request.session["question_index"] += 1
+            if "current_question_id" in request.session:
+                del request.session["current_question_id"]
             return redirect("mini_quiz_bio")
 
         elif "finish" in request.POST:
             return redirect("quiz_result")
-
     else:
+
+        if "current_question_id" in request.session:
+            stored_id = request.session["current_question_id"]
+            if stored_id == question_id:
+                question = MiniQuizBio.objects.get(id=stored_id)
+
         form = MiniQuizBioForm(question=question)
+
+    total_questions = len(request.session["questions"])
+    progress = (index / total_questions) * 100
 
     return render(
         request,
         "mini_quiz_bio.html",
-        {"form": form, "question": question, "score": score},
+        {
+            "form": form,
+            "question": question,
+            "score": score,
+            "progress": progress,
+            "current_index": index + 1,
+            "total_questions": total_questions,
+        },
     )
-
 
 def quiz_result_view(request):
     score = request.session.get("score", 0)
