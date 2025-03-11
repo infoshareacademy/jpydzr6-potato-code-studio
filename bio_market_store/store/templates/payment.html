@@ -69,76 +69,143 @@
                             </div>
                         </div>
                         <div class="col-12">
-                            <label for="username" class="form-label">Phone number</label>
-                            <div class="input-group has-validation">
-                                <span class="input-group-text">+48</span>
-                                <input type="text" class="form-control" id="username" name="phoneNumber" value="{{ address.phone_number }}"  required>
-                                <div class="invalid-feedback">
-                                    Your phone number is required.
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-12">
                             <label for="email" class="form-label">Email</label>
                             <input type="email" class="form-control" id="email" name="email" value="{{ user_profile.email }}" required>
                             <div class="invalid-feedback">
                                 Please enter a valid email address for shipping updates.
                             </div>
                         </div>
-                        <div class="col-12">
-                            <label for="address" class="form-label">Address</label>
-                            <input type="text" class="form-control" id="address" name="address" value="{{ address.street }}" required>
-                            <div class="invalid-feedback">
-                                Please enter your shipping address.
-                            </div>
-                        </div>
-                        <div class="col-12">
-                            <label for="city" class="form-label">City</label>
-                            <input type="text" class="form-control" id="city" name="city" value="{{ address.city }}" required>
-                            <div class="invalid-feedback">
-                                Please enter your city.
-                            </div>
-                        </div>
-                        <div class="col-md-4">
-                            <label for="state" class="form-label">State</label>
-                            <select class="form-select" id="state" name="state" required>
-                                <option value="">Choose...</option>
-                                <option value="dolnoslaskie">Dolnośląskie</option>
-                                <option value="kujawsko-pomorskie">Kujawsko-pomorskie</option>
-                                <option value="lubelskie">Lubelskie</option>
-                                <option value="lubuskie">Lubuskie</option>
-                                <option value="lodzkie">Łódzkie</option>
-                                <option value="malopolskie">Małopolskie</option>
-                                <option value="mazowieckie">Mazowieckie</option>
-                                <option value="opolskie">Opolskie</option>
-                                <option value="podkarpackie">Podkarpackie</option>
-                                <option value="podlaskie">Podlaskie</option>
-                                <option value="pomorskie">Pomorskie</option>
-                                <option value="slaskie">Śląskie</option>
-                                <option value="swietokrzyskie">Świętokrzyskie</option>
-                                <option value="warminsko-mazurskie">Warmińsko-mazurskie</option>
-                                <option value="wielkopolskie">Wielkopolskie</option>
-                                <option value="zachodniopomorskie">Zachodniopomorskie</option>
+
+                        <!-- New Address Selection Dropdown -->
+                        <div class="col-12 mb-3">
+                            <label for="address-type" class="form-label">Select Address</label>
+                            <select class="form-select" id="address-type" name="address_type" onchange="toggleAddressForm()">
+                                <option value="billing" selected>Billing Address</option>
+                                <option value="alternative">Alternative Address</option>
                             </select>
-                            <div class="invalid-feedback">
-                                Please provide a valid state.
+                        </div>
+
+                        <!-- Billing Address Form (default visible) -->
+                        <div id="billing-address-form">
+                            <div class="col-12">
+                                <label for="phone-billing" class="form-label">Phone number</label>
+                                <div class="input-group has-validation">
+                                    <span class="input-group-text">+48</span>
+                                    <input type="text" class="form-control" id="phone-billing" name="phoneNumber" value="{{ address.phone_number }}" required>
+                                    <div class="invalid-feedback">
+                                        Your phone number is required.
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-12">
+                                <label for="address-billing" class="form-label">Address</label>
+                                <input type="text" class="form-control" id="address-billing" name="address" value="{{ address.street }}" required>
+                                <div class="invalid-feedback">
+                                    Please enter your shipping address.
+                                </div>
+                            </div>
+                            <div class="col-12">
+                                <label for="city-billing" class="form-label">City</label>
+                                <input type="text" class="form-control" id="city-billing" name="city" value="{{ address.city }}" required>
+                                <div class="invalid-feedback">
+                                    Please enter your city.
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <label for="state-billing" class="form-label">State</label>
+                                <select class="form-select" id="state-billing" name="state" required>
+                                    <option value="">Choose...</option>
+                                    <option value="dolnoslaskie" {% if address.state == 'dolnoslaskie' %}selected{% endif %}>Dolnośląskie</option>
+                                    <option value="kujawsko-pomorskie" {% if address.state == 'kujawsko-pomorskie' %}selected{% endif %}>Kujawsko-pomorskie</option>
+                                    <option value="lubelskie" {% if address.state == 'lubelskie' %}selected{% endif %}>Lubelskie</option>
+                                    <option value="lubuskie" {% if address.state == 'lubuskie' %}selected{% endif %}>Lubuskie</option>
+                                    <option value="lodzkie" {% if address.state == 'lodzkie' %}selected{% endif %}>Łódzkie</option>
+                                    <option value="malopolskie" {% if address.state == 'malopolskie' %}selected{% endif %}>Małopolskie</option>
+                                    <option value="mazowieckie" {% if address.state == 'mazowieckie' %}selected{% endif %}>Mazowieckie</option>
+                                    <option value="opolskie" {% if address.state == 'opolskie' %}selected{% endif %}>Opolskie</option>
+                                    <option value="podkarpackie" {% if address.state == 'podkarpackie' %}selected{% endif %}>Podkarpackie</option>
+                                    <option value="podlaskie" {% if address.state == 'podlaskie' %}selected{% endif %}>Podlaskie</option>
+                                    <option value="pomorskie" {% if address.state == 'pomorskie' %}selected{% endif %}>Pomorskie</option>
+                                    <option value="slaskie" {% if address.state == 'slaskie' %}selected{% endif %}>Śląskie</option>
+                                    <option value="swietokrzyskie" {% if address.state == 'swietokrzyskie' %}selected{% endif %}>Świętokrzyskie</option>
+                                    <option value="warminsko-mazurskie" {% if address.state == 'warminsko-mazurskie' %}selected{% endif %}>Warmińsko-mazurskie</option>
+                                    <option value="wielkopolskie" {% if address.state == 'wielkopolskie' %}selected{% endif %}>Wielkopolskie</option>
+                                    <option value="zachodniopomorskie" {% if address.state == 'zachodniopomorskie' %}selected{% endif %}>Zachodniopomorskie</option>
+                                </select>
+                                <div class="invalid-feedback">
+                                    Please provide a valid state.
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <label for="zip-billing" class="form-label">Zip</label>
+                                <input type="text" class="form-control" id="zip-billing" name="zip" value="{{ address.postal_code }}" required>
+                                <div class="invalid-feedback">
+                                    Zip code required.
+                                </div>
                             </div>
                         </div>
-                        <div class="col-md-3">
-                            <label for="zip" class="form-label">Zip</label>
-                            <input type="text" class="form-control" id="zip" name="zip" value="{{ address.postal_code }}" required>
-                            <div class="invalid-feedback">
-                                Zip code required.
+
+                        <!-- Alternative Address Form (initially hidden) -->
+                        <div id="alternative-address-form" style="display: none;">
+                            <div class="col-12">
+                                <label for="phone-alternative" class="form-label">Phone number</label>
+                                <div class="input-group has-validation">
+                                    <span class="input-group-text">+48</span>
+                                    <input type="text" class="form-control" id="phone-alternative" name="phoneNumber_alt" value="{{ address_optional.phone_number }}">
+                                    <div class="invalid-feedback">
+                                        Your phone number is required.
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-12">
+                                <label for="address-alternative" class="form-label">Address</label>
+                                <input type="text" class="form-control" id="address-alternative" name="address_alt" value="{{ address_optional.street }}">
+                                <div class="invalid-feedback">
+                                    Please enter your shipping address.
+                                </div>
+                            </div>
+                            <div class="col-12">
+                                <label for="city-alternative" class="form-label">City</label>
+                                <input type="text" class="form-control" id="city-alternative" name="city_alt" value="{{ address_optional.city }}">
+                                <div class="invalid-feedback">
+                                    Please enter your city.
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <label for="state-alternative" class="form-label">State</label>
+                                <select class="form-select" id="state-alternative" name="state_alt">
+                                    <option value="">Choose...</option>
+                                    <option value="dolnoslaskie" {% if address_optional.state == 'dolnoslaskie' %}selected{% endif %}>Dolnośląskie</option>
+                                    <option value="kujawsko-pomorskie" {% if address_optional.state == 'kujawsko-pomorskie' %}selected{% endif %}>Kujawsko-pomorskie</option>
+                                    <option value="lubelskie" {% if address_optional.state == 'lubelskie' %}selected{% endif %}>Lubelskie</option>
+                                    <option value="lubuskie" {% if address_optional.state == 'lubuskie' %}selected{% endif %}>Lubuskie</option>
+                                    <option value="lodzkie" {% if address_optional.state == 'lodzkie' %}selected{% endif %}>Łódzkie</option>
+                                    <option value="malopolskie" {% if address_optional.state == 'malopolskie' %}selected{% endif %}>Małopolskie</option>
+                                    <option value="mazowieckie" {% if address_optional.state == 'mazowieckie' %}selected{% endif %}>Mazowieckie</option>
+                                    <option value="opolskie" {% if address_optional.state == 'opolskie' %}selected{% endif %}>Opolskie</option>
+                                    <option value="podkarpackie" {% if address_optional.state == 'podkarpackie' %}selected{% endif %}>Podkarpackie</option>
+                                    <option value="podlaskie" {% if address_optional.state == 'podlaskie' %}selected{% endif %}>Podlaskie</option>
+                                    <option value="pomorskie" {% if address_optional.state == 'pomorskie' %}selected{% endif %}>Pomorskie</option>
+                                    <option value="slaskie" {% if address_optional.state == 'slaskie' %}selected{% endif %}>Śląskie</option>
+                                    <option value="swietokrzyskie" {% if address_optional.state == 'swietokrzyskie' %}selected{% endif %}>Świętokrzyskie</option>
+                                    <option value="warminsko-mazurskie" {% if address_optional.state == 'warminsko-mazurskie' %}selected{% endif %}>Warmińsko-mazurskie</option>
+                                    <option value="wielkopolskie" {% if address_optional.state == 'wielkopolskie' %}selected{% endif %}>Wielkopolskie</option>
+                                    <option value="zachodniopomorskie" {% if address_optional.state == 'zachodniopomorskie' %}selected{% endif %}>Zachodniopomorskie</option>
+                                </select>
+                                <div class="invalid-feedback">
+                                    Please provide a valid state.
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <label for="zip-alternative" class="form-label">Zip</label>
+                                <input type="text" class="form-control" id="zip-alternative" name="zip_alt" value="{{ address_optional.postal_code }}">
+                                <div class="invalid-feedback">
+                                    Zip code required.
+                                </div>
                             </div>
                         </div>
                     </div>
-                    <hr class="my-4">
-                    <div class="form-check">
-                        <input type="checkbox" class="form-check-input" id="same-address" name="same_address">
-                        <label class="form-check-label" for="same-address">
-                            Shipping address is the same as my billing address
-                        </label>
-                    </div>
+
                     <hr class="my-4">
                     <h4 class="mb-3">Payment</h4>
                     <div class="my-3">
@@ -223,5 +290,48 @@
       }, false)
     })
   })()
+
+  // Function to toggle between address forms
+  function toggleAddressForm() {
+    const addressType = document.getElementById('address-type').value;
+    const billingForm = document.getElementById('billing-address-form');
+    const alternativeForm = document.getElementById('alternative-address-form');
+
+    if (addressType === 'billing') {
+      billingForm.style.display = 'block';
+      alternativeForm.style.display = 'none';
+
+      // Make billing address fields required
+      document.getElementById('phone-billing').required = true;
+      document.getElementById('address-billing').required = true;
+      document.getElementById('city-billing').required = true;
+      document.getElementById('state-billing').required = true;
+      document.getElementById('zip-billing').required = true;
+
+      // Make alternative address fields not required
+      document.getElementById('phone-alternative').required = false;
+      document.getElementById('address-alternative').required = false;
+      document.getElementById('city-alternative').required = false;
+      document.getElementById('state-alternative').required = false;
+      document.getElementById('zip-alternative').required = false;
+    } else {
+      billingForm.style.display = 'none';
+      alternativeForm.style.display = 'block';
+
+      // Make billing address fields not required
+      document.getElementById('phone-billing').required = false;
+      document.getElementById('address-billing').required = false;
+      document.getElementById('city-billing').required = false;
+      document.getElementById('state-billing').required = false;
+      document.getElementById('zip-billing').required = false;
+
+      // Make alternative address fields required
+      document.getElementById('phone-alternative').required = true;
+      document.getElementById('address-alternative').required = true;
+      document.getElementById('city-alternative').required = true;
+      document.getElementById('state-alternative').required = true;
+      document.getElementById('zip-alternative').required = true;
+    }
+  }
 </script>
 {% endblock %}

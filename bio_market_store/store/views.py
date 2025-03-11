@@ -360,6 +360,7 @@ def empty_cart(request):
         del request.session["cart"]
     return redirect("product_list")
 
+
 @login_required
 def payment(request):
     cart = request.session.get("cart", {})
@@ -396,20 +397,37 @@ def payment(request):
 
     if request.method == "POST":
         payment_method = request.POST.get("paymentMethod")
-        same_address = request.POST.get("same_address", "0")
-        selected_address = address if same_address == "1" else address_optional
+        address_type = request.POST.get("address_type", "billing")
 
+        # Update user profile information
         user_profile.first_name = request.POST.get("firstName")
         user_profile.last_name = request.POST.get("lastName")
         user_profile.email = request.POST.get("email")
         user_profile.save()
 
-        selected_address.street = request.POST.get("address")
-        selected_address.postal_code = request.POST.get("zip")
-        selected_address.state = request.POST.get("state")
-        selected_address.city = request.POST.get("city")
-        selected_address.phone_number = request.POST.get("phoneNumber")
-        selected_address.save()
+        # Update the appropriate address based on selection
+        if address_type == "billing":
+            # Update billing address
+            address.street = request.POST.get("address")
+            address.postal_code = request.POST.get("zip")
+            address.state = request.POST.get("state")
+            address.city = request.POST.get("city")
+            address.phone_number = request.POST.get("phoneNumber")
+            address.save()
+
+            # Use billing address for shipping
+            selected_address = address
+        else:
+            # Update alternative address
+            address_optional.street = request.POST.get("address_alt")
+            address_optional.postal_code = request.POST.get("zip_alt")
+            address_optional.state = request.POST.get("state_alt")
+            address_optional.city = request.POST.get("city_alt")
+            address_optional.phone_number = request.POST.get("phoneNumber_alt")
+            address_optional.save()
+
+            # Use alternative address for shipping
+            selected_address = address_optional
 
         # Prepare email content
         products_info = "\n".join(
@@ -422,7 +440,7 @@ def payment(request):
         message_body = f"""
         New order from BioPotato Store:
         {"-" * 40}
-        Customer: {user_profile.first_name}, {user_profile.last_name}
+        Customer: {user_profile.first_name} {user_profile.last_name}
         Contact: {selected_address.phone_number}
 
         Shipping Address:
