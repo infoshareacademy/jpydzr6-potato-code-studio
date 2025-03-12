@@ -62,7 +62,7 @@ body {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    transition: top 0.3s ease; /* Animacja ukrywania navbaru */
+
 }
 
 .navbar-brand {
