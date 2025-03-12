@@ -21,56 +21,43 @@
 
 <body>
 <nav class="navbar navbar-expand-md fixed-top nav-masthead">
-    <a class="navbar-brand" href="/">BioPotato</a>
-    <div class="collapse navbar-collapse justify-content-end" id="navbarNavAltMarkup">
-        <div class="navbar-nav">
-            <a class="nav-link" id="storeNav" href="{% url 'product_list' %}">Store</a>
-            {% if user.is_authenticated %}
-            <a class="nav-link" href="{% url 'add' %}">Add Product</a>
-            {% endif %}
-            <a class="nav-link" id="contactNav" href="{% url 'contact-page'%}">Contact</a>
-            <a class="nav-link" id="aboutNav" href="{% url 'about-page' %}">About</a>
-            {% comment %}
-            <div class="container mt-3"> {% endcomment %}
-                {% if user.is_authenticated and request.path == '/product_list/' %}
-                <button type="button" class="btn-cart" data-bs-toggle="modal" data-bs-target="#cartModal">
-                    <i class="fas fa-shopping-cart"></i> Cart
-                    <span>
-                      {{ total_items|default:"" }}
-                  </span>
-                </button>
-                {% endif %}
-
-                <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button"
-                       data-bs-toggle="dropdown" aria-expanded="false">
-                        <i class="fas fa-user"></i>
-                    </a>
-                    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
-                        {% if user.is_authenticated %}
-                        <li><a class="dropdown-item" href="{% url 'user_profile' %}">Profile</a></li>
-                        <li><a class="dropdown-item" href="{% url 'mini_quiz_bio' %}">Mini Quiz Bio</a></li>
-                        <li>
-                            <hr class="dropdown-divider">
-                        </li>
-                        <li><a class="dropdown-item" href="{% url 'logout' %}">Logout</a></li>
-                        {% else %}
-                        <li>
-                            <a href="{% url 'login' %}" type="submit" class="dropdown-item">Sign In</a>
-                        </li>
-                        <li>
-                            <hr class="dropdown-divider">
-                        </li>
-                        <li>
-                            <a href="{% url 'register' %}" type="submit" class="dropdown-item">Sign Up</a>
-                        </li>
-                        {% endif %}
-                    </ul>
-                </li>
-            </div>
-        </div>
+  <a class="navbar-brand" href="/">BioPotato</a>
+  <div class="collapse navbar-collapse justify-content-end" id="navbarNavAltMarkup">
+    <div class="navbar-nav">
+      <a class="nav-link" id="storeNav" href="{% url 'product_list' %}">Store</a>
+      {% if user.is_authenticated %}
+      <a class="nav-link" href="{% url 'add' %}">Add Product</a>
+      {% endif %}
+      <a class="nav-link" id="contactNav" href="{% url 'contact-page' %}">Contact</a>
+      <a class="nav-link" id="aboutNav" href="{% url 'about-page' %}">About</a>
+      {% if user.is_authenticated and request.path == '/product_list/' %}
+      <button type="button" class="btn-cart" data-bs-toggle="modal" data-bs-target="#cartModal">
+        <i class="fas fa-shopping-cart"></i> Cart
+        <span>{{ total_items|default:"" }}</span>
+      </button>
+      {% endif %}
+      <li class="nav-item dropdown">
+        <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button"
+           data-bs-toggle="dropdown" aria-expanded="false">
+          <i class="fas fa-user"></i>
+        </a>
+        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
+          {% if user.is_authenticated %}
+          <li><a class="dropdown-item" href="{% url 'user_profile' %}">Profile</a></li>
+          <li><a class="dropdown-item" href="{% url 'mini_quiz_bio' %}">Mini Quiz Bio</a></li>
+          <li><hr class="dropdown-divider"></li>
+          <li><a class="dropdown-item" href="{% url 'logout' %}">Logout</a></li>
+          {% else %}
+          <li><a class="dropdown-item" href="{% url 'login' %}">Sign In</a></li>
+          <li><hr class="dropdown-divider"></li>
+          <li><a class="dropdown-item" href="{% url 'register' %}">Sign Up</a></li>
+          {% endif %}
+        </ul>
+      </li>
     </div>
+  </div>
 </nav>
+
 
 <div class="modal fade" id="cartModal" tabindex="-1" aria-labelledby="cartModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-lg">
