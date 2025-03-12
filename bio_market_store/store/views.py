@@ -9,7 +9,7 @@ from .models import UserProfile, Address, Product, MiniQuizBio
 from .forms import UserProfileForm, AddressForm, MiniQuizBioForm, UserPasswordChangeForm
 from django.core.mail import send_mail
 from django.conf import settings
-
+from django.http import HttpResponse
 # import json
 import logging
 
@@ -56,6 +56,7 @@ def add_product(request):
         exp_date = request.POST.get("exp_date")
         amount = request.POST.get("amount")
         producer = request.POST.get("producer")
+        description = request.POST.get("description")
         image = request.FILES.get("image")
 
         if not all(
@@ -68,6 +69,7 @@ def add_product(request):
                 exp_date,
                 amount,
                 producer,
+                description,
                 image,
             ]
         ):
@@ -84,6 +86,7 @@ def add_product(request):
             amount=amount,
             producer=producer,
             image=image,
+            description=description,
             created_at=now(),
         )
 
@@ -477,3 +480,10 @@ def decrement_quantity(request, product_id):
             }
         )
     return JsonResponse({"error": "Product not found in cart"}, status=404)
+
+def single_product(request, product_id):
+    try:
+        product = Product.objects.get(id=product_id)
+        return render(request, 'single_product.html', {'product': product})
+    except Product.DoesNotExist:
+        return HttpResponse(f"Product with id {product_id} does not exist.")

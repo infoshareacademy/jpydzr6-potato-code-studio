@@ -80,6 +80,7 @@ class ProductForm(forms.ModelForm):
             "exp_date",
             "amount",
             "producer",
+            "description",
             "image",
         ]
 

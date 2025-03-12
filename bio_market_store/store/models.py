@@ -54,6 +54,7 @@ class Product(models.Model):
     exp_date = models.DateField(null=True, blank=True)
     amount = models.IntegerField()
     producer = models.CharField(max_length=255)
+    description = models.CharField(max_length=1000)
     image = models.ImageField(upload_to="png")
 
     def __str__(self):

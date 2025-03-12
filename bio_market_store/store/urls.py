@@ -21,6 +21,7 @@ from .views import (
     payment,
     increment_quantity,
     decrement_quantity,
+    single_product,
 )
 
 urlpatterns = [
@@ -47,6 +48,7 @@ urlpatterns = [
     path('payment/', payment, name='payment'),
     path('increment_quantity/<int:product_id>/', increment_quantity, name='increment_quantity'),
     path('decrement_quantity/<int:product_id>/', decrement_quantity, name='decrement_quantity'),
+    path("product/<int:product_id>/", single_product, name='single_product'),
 ]
 
 if settings.DEBUG:
