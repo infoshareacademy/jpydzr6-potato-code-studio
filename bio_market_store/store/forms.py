@@ -6,6 +6,7 @@ from django.contrib.auth.forms import (
 )
 from django.contrib.auth import get_user_model
 from .models import UserProfile, Product, Address, MiniQuizBio
+from .utils.user_registration import ROLE_CHOICES
 import json
 from django.conf import settings
 
@@ -13,17 +14,50 @@ from django.conf import settings
 class UserCreatingForm(UserCreationForm):
     class Meta(UserCreationForm.Meta):
         model = UserProfile
-        fields = ("username", "email", "password1", "password2")
+        fields = ("username", "email", "password1", "password2", "role")
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.fields["password1"].widget = forms.PasswordInput()
-        self.fields["password2"].widget = forms.PasswordInput()
+
+        if settings.DEBUG:
+            self.fields["role"].choices.append(("contributor", "Contributor"))
+
+        self.fields["username"].widget = forms.TextInput(
+            attrs={"class": "form-control", "placeholder": "Enter username"}
+        )
+        self.fields["email"].widget = forms.EmailInput(
+            attrs={"class": "form-control", "placeholder": "Enter email"}
+        )
+        self.fields["password1"].widget = forms.PasswordInput(
+            attrs={
+                "class": "form-control",
+                "placeholder": "Enter password",
+                "id": "password",
+            }
+        )
+        self.fields["password2"].widget = forms.PasswordInput(
+            attrs={
+                "class": "form-control",
+                "placeholder": "Confirm password",
+                "id": "confirm_password",
+            }
+        )
+        self.fields["role"].widget = forms.Select(
+            attrs={"class": "form-control", "placeholder": "Select role"},
+            choices=ROLE_CHOICES,
+        )
 
 
 class UserAuthenticationForm(AuthenticationForm):
     username = forms.CharField(
-        max_length=254, widget=forms.TextInput(attrs={"autofocus": True})
+        max_length=254,
+        widget=forms.TextInput(
+            attrs={
+                "autofocus": True,
+                "class": "form-control",
+                "placeholder": "Enter username",
+            }
+        ),
     )
     password = forms.CharField(
         label="Password", strip=False, widget=forms.PasswordInput
@@ -40,10 +74,24 @@ class UserProfileForm(forms.ModelForm):
         model = UserProfile
         fields = ["first_name", "last_name", "email", "role"]
         widgets = {
-            "first_name": forms.TextInput(attrs={"class": "form-control"}),
-            "last_name": forms.TextInput(attrs={"class": "form-control"}),
-            "email": forms.EmailInput(attrs={"class": "form-control"}),
-            "role": forms.Select(attrs={"class": "form-control"}),
+            "first_name": forms.TextInput(
+                attrs={
+                    "class": "form-control",
+                    "placeholder": "Enter your first name",
+                }
+            ),
+            "last_name": forms.TextInput(
+                attrs={
+                    "class": "form-control",
+                    "placeholder": "Enter your last name",
+                }
+            ),
+            "email": forms.EmailInput(
+                attrs={"class": "form-control", "placeholder": "Enter your email"}
+            ),
+            "role": forms.Select(
+                attrs={"class": "form-control", "placeholder": "Select your role"}
+            ),
         }
 
 
@@ -52,11 +100,22 @@ class AddressForm(forms.ModelForm):
         model = Address
         fields = ["street", "postal_code", "city", "phone_number"]
         widgets = {
-            "street": forms.TextInput(attrs={"class": "form-control"}),
-            "postal_code": forms.TextInput(attrs={"class": "form-control"}),
-            "city": forms.TextInput(attrs={"class": "form-control"}),
+            "street": forms.TextInput(
+                attrs={"class": "form-control", "placeholder": "Enter street name"}
+            ),
+            "postal_code": forms.TextInput(
+                attrs={"class": "form-control", "placeholder": "Enter postal code"}
+            ),
+            "city": forms.TextInput(
+                attrs={"class": "form-control", "placeholder": "Enter city"}
+            ),
             "phone_number": forms.TextInput(
-                attrs={"class": "form-control", "type": "tel", "pattern": "[0-9]{9}"}
+                attrs={
+                    "class": "form-control",
+                    "type": "tel",
+                    "pattern": "[0-9]{9}",
+                    "placeholder": "Enter phone number",
+                }
             ),
         }
 

@@ -22,10 +22,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
 document.addEventListener("DOMContentLoaded", () => {
-    const togglePassword1 = document.getElementById("togglePassword1");
+    const togglePassword1 = document.getElementById("togglepassword1");
     const password = document.getElementById("password");
 
-    const togglePassword2 = document.getElementById("togglePassword2");
+    const togglePassword2 = document.getElementById("togglepassword2");
     const confirm_password = document.getElementById("confirm_password");
 
     const toggleVisibility = (inputField, icon) => {

@@ -7,7 +7,14 @@ from django.contrib.auth.decorators import login_required
 from django.utils.timezone import now
 from django.http import JsonResponse
 from .models import UserProfile, Address, Product, MiniQuizBio
-from .forms import UserProfileForm, AddressForm, MiniQuizBioForm, UserPasswordChangeForm
+from .forms import (
+    UserProfileForm,
+    AddressForm,
+    MiniQuizBioForm,
+    UserPasswordChangeForm,
+    UserCreatingForm,
+    UserAuthenticationForm,
+)
 from django.core.mail import send_mail
 from django.conf import settings
 from django.contrib.auth.password_validation import validate_password
@@ -118,59 +125,49 @@ def product_list(request):
 
 def register_view(request):
     if request.method == "POST":
-        username = request.POST.get("username")
-        email = request.POST.get("email")
-        password = request.POST.get("password")
-        confirm_password = request.POST.get("confirm_password")
-        role = request.POST.get("role")
-
-        if UserProfile.objects.filter(username=username).exists():
-            messages.error(request, "Username already exists")
-            return redirect("register")
-
-        if password != confirm_password:
-            messages.error(request, "Passwords do not match")
-            return redirect("register")
-
-        try:
-            validate_password(password)
-
-            new_user = UserProfile.objects.create(
-                username=username, email=email, role=role
-            )
-            new_user.set_password(password)
-            new_user.save()
-
+        register_form = UserCreatingForm(request.POST)
+        if register_form.is_valid():
+            user = register_form.save()
+            user.set_password(register_form.cleaned_data["password1"])
+            user.save()
             messages.success(
                 request,
                 "You have been registered",
             )
-        except ValidationError as e:
-            for error in e.messages:
+        else:
+            for error in register_form.errors.values():
                 messages.error(request, error)
-            return redirect("register")
 
-    return render(request, "register_page.html")
+    else:
+        register_form = UserCreatingForm()
+
+    return render(request, "register_page.html", {"register_form": register_form})
 
 
 def login_view(request):
     if request.method == "POST":
-        username = request.POST.get("username")
-        password = request.POST.get("password")
+        login_form = UserAuthenticationForm(request, data=request.POST)
 
-        user = authenticate(request, username=username, password=password)
+        if login_form.is_valid():
+            username = login_form.cleaned_data["username"]
+            password = login_form.cleaned_data["password"]
+            user = authenticate(request, username=username, password=password)
+            if user is not None:
+                login(request, user)
+                messages.success(
+                    request,
+                    "You have been logged in",
+                )
+                return redirect("product_list")
+            else:
+                messages.error(request, "Invalid username or password.")
+        else:
+            messages.error(request, "Please correct the errors below.")
 
-        if user is None:
-            messages.error(request, "Invalid username or password.")
-            return render(request, "login_page.html")
+    else:
+        login_form = UserAuthenticationForm()
 
-        login(request, user)
-        messages.success(
-            request,
-            "You have been logged in",
-        )
-
-    return render(request, "login_page.html")
+    return render(request, "login_page.html", {"login_form": login_form})
 
 
 def logout_view(request):
