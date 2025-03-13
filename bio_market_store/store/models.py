@@ -30,7 +30,7 @@ class Address(models.Model):
     street = models.CharField(max_length=255)
     postal_code = models.CharField(max_length=20)
     city = models.CharField(max_length=100)
-    phone_number = models.CharField(max_length=10)
+    phone_number = models.CharField(max_length=9)
     state = models.CharField(max_length=50)
     user = models.OneToOneField(
         UserProfile,
@@ -46,7 +46,7 @@ class AddressOptional(models.Model):
     street = models.CharField(max_length=255)
     postal_code = models.CharField(max_length=20)
     city = models.CharField(max_length=100)
-    phone_number = models.CharField(max_length=10)
+    phone_number = models.CharField(max_length=9)
     state = models.CharField(max_length=50)
     user = models.OneToOneField(
         UserProfile,

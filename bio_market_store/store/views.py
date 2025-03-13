@@ -37,7 +37,7 @@ def contact_us(request):
             subject,
             full_message,
             settings.DEFAULT_FROM_EMAIL,
-            ["biopotato@wp.pl"],
+            recipient_list=[settings.EMAIL_HOST_USER],
         )
 
         return render(request, "contact.html", {"success": True})
@@ -460,8 +460,7 @@ def payment(request):
                 subject="New Order - BioPotato",
                 message=message_body,
                 from_email=settings.DEFAULT_FROM_EMAIL,
-                recipient_list=[settings.ADMIN_EMAIL],
-                fail_silently=False,
+                recipient_list=[settings.EMAIL_HOST_USER],
             )
         except Exception as e:
             logger.error(f"Error sending email: {str(e)}")
