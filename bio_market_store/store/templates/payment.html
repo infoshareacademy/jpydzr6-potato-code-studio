@@ -111,36 +111,38 @@
                                     Please enter your city.
                                 </div>
                             </div>
-                            <div class="col-md-4">
-                                <label for="state-billing" class="form-label">State</label>
-                                <select class="form-select" id="state-billing" name="state" required>
-                                    <option value="">Choose...</option>
-                                    <option value="dolnoslaskie" {% if address.state == 'dolnoslaskie' %}selected{% endif %}>Dolnośląskie</option>
-                                    <option value="kujawsko-pomorskie" {% if address.state == 'kujawsko-pomorskie' %}selected{% endif %}>Kujawsko-pomorskie</option>
-                                    <option value="lubelskie" {% if address.state == 'lubelskie' %}selected{% endif %}>Lubelskie</option>
-                                    <option value="lubuskie" {% if address.state == 'lubuskie' %}selected{% endif %}>Lubuskie</option>
-                                    <option value="lodzkie" {% if address.state == 'lodzkie' %}selected{% endif %}>Łódzkie</option>
-                                    <option value="malopolskie" {% if address.state == 'malopolskie' %}selected{% endif %}>Małopolskie</option>
-                                    <option value="mazowieckie" {% if address.state == 'mazowieckie' %}selected{% endif %}>Mazowieckie</option>
-                                    <option value="opolskie" {% if address.state == 'opolskie' %}selected{% endif %}>Opolskie</option>
-                                    <option value="podkarpackie" {% if address.state == 'podkarpackie' %}selected{% endif %}>Podkarpackie</option>
-                                    <option value="podlaskie" {% if address.state == 'podlaskie' %}selected{% endif %}>Podlaskie</option>
-                                    <option value="pomorskie" {% if address.state == 'pomorskie' %}selected{% endif %}>Pomorskie</option>
-                                    <option value="slaskie" {% if address.state == 'slaskie' %}selected{% endif %}>Śląskie</option>
-                                    <option value="swietokrzyskie" {% if address.state == 'swietokrzyskie' %}selected{% endif %}>Świętokrzyskie</option>
-                                    <option value="warminsko-mazurskie" {% if address.state == 'warminsko-mazurskie' %}selected{% endif %}>Warmińsko-mazurskie</option>
-                                    <option value="wielkopolskie" {% if address.state == 'wielkopolskie' %}selected{% endif %}>Wielkopolskie</option>
-                                    <option value="zachodniopomorskie" {% if address.state == 'zachodniopomorskie' %}selected{% endif %}>Zachodniopomorskie</option>
-                                </select>
-                                <div class="invalid-feedback">
-                                    Please provide a valid state.
+                            <div class="row">
+                                <div class="col-md-8">
+                                    <label for="state-billing" class="form-label">State</label>
+                                    <select class="form-select" id="state-billing" name="state" required>
+                                        <option value="">Choose...</option>
+                                        <option value="dolnoslaskie" {% if address.state == 'dolnoslaskie' %}selected{% endif %}>Dolnośląskie</option>
+                                        <option value="kujawsko-pomorskie" {% if address.state == 'kujawsko-pomorskie' %}selected{% endif %}>Kujawsko-pomorskie</option>
+                                        <option value="lubelskie" {% if address.state == 'lubelskie' %}selected{% endif %}>Lubelskie</option>
+                                        <option value="lubuskie" {% if address.state == 'lubuskie' %}selected{% endif %}>Lubuskie</option>
+                                        <option value="lodzkie" {% if address.state == 'lodzkie' %}selected{% endif %}>Łódzkie</option>
+                                        <option value="malopolskie" {% if address.state == 'malopolskie' %}selected{% endif %}>Małopolskie</option>
+                                        <option value="mazowieckie" {% if address.state == 'mazowieckie' %}selected{% endif %}>Mazowieckie</option>
+                                        <option value="opolskie" {% if address.state == 'opolskie' %}selected{% endif %}>Opolskie</option>
+                                        <option value="podkarpackie" {% if address.state == 'podkarpackie' %}selected{% endif %}>Podkarpackie</option>
+                                        <option value="podlaskie" {% if address.state == 'podlaskie' %}selected{% endif %}>Podlaskie</option>
+                                        <option value="pomorskie" {% if address.state == 'pomorskie' %}selected{% endif %}>Pomorskie</option>
+                                        <option value="slaskie" {% if address.state == 'slaskie' %}selected{% endif %}>Śląskie</option>
+                                        <option value="swietokrzyskie" {% if address.state == 'swietokrzyskie' %}selected{% endif %}>Świętokrzyskie</option>
+                                        <option value="warminsko-mazurskie" {% if address.state == 'warminsko-mazurskie' %}selected{% endif %}>Warmińsko-mazurskie</option>
+                                        <option value="wielkopolskie" {% if address.state == 'wielkopolskie' %}selected{% endif %}>Wielkopolskie</option>
+                                        <option value="zachodniopomorskie" {% if address.state == 'zachodniopomorskie' %}selected{% endif %}>Zachodniopomorskie</option>
+                                    </select>
+                                    <div class="invalid-feedback">
+                                        Please provide a valid state.
+                                    </div>
                                 </div>
-                            </div>
-                            <div class="col-md-3">
-                                <label for="zip-billing" class="form-label">Zip</label>
-                                <input type="text" class="form-control" id="zip-billing" name="zip" value="{{ address.postal_code }}" required>
-                                <div class="invalid-feedback">
-                                    Zip code required.
+                                <div class="col-md-4">
+                                    <label for="zip-billing" class="form-label">Zip</label>
+                                    <input type="text" class="form-control" id="zip-billing" name="zip" value="{{ address.postal_code }}" required>
+                                    <div class="invalid-feedback">
+                                        Zip code required.
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -171,36 +173,38 @@
                                     Please enter your city.
                                 </div>
                             </div>
-                            <div class="col-md-4">
-                                <label for="state-alternative" class="form-label">State</label>
-                                <select class="form-select" id="state-alternative" name="state_alt">
-                                    <option value="">Choose...</option>
-                                    <option value="dolnoslaskie" {% if address_optional.state == 'dolnoslaskie' %}selected{% endif %}>Dolnośląskie</option>
-                                    <option value="kujawsko-pomorskie" {% if address_optional.state == 'kujawsko-pomorskie' %}selected{% endif %}>Kujawsko-pomorskie</option>
-                                    <option value="lubelskie" {% if address_optional.state == 'lubelskie' %}selected{% endif %}>Lubelskie</option>
-                                    <option value="lubuskie" {% if address_optional.state == 'lubuskie' %}selected{% endif %}>Lubuskie</option>
-                                    <option value="lodzkie" {% if address_optional.state == 'lodzkie' %}selected{% endif %}>Łódzkie</option>
-                                    <option value="malopolskie" {% if address_optional.state == 'malopolskie' %}selected{% endif %}>Małopolskie</option>
-                                    <option value="mazowieckie" {% if address_optional.state == 'mazowieckie' %}selected{% endif %}>Mazowieckie</option>
-                                    <option value="opolskie" {% if address_optional.state == 'opolskie' %}selected{% endif %}>Opolskie</option>
-                                    <option value="podkarpackie" {% if address_optional.state == 'podkarpackie' %}selected{% endif %}>Podkarpackie</option>
-                                    <option value="podlaskie" {% if address_optional.state == 'podlaskie' %}selected{% endif %}>Podlaskie</option>
-                                    <option value="pomorskie" {% if address_optional.state == 'pomorskie' %}selected{% endif %}>Pomorskie</option>
-                                    <option value="slaskie" {% if address_optional.state == 'slaskie' %}selected{% endif %}>Śląskie</option>
-                                    <option value="swietokrzyskie" {% if address_optional.state == 'swietokrzyskie' %}selected{% endif %}>Świętokrzyskie</option>
-                                    <option value="warminsko-mazurskie" {% if address_optional.state == 'warminsko-mazurskie' %}selected{% endif %}>Warmińsko-mazurskie</option>
-                                    <option value="wielkopolskie" {% if address_optional.state == 'wielkopolskie' %}selected{% endif %}>Wielkopolskie</option>
-                                    <option value="zachodniopomorskie" {% if address_optional.state == 'zachodniopomorskie' %}selected{% endif %}>Zachodniopomorskie</option>
-                                </select>
-                                <div class="invalid-feedback">
-                                    Please provide a valid state.
+                            <div class="row">
+                                <div class="col-md-8">
+                                    <label for="state-alternative" class="form-label">State</label>
+                                    <select class="form-select" id="state-alternative" name="state_alt">
+                                        <option value="">Choose...</option>
+                                        <option value="dolnoslaskie" {% if address_optional.state == 'dolnoslaskie' %}selected{% endif %}>Dolnośląskie</option>
+                                        <option value="kujawsko-pomorskie" {% if address_optional.state == 'kujawsko-pomorskie' %}selected{% endif %}>Kujawsko-pomorskie</option>
+                                        <option value="lubelskie" {% if address_optional.state == 'lubelskie' %}selected{% endif %}>Lubelskie</option>
+                                        <option value="lubuskie" {% if address_optional.state == 'lubuskie' %}selected{% endif %}>Lubuskie</option>
+                                        <option value="lodzkie" {% if address_optional.state == 'lodzkie' %}selected{% endif %}>Łódzkie</option>
+                                        <option value="malopolskie" {% if address_optional.state == 'malopolskie' %}selected{% endif %}>Małopolskie</option>
+                                        <option value="mazowieckie" {% if address_optional.state == 'mazowieckie' %}selected{% endif %}>Mazowieckie</option>
+                                        <option value="opolskie" {% if address_optional.state == 'opolskie' %}selected{% endif %}>Opolskie</option>
+                                        <option value="podkarpackie" {% if address_optional.state == 'podkarpackie' %}selected{% endif %}>Podkarpackie</option>
+                                        <option value="podlaskie" {% if address_optional.state == 'podlaskie' %}selected{% endif %}>Podlaskie</option>
+                                        <option value="pomorskie" {% if address_optional.state == 'pomorskie' %}selected{% endif %}>Pomorskie</option>
+                                        <option value="slaskie" {% if address_optional.state == 'slaskie' %}selected{% endif %}>Śląskie</option>
+                                        <option value="swietokrzyskie" {% if address_optional.state == 'swietokrzyskie' %}selected{% endif %}>Świętokrzyskie</option>
+                                        <option value="warminsko-mazurskie" {% if address_optional.state == 'warminsko-mazurskie' %}selected{% endif %}>Warmińsko-mazurskie</option>
+                                        <option value="wielkopolskie" {% if address_optional.state == 'wielkopolskie' %}selected{% endif %}>Wielkopolskie</option>
+                                        <option value="zachodniopomorskie" {% if address_optional.state == 'zachodniopomorskie' %}selected{% endif %}>Zachodniopomorskie</option>
+                                    </select>
+                                    <div class="invalid-feedback">
+                                        Please provide a valid state.
+                                    </div>
                                 </div>
-                            </div>
-                            <div class="col-md-3">
-                                <label for="zip-alternative" class="form-label">Zip</label>
-                                <input type="text" class="form-control" id="zip-alternative" name="zip_alt" value="{{ address_optional.postal_code }}">
-                                <div class="invalid-feedback">
-                                    Zip code required.
+                                <div class="col-md-4">
+                                    <label for="zip-alternative" class="form-label">Zip</label>
+                                    <input type="text" class="form-control" id="zip-alternative" name="zip_alt" value="{{ address_optional.postal_code }}">
+                                    <div class="invalid-feedback">
+                                        Zip code required.
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -272,66 +276,200 @@
 ></script>
 <script>
   // Form validation script
-  (function () {
-    'use strict'
+(function () {
+  'use strict'
 
-    // Fetch all the forms we want to apply custom Bootstrap validation styles to
-    const forms = document.querySelectorAll('.needs-validation')
+  // Fetch all the forms we want to apply custom Bootstrap validation styles to
+  const forms = document.querySelectorAll('.needs-validation')
 
-    // Loop over them and prevent submission
-    Array.from(forms).forEach(form => {
-      form.addEventListener('submit', event => {
-        if (!form.checkValidity()) {
-          event.preventDefault()
-          event.stopPropagation()
-        }
+  // Setup input validation for specific fields
+  setupNameValidation();
+  setupCardNumberValidation();
+  setupExpirationValidation();
+  setupCVVValidation();
 
-        form.classList.add('was-validated')
-      }, false)
-    })
-  })()
+  // Loop over forms and prevent submission if invalid
+  Array.from(forms).forEach(form => {
+    form.addEventListener('submit', event => {
+      if (!form.checkValidity()) {
+        event.preventDefault()
+        event.stopPropagation()
+      }
 
-  // Function to toggle between address forms
-  function toggleAddressForm() {
-    const addressType = document.getElementById('address-type').value;
-    const billingForm = document.getElementById('billing-address-form');
-    const alternativeForm = document.getElementById('alternative-address-form');
+      form.classList.add('was-validated')
+    }, false)
+  })
+})()
 
-    if (addressType === 'billing') {
-      billingForm.style.display = 'block';
-      alternativeForm.style.display = 'none';
+// Function to toggle between address forms
+function toggleAddressForm() {
+  const addressType = document.getElementById('address-type').value;
+  const billingForm = document.getElementById('billing-address-form');
+  const alternativeForm = document.getElementById('alternative-address-form');
 
-      // Make billing address fields required
-      document.getElementById('phone-billing').required = true;
-      document.getElementById('address-billing').required = true;
-      document.getElementById('city-billing').required = true;
-      document.getElementById('state-billing').required = true;
-      document.getElementById('zip-billing').required = true;
+  if (addressType === 'billing') {
+    billingForm.style.display = 'block';
+    alternativeForm.style.display = 'none';
 
-      // Make alternative address fields not required
-      document.getElementById('phone-alternative').required = false;
-      document.getElementById('address-alternative').required = false;
-      document.getElementById('city-alternative').required = false;
-      document.getElementById('state-alternative').required = false;
-      document.getElementById('zip-alternative').required = false;
-    } else {
-      billingForm.style.display = 'none';
-      alternativeForm.style.display = 'block';
+    // Make billing address fields required
+    document.getElementById('phone-billing').required = true;
+    document.getElementById('address-billing').required = true;
+    document.getElementById('city-billing').required = true;
+    document.getElementById('state-billing').required = true;
+    document.getElementById('zip-billing').required = true;
 
-      // Make billing address fields not required
-      document.getElementById('phone-billing').required = false;
-      document.getElementById('address-billing').required = false;
-      document.getElementById('city-billing').required = false;
-      document.getElementById('state-billing').required = false;
-      document.getElementById('zip-billing').required = false;
+    // Make alternative address fields not required
+    document.getElementById('phone-alternative').required = false;
+    document.getElementById('address-alternative').required = false;
+    document.getElementById('city-alternative').required = false;
+    document.getElementById('state-alternative').required = false;
+    document.getElementById('zip-alternative').required = false;
+  } else {
+    billingForm.style.display = 'none';
+    alternativeForm.style.display = 'block';
 
-      // Make alternative address fields required
-      document.getElementById('phone-alternative').required = true;
-      document.getElementById('address-alternative').required = true;
-      document.getElementById('city-alternative').required = true;
-      document.getElementById('state-alternative').required = true;
-      document.getElementById('zip-alternative').required = true;
-    }
+    // Make billing address fields not required
+    document.getElementById('phone-billing').required = false;
+    document.getElementById('address-billing').required = false;
+    document.getElementById('city-billing').required = false;
+    document.getElementById('state-billing').required = false;
+    document.getElementById('zip-billing').required = false;
+
+    // Make alternative address fields required
+    document.getElementById('phone-alternative').required = true;
+    document.getElementById('address-alternative').required = true;
+    document.getElementById('city-alternative').required = true;
+    document.getElementById('state-alternative').required = true;
+    document.getElementById('zip-alternative').required = true;
   }
+}
+
+// Function to validate name (letters and spaces only)
+function setupNameValidation() {
+  const nameField = document.getElementById('cc-name');
+
+  nameField.addEventListener('input', function(e) {
+    // Allow only letters and spaces
+    const value = e.target.value;
+    const sanitized = value.replace(/[^A-Za-z\s]/g, '');
+
+    if (value !== sanitized) {
+      e.target.value = sanitized;
+    }
+
+    // Custom validation
+    if (sanitized.trim().length === 0) {
+      nameField.setCustomValidity('Please enter a valid name');
+    } else {
+      nameField.setCustomValidity('');
+    }
+  });
+}
+
+// Function to validate credit card number (exactly 16 digits)
+function setupCardNumberValidation() {
+  const cardField = document.getElementById('cc-number');
+
+  cardField.addEventListener('input', function(e) {
+    // Allow only numbers
+    const value = e.target.value;
+    const sanitized = value.replace(/\D/g, '');
+
+    if (value !== sanitized) {
+      e.target.value = sanitized;
+    }
+
+    // Limit to 16 digits
+    if (sanitized.length > 16) {
+      e.target.value = sanitized.substring(0, 16);
+    }
+
+    // Custom validation - require exactly 16 digits
+    if (e.target.value.length !== 16) {
+      cardField.setCustomValidity('Credit card number must be exactly 16 digits');
+    } else {
+      cardField.setCustomValidity('');
+    }
+  });
+}
+
+// Function to validate expiration date (MM/YY format)
+function setupExpirationValidation() {
+  const expirationField = document.getElementById('cc-expiration');
+
+  expirationField.addEventListener('input', function(e) {
+    let value = e.target.value;
+
+    // Remove any non-digit and non-slash characters
+    value = value.replace(/[^\d\/]/g, '');
+
+    // Handle slash input
+    if (value.length === 2 && !value.includes('/') && e.inputType !== 'deleteContentBackward') {
+      value += '/';
+    }
+
+    // Enforce MM/YY format (automatically add slash)
+    if (value.length > 0 && !value.includes('/')) {
+      if (value.length > 2) {
+        value = value.substring(0, 2) + '/' + value.substring(2, 4);
+      }
+    }
+
+    // Limit to MM/YY format (maximum of 5 characters: MM/YY)
+    if (value.length > 5) {
+      value = value.substring(0, 5);
+    }
+
+    e.target.value = value;
+
+    // Custom validation
+    const pattern = /^(0[1-9]|1[0-2])\/([0-9]{2})$/;
+    if (!pattern.test(value)) {
+      expirationField.setCustomValidity('Please enter a valid expiration date (MM/YY)');
+    } else {
+      // Check if the expiration date is in the future
+      const [month, year] = value.split('/');
+      const currentDate = new Date();
+      const expiryDate = new Date();
+
+      // Add 2000 to get the full year (20YY)
+      expiryDate.setFullYear(2000 + parseInt(year, 10));
+      expiryDate.setMonth(parseInt(month, 10) - 1); // Months are 0-indexed
+
+      if (expiryDate < currentDate) {
+        expirationField.setCustomValidity('Expiration date cannot be in the past');
+      } else {
+        expirationField.setCustomValidity('');
+      }
+    }
+  });
+}
+
+// Function to validate CVV (3 digits only)
+function setupCVVValidation() {
+  const cvvField = document.getElementById('cc-cvv');
+
+  cvvField.addEventListener('input', function(e) {
+    // Allow only numbers
+    const value = e.target.value;
+    const sanitized = value.replace(/\D/g, '');
+
+    if (value !== sanitized) {
+      e.target.value = sanitized;
+    }
+
+    // Limit to 3 digits
+    if (sanitized.length > 3) {
+      e.target.value = sanitized.substring(0, 3);
+    }
+
+    // Custom validation
+    if (e.target.value.length !== 3) {
+      cvvField.setCustomValidity('CVV must be exactly 3 digits');
+    } else {
+      cvvField.setCustomValidity('');
+    }
+  });
+}
 </script>
 {% endblock %}
