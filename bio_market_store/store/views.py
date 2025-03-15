@@ -7,11 +7,13 @@ from django.utils.timezone import now
 from django.http import JsonResponse
 from .models import UserProfile, Address, Product, MiniQuizBio, AddressOptional
 from .forms import UserProfileForm, AddressForm, MiniQuizBioForm, UserPasswordChangeForm
+from .utils.states import STATES
 from django.core.mail import send_mail
 from django.conf import settings
 
 # import json
 import logging
+
 
 logger = logging.getLogger(__name__)
 
@@ -393,6 +395,7 @@ def payment(request):
         "user_profile": user_profile,
         "address": address,
         "address_optional": address_optional,
+        "states": STATES,
     }
 
     if request.method == "POST":

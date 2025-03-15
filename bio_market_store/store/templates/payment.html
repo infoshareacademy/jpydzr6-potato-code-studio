@@ -115,23 +115,9 @@
                                 <div class="col-md-8">
                                     <label for="state-billing" class="form-label">State</label>
                                     <select class="form-select" id="state-billing" name="state" required>
-                                        <option value="">Choose...</option>
-                                        <option value="dolnoslaskie" {% if address.state == 'dolnoslaskie' %}selected{% endif %}>Dolnośląskie</option>
-                                        <option value="kujawsko-pomorskie" {% if address.state == 'kujawsko-pomorskie' %}selected{% endif %}>Kujawsko-pomorskie</option>
-                                        <option value="lubelskie" {% if address.state == 'lubelskie' %}selected{% endif %}>Lubelskie</option>
-                                        <option value="lubuskie" {% if address.state == 'lubuskie' %}selected{% endif %}>Lubuskie</option>
-                                        <option value="lodzkie" {% if address.state == 'lodzkie' %}selected{% endif %}>Łódzkie</option>
-                                        <option value="malopolskie" {% if address.state == 'malopolskie' %}selected{% endif %}>Małopolskie</option>
-                                        <option value="mazowieckie" {% if address.state == 'mazowieckie' %}selected{% endif %}>Mazowieckie</option>
-                                        <option value="opolskie" {% if address.state == 'opolskie' %}selected{% endif %}>Opolskie</option>
-                                        <option value="podkarpackie" {% if address.state == 'podkarpackie' %}selected{% endif %}>Podkarpackie</option>
-                                        <option value="podlaskie" {% if address.state == 'podlaskie' %}selected{% endif %}>Podlaskie</option>
-                                        <option value="pomorskie" {% if address.state == 'pomorskie' %}selected{% endif %}>Pomorskie</option>
-                                        <option value="slaskie" {% if address.state == 'slaskie' %}selected{% endif %}>Śląskie</option>
-                                        <option value="swietokrzyskie" {% if address.state == 'swietokrzyskie' %}selected{% endif %}>Świętokrzyskie</option>
-                                        <option value="warminsko-mazurskie" {% if address.state == 'warminsko-mazurskie' %}selected{% endif %}>Warmińsko-mazurskie</option>
-                                        <option value="wielkopolskie" {% if address.state == 'wielkopolskie' %}selected{% endif %}>Wielkopolskie</option>
-                                        <option value="zachodniopomorskie" {% if address.state == 'zachodniopomorskie' %}selected{% endif %}>Zachodniopomorskie</option>
+                                        {% for state_value, state_name in states %}
+                                            <option value="{{ state_value }}" {% if address.state == state_value %}selected{% endif %}>{{ state_name }}</option>
+                                        {% endfor %}
                                     </select>
                                     <div class="invalid-feedback">
                                         Please provide a valid state.
@@ -177,23 +163,9 @@
                                 <div class="col-md-8">
                                     <label for="state-alternative" class="form-label">State</label>
                                     <select class="form-select" id="state-alternative" name="state_alt">
-                                        <option value="">Choose...</option>
-                                        <option value="dolnoslaskie" {% if address_optional.state == 'dolnoslaskie' %}selected{% endif %}>Dolnośląskie</option>
-                                        <option value="kujawsko-pomorskie" {% if address_optional.state == 'kujawsko-pomorskie' %}selected{% endif %}>Kujawsko-pomorskie</option>
-                                        <option value="lubelskie" {% if address_optional.state == 'lubelskie' %}selected{% endif %}>Lubelskie</option>
-                                        <option value="lubuskie" {% if address_optional.state == 'lubuskie' %}selected{% endif %}>Lubuskie</option>
-                                        <option value="lodzkie" {% if address_optional.state == 'lodzkie' %}selected{% endif %}>Łódzkie</option>
-                                        <option value="malopolskie" {% if address_optional.state == 'malopolskie' %}selected{% endif %}>Małopolskie</option>
-                                        <option value="mazowieckie" {% if address_optional.state == 'mazowieckie' %}selected{% endif %}>Mazowieckie</option>
-                                        <option value="opolskie" {% if address_optional.state == 'opolskie' %}selected{% endif %}>Opolskie</option>
-                                        <option value="podkarpackie" {% if address_optional.state == 'podkarpackie' %}selected{% endif %}>Podkarpackie</option>
-                                        <option value="podlaskie" {% if address_optional.state == 'podlaskie' %}selected{% endif %}>Podlaskie</option>
-                                        <option value="pomorskie" {% if address_optional.state == 'pomorskie' %}selected{% endif %}>Pomorskie</option>
-                                        <option value="slaskie" {% if address_optional.state == 'slaskie' %}selected{% endif %}>Śląskie</option>
-                                        <option value="swietokrzyskie" {% if address_optional.state == 'swietokrzyskie' %}selected{% endif %}>Świętokrzyskie</option>
-                                        <option value="warminsko-mazurskie" {% if address_optional.state == 'warminsko-mazurskie' %}selected{% endif %}>Warmińsko-mazurskie</option>
-                                        <option value="wielkopolskie" {% if address_optional.state == 'wielkopolskie' %}selected{% endif %}>Wielkopolskie</option>
-                                        <option value="zachodniopomorskie" {% if address_optional.state == 'zachodniopomorskie' %}selected{% endif %}>Zachodniopomorskie</option>
+                                        {% for state_value, state_name in states %}
+                                            <option value="{{ state_value }}" {% if address_optional.state == state_value %}selected{% endif %}>{{ state_name }}</option>
+                                        {% endfor %}
                                     </select>
                                     <div class="invalid-feedback">
                                         Please provide a valid state.
