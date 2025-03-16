@@ -1,0 +1,17 @@
+.button-group {
+    padding-bottom: 15px;
+}
+
+.container .card {
+    padding-bottom: 60px !important;
+}
+
+.button-group button {
+    margin-bottom: 10px;
+}
+
+.progress {
+    max-width: 1000px;
+    margin: auto;
+    width: 100%;
+}
