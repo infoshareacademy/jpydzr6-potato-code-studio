@@ -15,7 +15,8 @@
         {% for product in products %}
         <div class="col-md-4 mb-4 product-item">
             <div class="card shadow-sm product-card">
-                {% comment %} <div class="row g-0"> {% endcomment %}
+                {% comment %}
+                <div class="row g-0"> {% endcomment %}
                     <img src="{{ product.image.url }}" class="product-img" alt="{{ product.name }}">
                     <div class="card-body">
                         <h3 class="card-title">{{ product.name_tag }}</h3>
@@ -34,9 +35,12 @@
                         <button class="btn btn-secondary btn" disabled>Added to Cart</button>
                         {% else %}
                         <a href="{% url 'add_to_cart' product.id %}" class="btn btn-success btn">Add to Cart</a>
+                        <a href="{% url 'single_product' product.id %}" class="btn btn-primary">View Details</a>
                         {% endif %}
                     </div>
-                {% comment %} </div> {% endcomment %}
+                    {% comment %}
+                </div>
+                {% endcomment %}
             </div>
         </div>
         {% endfor %}
