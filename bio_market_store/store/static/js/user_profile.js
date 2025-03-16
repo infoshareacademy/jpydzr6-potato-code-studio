@@ -42,6 +42,41 @@ document.addEventListener("DOMContentLoaded", () => {
     })
 })
 
+document.addEventListener("DOMContentLoaded", () => {
+    const togglePassword = document.getElementById("toggle_old_password");
+    const old_password = document.getElementById("id_old_password");
+
+    const togglePassword1 = document.getElementById("toggle_new_password");
+    const new_password = document.getElementById("id_new_password1");
+
+    const togglePassword2 = document.getElementById("toggle_new_password2");
+    const confirm_password = document.getElementById("id_new_password2");
+
+    const toggleVisibility = (inputField, icon) => {
+      if (inputField.type === "password") {
+        inputField.type = "text";
+        icon.classList.remove("fa-eye");
+        icon.classList.add("fa-eye-slash");
+      } else {
+        inputField.type = "password";
+        icon.classList.remove("fa-eye-slash");
+        icon.classList.add("fa-eye");
+      }
+    }
+
+    togglePassword.addEventListener("click", () => {
+        toggleVisibility(old_password, togglePassword)
+    })
+
+    togglePassword1.addEventListener("click", () => {
+        toggleVisibility(new_password, togglePassword1)
+    })
+
+    togglePassword2.addEventListener("click", () => {
+        toggleVisibility(confirm_password, togglePassword2)
+    })
+})
+
 
 const toggleDeleteButton = () => {
     const inputPasswordField = document.getElementById("confirm-delete-password")

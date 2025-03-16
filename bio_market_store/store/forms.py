@@ -49,19 +49,21 @@ class UserCreatingForm(UserCreationForm):
 
 
 class UserAuthenticationForm(AuthenticationForm):
-    username = forms.CharField(
-        max_length=254,
-        widget=forms.TextInput(
-            attrs={
-                "autofocus": True,
-                "class": "form-control",
-                "placeholder": "Enter username",
-            }
-        ),
-    )
-    password = forms.CharField(
-        label="Password", strip=False, widget=forms.PasswordInput
-    )
+    class Meta:
+        fields = ["username", "password"]
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        for field_name, field in self.fields.items():
+            field.widget.attrs.update(
+                {
+                    "class": "form-control",
+                    "placeholder": f"Enter {field.label.lower()}",
+                }
+            )
+
+        self.fields["username"].widget.attrs["autofocus"] = True
 
 
 class UserProfileForm(forms.ModelForm):

@@ -58,7 +58,7 @@
               >
                 {% csrf_token %}
                 <h5>Personal Information</h5>
-                <div class="row mb-3">
+                {% comment %} <div class="row mb-3">
                   <div class="col-md-12 d-flex flex-column">
                   <label class="form-label">
                     {{ user_profile_form.first_name.label }}:
@@ -94,7 +94,22 @@
                       </span>
                     </div>
                   </div>
-                </div>
+                </div> {% endcomment %}
+                {% for field in user_profile_form %}
+                  <div class="row mb-3">
+                    <div class="col-md-12 d-flex flex-column">
+                      <label class="form-label" for="{{ field.id_for_label }}">{{ field.label }}</label>
+                      <div class="input-group">
+                        {{ field }}
+                        {% if field.name == "role" %}
+                        <span class="input-group-text">
+                          <i class="fa-solid fa-arrow-down"></i>
+                        </span>
+                        {% endif %}
+                      </div>
+                    </div>
+                  </div>
+                  {% endfor %}
                 <button
                   type="submit"
                   class="btn btn-success w-100"
@@ -110,7 +125,7 @@
               <form method="POST" action="{% url 'user_profile_address' %}">
                 {% csrf_token %}
                 <h5>Address</h5>
-                <div class="row mb-3">
+                {% comment %} <div class="row mb-3">
                   <div class="col-md-12 d-flex flex-column">
                     <label class="form-label"
                       >{{ address_form.street.label_tag }}</label
@@ -137,7 +152,15 @@
                     >
                     {{ address_form.phone_number }}
                   </div>
+                </div> {% endcomment %}
+                {% for field in address_form %}
+                <div class="row mb-3">
+                  <div class="col-md-12 d-flex flex-column">
+                    <label class="form-label" for="{{ field.id_for_label }}">{{ field.label }}</label>
+                    {{ field }}
+                  </div>
                 </div>
+                {% endfor %}
                 <button
                   type="submit"
                   class="btn btn-success w-100"
@@ -153,45 +176,55 @@
               <form method="POST" action="{% url 'user_profile_password' %}">
                 {% csrf_token %}
                 <h5>Change Password</h5>
-                <div class="row mb-3">
-                  <div class="col-md-12 d-flex flex-column">
+                <div class="mb-3">
                     <label class="form-label">
                       {{ password_form.old_password.label_tag }}
                     </label>
-                    <input
-                      type="password"
-                      name="old_password"
-                      class="form-control"
-                      id="id_old_password"
-                      required
-                    />
-                  </div>
+                    <div class="input-group">
+                      <input
+                        type="password"
+                        name="old_password"
+                        class="form-control"
+                        id="id_old_password"
+                        required
+                      />
+                      <span class="input-group-text">
+                        <i class="fa fa-eye" id="toggle_old_password" style="cursor: pointer;"></i>
+                      </span>
+                    </div>
                 </div>
-                <div class="row mb-3">
-                  <div class="col-md-12 d-flex flex-column">
+                <div class="mb-3">
                     <label class="form-label">
                       {{ password_form.new_password1.label_tag }}
                     </label>
-                    <input
-                      type="password"
-                      name="new_password1"
-                      class="form-control"
-                      id="id_new_password1"
-                      required
-                    />
-                  </div>
+                    <div class="input-group">
+                      <input
+                        type="password"
+                        name="new_password1"
+                        class="form-control"
+                        id="id_new_password1"
+                        required
+                      />
+                      <span class="input-group-text">
+                        <i class="fa fa-eye" id="toggle_new_password" style="cursor: pointer;"></i>
+                      </span>
+                    </div>
+                    
                 </div>
-                <div class="row mb-3">
-                  <div class="col-md-12 d-flex flex-column">
+                <div class="mb-3">
                     <label class="form-label"> Confirm password: </label>
-                    <input
-                      type="password"
-                      name="new_password2"
-                      class="form-control"
-                      id="id_new_password2"
-                      required
-                    />
-                  </div>
+                    <div class="input-group">
+                      <input
+                        type="password"
+                        name="new_password2"
+                        class="form-control"
+                        id="id_new_password2"
+                        required
+                      />
+                      <span class="input-group-text">
+                        <i class="fa fa-eye" id="toggle_new_password2" style="cursor: pointer;"></i>
+                      </span>
+                    </div>
                 </div>
                 <button
                   type="submit"
