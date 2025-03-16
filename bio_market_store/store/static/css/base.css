@@ -1,9 +1,23 @@
 html, body {
-    height: 100vh;
+    height: 100%;
     margin: 0;
     padding: 0;
     display: flex;
     flex-direction: column;
+}
+
+.content {
+    flex: 1;
+
+}
+
+.fixed-top {
+    position: absolute; !important;
+    top: 0;
+    right: 0;
+    left: 0;
+    z-index: 1030;
+    /*nav fix, tak żeby trzymał się góry nie zjeżdżał do dołu*/
 }
 
 body {
@@ -41,17 +55,23 @@ body {
 }
 
 .footer {
-    position: sticky;
-    bottom: 0;
     width: 100%;
+    text-align: center;
+    padding: 10px;
 }
 
 .nav {
-    margin-left: auto;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 1000;
+    background-color: rgba(0, 0, 0, 0.7);
+    padding: 10px 30px;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 10px 30px;
+
 }
 
 .navbar-brand {
@@ -65,7 +85,11 @@ body {
     color: white;
     font-size: 18px;
     margin-left: 20px;
+    font-weight: 600;
+    text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.7);
+    /*jak chcemy mocniejszy cień co zwiększ ostatnią wartość*/
 }
+
 
 .nav-link:hover {
     color: #32de84;
@@ -88,12 +112,13 @@ body {
     color: rgba(255, 255, 255, 0.75);
     border: none;
     border-radius: 0;
+    text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.7);
 }
 
 .btn-cart:hover {
     border-bottom: 0.25rem solid white !important;
 }
 
-.total-price{
+.total-price {
     color: black
 }
