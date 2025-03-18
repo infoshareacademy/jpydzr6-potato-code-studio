@@ -1,7 +1,7 @@
 document.addEventListener("DOMContentLoaded", () => {
     let alerts = document.querySelectorAll(".alert");
 
-    if (alerts.length > 0) { 
+    if (alerts.length > 0) {
         setTimeout(() => {
             alerts.forEach(alert => {
                 alert.classList.add("fade");
@@ -12,10 +12,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
             if (successAlert) {
                 setTimeout(() => {
-                    window.location.href = "/profile";
+                    window.location.href = "/";
                 }, 1000);
             }
-            
+
         }, 3000);
     }
 });
@@ -23,15 +23,18 @@ document.addEventListener("DOMContentLoaded", () => {
 
 document.addEventListener("DOMContentLoaded", () => {
     const togglePassword1 = document.getElementById("togglePassword1");
-    const password = document.getElementById("confirm-delete-password");
+    const password = document.getElementById("password");
+
+    const togglePassword2 = document.getElementById("togglePassword2");
+    const confirm_password = document.getElementById("confirm_password");
 
     const toggleVisibility = (inputField, icon) => {
-      if (inputField.type === "confirm-delete-password") {
+      if (inputField.type === "password") {
         inputField.type = "text";
         icon.classList.remove("fa-eye");
         icon.classList.add("fa-eye-slash");
       } else {
-        inputField.type = "confirm-delete-password";
+        inputField.type = "password";
         icon.classList.remove("fa-eye-slash");
         icon.classList.add("fa-eye");
       }
@@ -40,11 +43,9 @@ document.addEventListener("DOMContentLoaded", () => {
     togglePassword1.addEventListener("click", () => {
         toggleVisibility(password, togglePassword1)
     })
+
+    togglePassword2.addEventListener("click", () => {
+        toggleVisibility(confirm_password, togglePassword2)
+    })
+
 })
-
-
-const toggleDeleteButton = () => {
-    const inputPasswordField = document.getElementById("confirm-delete-password")
-    const deleteButton = document.getElementById("delete-button")
-    deleteButton.disabled = inputPasswordField.value.trim() === ""
-}
