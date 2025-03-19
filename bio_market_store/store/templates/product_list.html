@@ -32,8 +32,14 @@
                         <p class="card-text text-primary fw-bold">Price: {{ product.price }} zł</p>
                         <!-- Add to Cart Button (Disabled if product is in cart) -->
                         {% if product.id|stringformat:"s" in request.session.cart %}
-                        <button class="btn btn-secondary btn" disabled>Added to Cart</button>
+                        <button class="btn btn-secondary" disabled>Added to Cart</button>
+                        {% elif not user.is_authenticated %}
+                        <a href="{% url 'login' %}" class="btn btn-primary">Log in to add to cart</a>
                         {% else %}
+                        <form method="post" action="{% url 'add_to_cart' product.id %}">
+                            {% csrf_token %}
+                            <button class="btn btn-primary" type="submit">Add to Cart</button>
+                        </form>
                         <a href="{% url 'add_to_cart' product.id %}" class="btn btn-success btn">Add to Cart</a>
                         <a href="{% url 'single_product' product.id %}" class="btn btn-primary">View Details</a>
                         {% endif %}
