@@ -539,3 +539,6 @@ def single_product(request, product_id):
         return render(request, 'single_product.html', {'product': product})
     except Product.DoesNotExist:
         return HttpResponse(f"Product with id {product_id} does not exist.")
+
+def about_project(request):
+    return render(request, "about_project.html")

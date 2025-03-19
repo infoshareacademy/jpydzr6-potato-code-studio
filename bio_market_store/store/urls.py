@@ -23,6 +23,7 @@ from .views import (
     increment_quantity,
     decrement_quantity,
     single_product,
+    about_project,
 )
 
 urlpatterns = [
@@ -60,6 +61,7 @@ urlpatterns = [
         name="decrement_quantity",
     ),
     path("product/<int:product_id>/", single_product, name='single_product'),
+    path("about_project/", about_project, name="about_project"),
 ]
 
 if settings.DEBUG:
