@@ -38,9 +38,8 @@
                         {% else %}
                         <form method="post" action="{% url 'add_to_cart' product.id %}">
                             {% csrf_token %}
-                            <button class="btn btn-primary" type="submit">Add to Cart</button>
+                            <a href="{% url 'add_to_cart' product.id %}" class="btn btn-success btn">Add to Cart</a>
                         </form>
-                        <a href="{% url 'add_to_cart' product.id %}" class="btn btn-success btn">Add to Cart</a>
                         <a href="{% url 'single_product' product.id %}" class="btn btn-primary">View Details</a>
                         {% endif %}
                     </div>
