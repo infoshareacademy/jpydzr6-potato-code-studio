@@ -60,8 +60,8 @@
                 <h5>Personal Information</h5>
                 <div class="row mb-3">
                   <div class="col-md-12 d-flex flex-column">
-                    {{ user_profile_form.first_name.label }} {{
-                    user_profile_form.first_name }}
+                    <label class="form-label">{{ user_profile_form.first_name.label_tag }}</label>
+                    {{ user_profile_form.first_name }}
                   </div>
                 </div>
                 <div class="row mb-3">
