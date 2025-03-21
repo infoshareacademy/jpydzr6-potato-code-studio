@@ -5,7 +5,7 @@ from django.contrib.auth.forms import (
     PasswordChangeForm,
 )
 from django.contrib.auth import get_user_model
-from .models import UserProfile, Product, Address, MiniQuizBio
+from .models import UserProfile, Product, Address, MiniQuizBio, AddressOptional
 import json
 
 
@@ -43,7 +43,7 @@ class UserProfileForm(forms.ModelForm):
 class AddressForm(forms.ModelForm):
     class Meta:
         model = Address
-        fields = ["street", "postal_code", "city", "phone_number"]
+        fields = ["street", "postal_code", "city", "phone_number", "state"]
         widgets = {
             "street": forms.TextInput(attrs={"class": "form-control"}),
             "postal_code": forms.TextInput(attrs={"class": "form-control"}),
@@ -51,7 +51,14 @@ class AddressForm(forms.ModelForm):
             "phone_number": forms.TextInput(
                 attrs={"class": "form-control", "type": "tel", "pattern": "[0-9]{9}"}
             ),
+            "state": forms.Select(attrs={"class": "form-control"}),
         }
+
+    def __init__(self, *args, **kwargs):
+        # Dynamically set the model based on the instance passed to the form
+        if 'instance' in kwargs and isinstance(kwargs['instance'], AddressOptional):
+            self.Meta.model = AddressOptional  # Switch to AddressOptional model
+        super().__init__(*args, **kwargs)
 
 
 class UserPasswordChangeForm(PasswordChangeForm):

@@ -181,6 +181,7 @@ def user_profile(request):
             "address_form": address_form,
             "address_optional_form": address_optional_form,
             "password_form": password_form,
+            "states": STATES,
         },
     )
 
@@ -227,6 +228,7 @@ def user_profile_address(request):
                 "postal_code": address.postal_code if address.postal_code else "",
                 "city": address.city if address.city else "",
                 "phone_number": address.phone_number if address.phone_number else "",
+                "state": address.state if address.state else "",
             }
             address_form = AddressForm(initial=address_data, instance=address)
 
