@@ -7,6 +7,7 @@ from django.contrib.auth.forms import (
 from django.contrib.auth import get_user_model
 from .models import UserProfile, Product, Address, MiniQuizBio, AddressOptional
 import json
+from django.conf import settings
 
 
 class UserCreatingForm(UserCreationForm):
@@ -30,13 +31,19 @@ class UserAuthenticationForm(AuthenticationForm):
 
 
 class UserProfileForm(forms.ModelForm):
+    base_roles = [("seller", "Seller"), ("client", "Client")]
+
+    if settings.DEBUG:
+        base_roles.append(("contributor", "Contributor"))
+
     class Meta:
         model = UserProfile
-        fields = ["first_name", "last_name", "email"]
+        fields = ["first_name", "last_name", "email", "role"]
         widgets = {
             "first_name": forms.TextInput(attrs={"class": "form-control"}),
             "last_name": forms.TextInput(attrs={"class": "form-control"}),
             "email": forms.EmailInput(attrs={"class": "form-control"}),
+            "role": forms.Select(attrs={"class": "form-control"}),
         }
 
 
@@ -87,6 +94,7 @@ class ProductForm(forms.ModelForm):
             "exp_date",
             "amount",
             "producer",
+            "description",
             "image",
         ]
 

@@ -1,5 +1,6 @@
 from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout, update_session_auth_hash
+from django.contrib.auth.hashers import check_password
 from django.contrib.auth.forms import PasswordChangeForm
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
@@ -10,7 +11,10 @@ from .forms import UserProfileForm, AddressForm, MiniQuizBioForm, UserPasswordCh
 from .utils.states import STATES
 from django.core.mail import send_mail
 from django.conf import settings
+from django.contrib.auth.password_validation import validate_password
+from django.core.exceptions import ValidationError
 
+from django.http import HttpResponse
 # import json
 import logging
 
@@ -58,6 +62,7 @@ def add_product(request):
         exp_date = request.POST.get("exp_date")
         amount = request.POST.get("amount")
         producer = request.POST.get("producer")
+        description = request.POST.get("description")
         image = request.FILES.get("image")
 
         if not all(
@@ -70,6 +75,7 @@ def add_product(request):
                 exp_date,
                 amount,
                 producer,
+                description,
                 image,
             ]
         ):
@@ -86,6 +92,7 @@ def add_product(request):
             amount=amount,
             producer=producer,
             image=image,
+            description=description,
             created_at=now(),
         )
 
@@ -120,20 +127,35 @@ def register_view(request):
         username = request.POST.get("username")
         email = request.POST.get("email")
         password = request.POST.get("password")
+        confirm_password = request.POST.get("confirm_password")
+        role = request.POST.get("role")
 
         if UserProfile.objects.filter(username=username).exists():
             messages.error(request, "Username already exists")
             return redirect("register")
 
-        new_user = UserProfile.objects.create_user(
-            username=username, email=email, password=password
-        )
-        new_user.save()
+        if password != confirm_password:
+            messages.error(request, "Passwords do not match")
+            return redirect("register")
 
-        messages.success(
-            request,
-            "You have been registered",
-        )
+        try:
+            validate_password(password)
+
+            new_user = UserProfile.objects.create(
+                username=username, email=email, role=role
+            )
+            new_user.set_password(password)
+            new_user.save()
+
+            messages.success(
+                request,
+                "You have been registered",
+            )
+        except ValidationError as e:
+            for error in e.messages:
+                messages.error(request, error)
+            return redirect("register")
+
     return render(request, "register_page.html")
 
 
@@ -274,6 +296,39 @@ def user_profile_password(request):
 
     password_form = UserPasswordChangeForm(request.user)
     return render(request, "user_profile.html", {"password_form": password_form})
+
+
+@login_required
+def user_profile_delete_user(request):
+    if "delete_attempts" not in request.session:
+        request.session["delete_attempts"] = 0
+
+    if request.method == "POST":
+        input_password = request.POST.get("confirm-delete-password")
+        user = request.user
+
+        print("POST data:", request.POST)
+        if check_password(input_password, user.password):
+            user.delete()
+            logout(request)
+            messages.success(request, "Your account has been deleted successully!")
+            request.session.pop("delete_attempts", None)
+            return redirect("cover_page")
+        else:
+            request.session["delete_attempts"] += 1
+            messages.error(
+                request,
+                f"Incorrect password. Attempt {request.session['delete_attempts']} of 3.",
+            )
+
+            if request.session["delete_attempts"] >= 3:
+                logout(request)
+                messages.error(
+                    request, "Too many failed attempts. You have been logged out."
+                )
+                request.session.pop("delete_attempts", None)
+                return redirect("cover_page")
+    return redirect("user_profile")
 
 
 def mini_quiz_bio_view(request):
@@ -537,3 +592,10 @@ def decrement_quantity(request, product_id):
             }
         )
     return JsonResponse({"error": "Product not found in cart"}, status=404)
+
+def single_product(request, product_id):
+    try:
+        product = Product.objects.get(id=product_id)
+        return render(request, 'single_product.html', {'product': product})
+    except Product.DoesNotExist:
+        return HttpResponse(f"Product with id {product_id} does not exist.")

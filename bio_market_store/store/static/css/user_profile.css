@@ -29,3 +29,21 @@ i {
   font-size: 1rem;
   margin-left: 0.5rem;
 }
+
+.modal-body {
+  color: black !important;
+}
+
+.btn-close {
+  background-color: white !important;
+}
+
+.delete-button {
+  background-color: #dc3545 !important;
+  border-color: #dc3545 !important;
+}
+
+.delete-button:hover {
+  background-color: #bb2d3b !important;
+  border-color: #bb2d3b !important;
+}
