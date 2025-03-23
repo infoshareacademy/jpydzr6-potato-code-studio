@@ -1,8 +1,11 @@
 {% extends 'base.html' %}
 {% load static %}
 {% block title %}Quiz Result{% endblock %}
-
+{% block extra_head %}
+<link href="{% static 'css/mini_quiz.css' %}" rel="stylesheet" />
+{% endblock %}
 {% block content %}
+
 <div class="container mt-5">
     <div class="card p-4 mt-4 shadow-lg text-center mx-auto">
         <h1 class="mb-3">🎉 Quiz Completed! 🎉</h1>

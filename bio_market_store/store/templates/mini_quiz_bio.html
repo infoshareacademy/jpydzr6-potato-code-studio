@@ -19,11 +19,13 @@
 {% if question %}
     <div class="container mt-5">
         <h1 class="text-center">Mini Quiz Bio</h1>
-        <div class="progress">
-            <div id="progressBar" class="progress-bar progress-bar-striped progress-bar-animated"
-                role="progressbar" aria-valuenow="{{ progress }}" aria-valuemin="0"
-                aria-valuemax="100" style="width: {{ progress }}%">
-                {{ progress|floatformat:0 }}%
+        <div class="shadow-box">
+            <div class="progress">
+                <div id="progressBar" class="progress-bar progress-bar-striped progress-bar-animated"
+                    role="progressbar" aria-valuenow="{{ progress }}" aria-valuemin="0"
+                    aria-valuemax="100" style="width: {{ progress }}%">
+                    {{ progress|floatformat:0 }}%
+                </div>
             </div>
         </div>
         <p class="text-center mt-2">Question {{ current_index }} of {{ total_questions }}</p>

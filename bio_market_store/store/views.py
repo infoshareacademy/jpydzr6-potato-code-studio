@@ -262,7 +262,8 @@ def initialize_quiz_session(request):
 
 def mini_quiz_bio_view(request):
     if "retry" in request.GET:
-        request.session.flush()
+        for key in ["questions", "score", "question_index"]:
+            request.session.pop(key, None)
         return redirect("mini_quiz_bio")
 
     if "questions" not in request.session:
