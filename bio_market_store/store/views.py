@@ -1,17 +1,23 @@
 from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout, update_session_auth_hash
+from django.contrib.auth.hashers import check_password
 from django.contrib.auth.forms import PasswordChangeForm
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.utils.timezone import now
 from django.http import JsonResponse
-from .models import UserProfile, Address, Product, MiniQuizBio
+from .models import UserProfile, Address, Product, MiniQuizBio, AddressOptional
 from .forms import UserProfileForm, AddressForm, MiniQuizBioForm, UserPasswordChangeForm
+from .utils.states import STATES
 from django.core.mail import send_mail
 from django.conf import settings
+from django.contrib.auth.password_validation import validate_password
+from django.core.exceptions import ValidationError
 
+from django.http import HttpResponse
 # import json
 import logging
+
 
 logger = logging.getLogger(__name__)
 
@@ -37,7 +43,7 @@ def contact_us(request):
             subject,
             full_message,
             settings.DEFAULT_FROM_EMAIL,
-            ["biopotato@wp.pl"],
+            recipient_list=[settings.EMAIL_HOST_USER],
         )
 
         return render(request, "contact.html", {"success": True})
@@ -56,6 +62,7 @@ def add_product(request):
         exp_date = request.POST.get("exp_date")
         amount = request.POST.get("amount")
         producer = request.POST.get("producer")
+        description = request.POST.get("description")
         image = request.FILES.get("image")
 
         if not all(
@@ -68,6 +75,7 @@ def add_product(request):
                 exp_date,
                 amount,
                 producer,
+                description,
                 image,
             ]
         ):
@@ -84,6 +92,7 @@ def add_product(request):
             amount=amount,
             producer=producer,
             image=image,
+            description=description,
             created_at=now(),
         )
 
@@ -118,20 +127,35 @@ def register_view(request):
         username = request.POST.get("username")
         email = request.POST.get("email")
         password = request.POST.get("password")
+        confirm_password = request.POST.get("confirm_password")
+        role = request.POST.get("role")
 
         if UserProfile.objects.filter(username=username).exists():
             messages.error(request, "Username already exists")
             return redirect("register")
 
-        new_user = UserProfile.objects.create_user(
-            username=username, email=email, password=password
-        )
-        new_user.save()
+        if password != confirm_password:
+            messages.error(request, "Passwords do not match")
+            return redirect("register")
 
-        messages.success(
-            request,
-            "You have been registered",
-        )
+        try:
+            validate_password(password)
+
+            new_user = UserProfile.objects.create(
+                username=username, email=email, role=role
+            )
+            new_user.set_password(password)
+            new_user.save()
+
+            messages.success(
+                request,
+                "You have been registered",
+            )
+        except ValidationError as e:
+            for error in e.messages:
+                messages.error(request, error)
+            return redirect("register")
+
     return render(request, "register_page.html")
 
 
@@ -166,7 +190,9 @@ def logout_view(request):
 def user_profile(request):
     user_profile_form = UserProfileForm(instance=request.user)
     address, created = Address.objects.get_or_create(user=request.user)
+    address_optional, created = AddressOptional.objects.get_or_create(user=request.user)
     address_form = AddressForm(instance=address)
+    address_optional_form = AddressForm(instance=address_optional)
     password_form = PasswordChangeForm(request.user)
 
     return render(
@@ -175,7 +201,9 @@ def user_profile(request):
         {
             "user_profile_form": user_profile_form,
             "address_form": address_form,
+            "address_optional_form": address_optional_form,
             "password_form": password_form,
+            "states": STATES,
         },
     )
 
@@ -222,6 +250,7 @@ def user_profile_address(request):
                 "postal_code": address.postal_code if address.postal_code else "",
                 "city": address.city if address.city else "",
                 "phone_number": address.phone_number if address.phone_number else "",
+                "state": address.state if address.state else "",
             }
             address_form = AddressForm(initial=address_data, instance=address)
 
@@ -230,6 +259,22 @@ def user_profile_address(request):
         "user_profile.html",
         {"address_form": address_form},
     )
+
+
+@login_required
+def user_profile_address_optional(request):
+    address_optional, _ = AddressOptional.objects.get_or_create(user=request.user)
+
+    if request.method == "POST":
+        form = AddressForm(request.POST, instance=address_optional)
+        if form.is_valid():
+            form.save()
+            messages.success(request, "Alternative address updated successfully.")
+            return redirect("user_profile")  # Przekierowanie z powrotem do profilu
+    else:
+        form = AddressForm(instance=address_optional)
+
+    return render(request, "user_profile.html", {"address_optional_form": form})
 
 
 @login_required
@@ -259,6 +304,39 @@ def initialize_quiz_session(request):
         "question_index": 0,
         "score": 0
     })
+
+@login_required
+def user_profile_delete_user(request):
+    if "delete_attempts" not in request.session:
+        request.session["delete_attempts"] = 0
+
+    if request.method == "POST":
+        input_password = request.POST.get("confirm-delete-password")
+        user = request.user
+
+        print("POST data:", request.POST)
+        if check_password(input_password, user.password):
+            user.delete()
+            logout(request)
+            messages.success(request, "Your account has been deleted successully!")
+            request.session.pop("delete_attempts", None)
+            return redirect("cover_page")
+        else:
+            request.session["delete_attempts"] += 1
+            messages.error(
+                request,
+                f"Incorrect password. Attempt {request.session['delete_attempts']} of 3.",
+            )
+
+            if request.session["delete_attempts"] >= 3:
+                logout(request)
+                messages.error(
+                    request, "Too many failed attempts. You have been logged out."
+                )
+                request.session.pop("delete_attempts", None)
+                return redirect("cover_page")
+    return redirect("user_profile")
+
 
 def mini_quiz_bio_view(request):
     if "retry" in request.GET:
@@ -339,18 +417,21 @@ def empty_cart(request):
     return redirect("product_list")
 
 
+@login_required
 def payment(request):
     cart = request.session.get("cart", {})
-
     cart_items = []
     cart_total = 0
     total_items = 0
+    user_profile = request.user
+    address, created = Address.objects.get_or_create(user=request.user)
+    address_optional, created = AddressOptional.objects.get_or_create(user=request.user)
 
+    # Process cart items
     for product_id, item in cart.items():
         total = float(item["price"]) * item["quantity"]
         cart_total += total
         total_items += item["quantity"]
-
         cart_items.append(
             {
                 "id": product_id,
@@ -365,56 +446,90 @@ def payment(request):
         "cart_items": cart_items,
         "cart_total": cart_total,
         "total_items": total_items,
+        "user_profile": user_profile,
+        "address": address,
+        "address_optional": address_optional,
+        "states": STATES,
     }
 
     if request.method == "POST":
-        first_name = request.POST.get("firstName")
-        last_name = request.POST.get("lastName")
-        phone = request.POST.get("phoneNumber")
-        email = request.POST.get("email")
-        address = request.POST.get("address")
-        address2 = request.POST.get("address2", "")
-        country = request.POST.get("country")
-        state = request.POST.get("state")
-        zip_code = request.POST.get("zip")
         payment_method = request.POST.get("paymentMethod")
+        address_type = request.POST.get("address_type", "billing")
+
+        # Update user profile information
+        user_profile.first_name = request.POST.get("firstName")
+        user_profile.last_name = request.POST.get("lastName")
+        user_profile.email = request.POST.get("email")
+        user_profile.save()
+
+        # Update the appropriate address based on selection
+        if address_type == "billing":
+            # Update billing address
+            address.street = request.POST.get("address")
+            address.postal_code = request.POST.get("zip")
+            address.state = request.POST.get("state")
+            address.city = request.POST.get("city")
+            address.phone_number = request.POST.get("phoneNumber")
+            address.save()
+
+            # Use billing address for shipping
+            selected_address = address
+        else:
+            # Update alternative address
+            address_optional.street = request.POST.get("address_alt")
+            address_optional.postal_code = request.POST.get("zip_alt")
+            address_optional.state = request.POST.get("state_alt")
+            address_optional.city = request.POST.get("city_alt")
+            address_optional.phone_number = request.POST.get("phoneNumber_alt")
+            address_optional.save()
+
+            # Use alternative address for shipping
+            selected_address = address_optional
+
+        # Prepare email content
         products_info = "\n".join(
             [
-                f"{idx + 1}. {item['name']} - {item['quantity']} szt. - {item['total']} PLN"
+                f"{idx + 1}. {item['name']} - {item['quantity']} szt. - {item['total']:.2f} PLN"
                 for idx, item in enumerate(cart_items)
             ]
         )
 
         message_body = f"""
-        New order from BioMarket Store:
+        New order from BioPotato Store:
+        {"-" * 40}
+        Customer: {user_profile.first_name} {user_profile.last_name}
+        Contact: {selected_address.phone_number}
 
-        First Name: {first_name}
-        Last Name: {last_name}
-        Contact Number: {phone}
-        Email: {email}
-        Address: {address}
-        Address 2: {address2}
-        Country: {country}
-        State: {state}
-        Zip: {zip_code}
-        Payment method: {payment_method}
+        Shipping Address:
+        {selected_address.street}, {selected_address.city}, {selected_address.state}, {selected_address.postal_code}
 
-        Oreder details:
-        \n{products_info}
+        Payment Method: {payment_method}
 
-        Oder value: {sum(item["total"] for item in cart_items):.2f} PLN
+        Order Details:
+        {products_info}
+
+        Total Order Value: {cart_total:.2f} PLN
         """
 
-        send_mail(
-            subject="Nowe zamówienie",
-            message=message_body,
-            from_email=settings.EMAIL_HOST_USER,
-            recipient_list=["biopotato@wp.pl"],
-            fail_silently=False,
-        )
+        # Send confirmation email
+        try:
+            send_mail(
+                subject="New Order - BioPotato",
+                message=message_body,
+                from_email=settings.DEFAULT_FROM_EMAIL,
+                recipient_list=[settings.EMAIL_HOST_USER],
+            )
+        except Exception as e:
+            logger.error(f"Error sending email: {str(e)}")
+            messages.warning(
+                request, "Order processed, but confirmation email failed to send."
+            )
 
+        # Clear cart and redirect
         request.session["cart"] = {}
-
+        messages.success(
+            request, "Order completed successfully! Thank you for your purchase."
+        )
         return redirect("product_list")
 
     return render(request, "payment.html", context=context)
@@ -474,3 +589,10 @@ def decrement_quantity(request, product_id):
             }
         )
     return JsonResponse({"error": "Product not found in cart"}, status=404)
+
+def single_product(request, product_id):
+    try:
+        product = Product.objects.get(id=product_id)
+        return render(request, 'single_product.html', {'product': product})
+    except Product.DoesNotExist:
+        return HttpResponse(f"Product with id {product_id} does not exist.")
