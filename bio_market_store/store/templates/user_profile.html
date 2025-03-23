@@ -60,8 +60,8 @@
                 <h5>Personal Information</h5>
                 <div class="row mb-3">
                   <div class="col-md-12 d-flex flex-column">
-                    {{ user_profile_form.first_name.label }} {{
-                    user_profile_form.first_name }}
+                    <label class="form-label">{{ user_profile_form.first_name.label_tag }}</label>
+                    {{ user_profile_form.first_name }}
                   </div>
                 </div>
                 <div class="row mb-3">
@@ -105,45 +105,126 @@
 
             <!-- Address Tab -->
             <div class="tab-pane fade" id="address">
-              <form method="POST" action="{% url 'user_profile_address' %}">
-                {% csrf_token %}
-                <h5>Address</h5>
-                <div class="row mb-3">
-                  <div class="col-md-12 d-flex flex-column">
-                    <label class="form-label"
-                      >{{ address_form.street.label_tag }}</label
-                    >
-                    {{ address_form.street }}
+              <!-- Wybór adresu -->
+              <div class="mb-3">
+                <label for="address-type" class="form-label">Choose Address</label>
+                <select class="form-select" id="address-type" onchange="toggleAddressForm()">
+                  <option value="main" selected>Billing Address</option>
+                  <option value="optional">Alternative Address</option>
+                </select>
+              </div>
+
+              <!-- Formularz adresu głównego -->
+              <div id="billing-address">
+                <form method="POST" action="{% url 'user_profile_address' %}">
+                  {% csrf_token %}
+                  <h5>Billing Address</h5>
+
+                  <!-- Street -->
+                  <div class="row mb-3">
+                    <div class="col-md-12 d-flex flex-column">
+                      <label for="id_street" class="form-label">Street</label>
+                      {{ address_form.street }}
+                    </div>
                   </div>
-                  <div class="col-md-12 d-flex flex-column">
-                    <label class="form-label"
-                      >{{ address_form.postal_code.label_tag }}</label
-                    >
-                    {{ address_form.postal_code }}
+
+                  <!-- City -->
+                  <div class="row mb-3">
+                    <div class="col-md-12 d-flex flex-column">
+                      <label for="id_city" class="form-label">City</label>
+                      {{ address_form.city }}
+                    </div>
                   </div>
-                </div>
-                <div class="row mb-3">
-                  <div class="col-md-12 d-flex flex-column">
-                    <label class="form-label"
-                      >{{ address_form.city.label_tag }}</label
-                    >
-                    {{ address_form.city }}
+
+                  <!-- State field with dropdown from states list -->
+                  <div class="row mb-3">
+                    <div class="col-md-12 d-flex flex-column">
+                      <label for="id_state" class="form-label">State</label>
+                      <select name="state" id="id_state" class="form-select">
+                        {% for state_value, state_name in states %}
+                          <option value="{{ state_value }}" {% if address_form.state.value == state_value or address.state == state_value %}selected{% endif %}>{{ state_name }}</option>
+                        {% endfor %}
+                      </select>
+                    </div>
                   </div>
-                  <div class="col-md-12 d-flex flex-column">
-                    <label class="form-label"
-                      >{{ address_form.phone_number.label_tag }}</label
-                    >
-                    {{ address_form.phone_number }}
+
+                  <!-- Postal Code -->
+                  <div class="row mb-3">
+                    <div class="col-md-12 d-flex flex-column">
+                      <label for="id_postal_code" class="form-label">Postal Code</label>
+                      {{ address_form.postal_code }}
+                    </div>
                   </div>
-                </div>
-                <button
-                  type="submit"
-                  class="btn btn-success w-100"
-                  onclick="success_alert('Address updated successfully')"
-                >
-                  Save <i class="fas fa-save"></i>
-                </button>
-              </form>
+
+                  <!-- Phone Number -->
+                  <div class="row mb-3">
+                    <div class="col-md-12 d-flex flex-column">
+                      <label for="id_phone_number" class="form-label">Phone Number</label>
+                      {{ address_form.phone_number }}
+                    </div>
+                  </div>
+
+                  <button type="submit" class="btn btn-success w-100">
+                    Save <i class="fas fa-save"></i>
+                  </button>
+                </form>
+              </div>
+
+              <!-- Formularz alternatywnego adresu (ukryty domyślnie) -->
+              <div id="alternative-address" style="display: none;">
+                <form method="POST" action="{% url 'user_profile_address_optional' %}">
+                  {% csrf_token %}
+                  <h5>Alternative Address</h5>
+
+                  <!-- Street -->
+                  <div class="row mb-3">
+                    <div class="col-md-12 d-flex flex-column">
+                      <label for="id_optional_street" class="form-label">Street</label>
+                      {{ address_optional_form.street }}
+                    </div>
+                  </div>
+
+                  <!-- City -->
+                  <div class="row mb-3">
+                    <div class="col-md-12 d-flex flex-column">
+                      <label for="id_optional_city" class="form-label">City</label>
+                      {{ address_optional_form.city }}
+                    </div>
+                  </div>
+
+                  <!-- State field with dropdown from states list -->
+                  <div class="row mb-3">
+                    <div class="col-md-12 d-flex flex-column">
+                      <label for="id_optional_state" class="form-label">State</label>
+                      <select name="state" id="id_optional_state" class="form-select">
+                        {% for state_value, state_name in states %}
+                            <option value="{{ state_value }}" {% if address_optional_form.state.value == state_value or address_optional.state == state_value %}selected{% endif %}>{{ state_name }}</option>
+                        {% endfor %}
+                      </select>
+                    </div>
+                  </div>
+
+                  <!-- Postal Code -->
+                  <div class="row mb-3">
+                    <div class="col-md-12 d-flex flex-column">
+                      <label for="id_optional_postal_code" class="form-label">Postal Code</label>
+                      {{ address_optional_form.postal_code }}
+                    </div>
+                  </div>
+
+                  <!-- Phone Number -->
+                  <div class="row mb-3">
+                    <div class="col-md-12 d-flex flex-column">
+                      <label for="id_optional_phone_number" class="form-label">Phone Number</label>
+                      {{ address_optional_form.phone_number }}
+                    </div>
+                  </div>
+
+                  <button type="submit" class="btn btn-success w-100">
+                    Save <i class="fas fa-save"></i>
+                  </button>
+                </form>
+              </div>
             </div>
 
             <!-- Security Settings Tab -->
@@ -292,4 +373,11 @@
   crossorigin="anonymous"
 ></script>
 <script src="{% static 'js/user_profile.js' %}"></script>
+<script>
+  function toggleAddressForm() {
+    let selected = document.getElementById("address-type").value;
+    document.getElementById("billing-address").style.display = selected === "main" ? "block" : "none";
+    document.getElementById("alternative-address").style.display = selected === "optional" ? "block" : "none";
+  }
+</script>
 {% endblock %}
