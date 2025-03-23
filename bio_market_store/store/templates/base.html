@@ -15,6 +15,8 @@
     <link href="{% static 'css/mini_quiz.css' %}" rel="stylesheet"/>
     <link rel="stylesheet" href="{% static 'css/add_product_style.css' %}">
     <link rel="stylesheet" href="{% static 'css/single_product.css' %}">
+    <link rel="stylesheet" href="{% static 'css/about_project.css' %}">
+    <link rel="icon" href="{% static 'images/main_favicon.ico' %}" type="image/x-icon">
     <link href="https://fonts.googleapis.com/css2?family=Megrim&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"/>
 </head>
@@ -30,7 +32,6 @@
             {% endif %}
             <a class="nav-link" id="contactNav" href="{% url 'contact-page' %}">Contact</a>
             <a class="nav-link" id="aboutNav" href="{% url 'about-page' %}">About us</a>
-            <a class="nav-link" id="about_projectNav" href="{% url 'about_project' %}">Project</a>
             {% if user.is_authenticated and request.path == '/product_list/' %}
             <button type="button" class="btn-cart" data-bs-toggle="modal" data-bs-target="#cartModal">
                 <i class="fas fa-shopping-cart"></i> Cart

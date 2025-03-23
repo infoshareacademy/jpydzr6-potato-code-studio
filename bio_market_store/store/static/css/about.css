@@ -1,15 +1,45 @@
-
-#crewName {
-    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+body {
+    background: url("../images/backgorund.jpg") no-repeat center center fixed;
+    background-size: cover;
+    height: 100vh;
+    display: flex;
+    justify-content: normal; !important;
+    align-items: normal;!important;
+    text-align: start;!important;
+    color: white;
 }
 
-#crewText {
-    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+
+.featurette-divider {
+    color: white;
+!important;
 }
+.container-2 {
+    margin-top: 10vh !important;
+}
+
 
 .marketing {
     margin-top: 20rem !important;
     margin-bottom: 5rem;
+}
+
+.fa-brands.fa-linkedin {
+
+    transition: color 0.3s ease;
+}
+
+.fa-brands.fa-linkedin:hover {
+    color: #0077B5; /* Kolor po najchaniu */
+}
+
+
+.fa-brands.fa-github {
+    transition: color 0.3s ease;
+}
+
+.fa-brands.fa-github:hover {
+    color: #2b3137; /* Kolor po najchaniu */
 }
 
 .card {
