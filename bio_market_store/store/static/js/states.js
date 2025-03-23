@@ -17,11 +17,17 @@ const states = [
 
 document.addEventListener("DOMContentLoaded", () => {
     const stateSelect = document.getElementById("state");
-
+    if (!stateSelect) {
+        return `Element ${stateSelect} not found!`;
+    }
     states.forEach(state => {
         const option = document.createElement("option");
         option.value = state;
         option.textContent = state;
+        if(!option){
+            return `Element ${option} not found!`;
+        }
+
         stateSelect.appendChild(option);
     });
 });
