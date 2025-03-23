@@ -1,15 +1,6 @@
-body {
-    background: url("../images/backgorund.jpg") no-repeat center center fixed;
-    background-size: cover;
-    height: 100vh;
-    display: flex;
-    justify-content: normal; !important;
-    align-items: normal;!important;
-    text-align: start;!important;
-    color: white;
-}
-
-
+ /*justify-content: normal;*/
+ /*   align-items: normal;*/
+ /*   text-align: start;*/
 
 .featurette-divider {
     color: white;
