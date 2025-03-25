@@ -23,9 +23,9 @@ html, body {
 body {
     background: url("../images/backgorund.jpg") no-repeat center center fixed;
     background-size: cover;
-    height: 100vh;
+    /*height: 100vh;*/
     display: flex;
-    justify-content: center;
+    /*justify-content: center;*/
     align-items: center;
     text-align: center;
     color: white;
