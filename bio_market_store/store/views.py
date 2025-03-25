@@ -297,6 +297,13 @@ def user_profile_password(request):
     password_form = UserPasswordChangeForm(request.user)
     return render(request, "user_profile.html", {"password_form": password_form})
 
+def initialize_quiz_session(request):
+    questions = MiniQuizBio.objects.order_by('?')[:5]
+    request.session.update({
+        "questions": [q.id for q in questions],
+        "question_index": 0,
+        "score": 0
+    })
 
 @login_required
 def user_profile_delete_user(request):
@@ -332,66 +339,56 @@ def user_profile_delete_user(request):
 
 
 def mini_quiz_bio_view(request):
-    questions = list(MiniQuizBio.objects.all())
-    index = request.session.get("question_index", 0)
-    score = request.session.get("score", 0)
+    if "retry" in request.GET:
+        for key in ["questions", "score", "question_index"]:
+            request.session.pop(key, None)
+        return redirect("mini_quiz_bio")
 
-    if index >= len(questions):
+    if "questions" not in request.session:
+        initialize_quiz_session(request)
+
+    index = request.session["question_index"]
+    total_questions = len(request.session["questions"])
+
+    if index >= total_questions:
         return redirect("quiz_result")
 
-    question = questions[index]
-    choices = question.get_choices()
+    question = MiniQuizBio.objects.get(id=request.session["questions"][index])
+    form = MiniQuizBioForm(request.POST or None, question=question)
 
     if request.method == "POST":
-        form = MiniQuizBioForm(request.POST, question=question)
-
         if "submit" in request.POST and form.is_valid():
             selected = form.cleaned_data["answer"]
             correct = question.correct_answer
+            request.session["score"] += 5 if selected == correct else 0
 
-            if selected == correct:
-                score += 5
-                request.session["score"] = score
-                messages.success(request, "✅ Correct!")
-            else:
-                correct_answer_text = choices.get(correct, "Unknown")
-                messages.error(
-                    request,
-                    f"❌ Incorrect! Correct answer: {correct.upper()} - {correct_answer_text}",
-                )
-
-            # ✅ Stay on the same question (don't increment index)
-            return render(
+            messages.success(request, "✅ Correct!") if selected == correct else messages.error(
                 request,
-                "mini_quiz_bio.html",
-                {"form": form, "question": question, "score": score},
+                f"❌ Incorrect! Correct answer: {correct.upper()} - {question.get_choices().get(correct, 'Unknown')}"
             )
-
-        elif "next" in request.POST:
-            request.session["question_index"] = index + 1
             return redirect("mini_quiz_bio")
 
-        elif "finish" in request.POST:
+        if "next" in request.POST:
+            request.session["question_index"] += 1
+            return redirect("mini_quiz_bio")
+
+        if "finish" in request.POST:
             return redirect("quiz_result")
 
-    else:
-        form = MiniQuizBioForm(question=question)
-
-    return render(
-        request,
-        "mini_quiz_bio.html",
-        {"form": form, "question": question, "score": score},
-    )
+    return render(request, "mini_quiz_bio.html", {
+        "form": form,
+        "question": question,
+        "score": request.session["score"],
+        "progress": (index / total_questions) * 100,
+        "current_index": index + 1,
+        "total_questions": total_questions,
+    })
 
 
 def quiz_result_view(request):
     score = request.session.get("score", 0)
-
-    request.session["score"] = 0
-    request.session["question_index"] = 0
-
+    request.session.update({"score": 0, "question_index": 0})
     return render(request, "quiz_result.html", {"score": score})
-
 
 def add_to_cart(request, product_id):
     product = get_object_or_404(Product, id=product_id)

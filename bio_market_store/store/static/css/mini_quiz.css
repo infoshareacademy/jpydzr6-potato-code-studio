@@ -1,0 +1,38 @@
+.button-group {
+    padding-bottom: 15px;
+}
+
+.container .text-center {
+    text-shadow: 2px 2px 8px #000000;
+}
+
+.shadow-box {
+    box-shadow: 10px 5px 5px white;
+    max-width: 1000px;
+    margin: auto;
+    width: 100%;
+    border-radius: 0.25rem;
+}
+
+.container .card {
+    padding-bottom: 60px !important;
+    text-shadow: 2px 2px 8px #000000;
+}
+
+.button-group button {
+    margin-bottom: 10px;
+}
+
+.progress {
+    max-width: 1000px;
+    margin: auto;
+    width: 100%;
+}
+
+.container .card.text-center.mx-auto {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    min-height: 300px;
+}
