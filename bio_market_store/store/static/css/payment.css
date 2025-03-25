@@ -1,17 +1,3 @@
-
-html, body {
-    height: 100%;
-    margin: 0;
-    display: flex;
-    flex-direction: column;
-}
-
-body {
-    background: url("../images/backgorund.jpg") no-repeat center center fixed;
-    background-size: cover;
-    height: 100vh;
-}
-
 .text-body-secondary {
     --bs-text-opacity: 1;
     color: #212529 !important;
@@ -28,17 +14,10 @@ body {
     background: none;
     cursor: pointer;
 }
-
-
-
-
-
-
-
-
-.mb-3 {
-    color: white;
+.form-check-label {
+    float: left;
 }
+
 
 .text-body-secondary {
     --bs-text-opacity: 1;
