@@ -2,7 +2,7 @@
     padding-bottom: 15px;
 }
 
-.container .text-center {
+.mini-quiz-container .text-center {
     text-shadow: 2px 2px 8px #000000;
 }
 
@@ -14,7 +14,7 @@
     border-radius: 0.25rem;
 }
 
-.container .card {
+.mini-quiz-container .card {
     padding-bottom: 60px !important;
     text-shadow: 2px 2px 8px #000000;
 }
@@ -29,7 +29,7 @@
     width: 100%;
 }
 
-.container .card.text-center.mx-auto {
+.mini-quiz-container .card.text-center.mx-auto {
     display: flex;
     flex-direction: column;
     justify-content: center;
