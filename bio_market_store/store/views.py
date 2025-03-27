@@ -110,10 +110,17 @@ def product_list(request):
     total_items = 0
     cart_total = 0.0
 
-    # Calculate total items and cart total
-    for item in cart.values():
+    for key, item in cart.items():
+        try:
+            product = Product.objects.get(id=int(key))
+            item["available"] = product.amount
+        except Product.DoesNotExist:
+            item["available"] = 0
+
         total_items += item["quantity"]
         cart_total += float(item["price"]) * item["quantity"]
+
+    request.session["cart"] = cart
 
     return render(
         request,
@@ -396,18 +403,26 @@ def add_to_cart(request, product_id):
 
     product_key = str(product_id)
 
-    if product_key in cart:
-        cart[product_key]["quantity"] += 1
-    else:
-        cart[product_key] = {
-            "quantity": 1,
-            "price": str(product.price),
-            "name": product.name_tag,
-            "image": product.image.url,
-        }
+    # Check stock level
+    current_qty = cart.get(product_key, {}).get("quantity", 0)
 
-    request.session["cart"] = cart
-    request.session.modified = True  # Critical fix
+    if current_qty < product.amount:
+        if product_key in cart:
+            cart[product_key]["quantity"] += 1
+        else:
+            cart[product_key] = {
+                "quantity": 1,
+                "price": str(product.price),
+                "name": product.name_tag,
+                "image": product.image.url,
+                "available": product.amount,
+            }
+
+        request.session["cart"] = cart
+        request.session.modified = True  # Critical fix
+    else:
+        messages.warning(request, f"Cannot add more {product.name_tag}. Only {product.amount} available in stock.")
+
     return redirect("product_list")
 
 
@@ -427,8 +442,13 @@ def payment(request):
     address, created = Address.objects.get_or_create(user=request.user)
     address_optional, created = AddressOptional.objects.get_or_create(user=request.user)
 
-    # Process cart items
     for product_id, item in cart.items():
+        try:
+            product = Product.objects.get(id=int(product_id))
+            item["available"] = product.amount
+        except Product.DoesNotExist:
+            item["available"] = 0
+
         total = float(item["price"]) * item["quantity"]
         cart_total += total
         total_items += item["quantity"]
@@ -439,6 +459,7 @@ def payment(request):
                 "price": float(item["price"]),
                 "quantity": item["quantity"],
                 "total": total,
+                "available": item["available"],
             }
         )
 
@@ -485,6 +506,16 @@ def payment(request):
 
             # Use alternative address for shipping
             selected_address = address_optional
+
+        # Stock level update
+        for product_id, item in cart.items():
+            try:
+                product = Product.objects.get(id=int(product_id))
+
+                product.amount -= item["quantity"]
+                product.save()
+            except Product.DoesNotExist:
+                pass
 
         # Prepare email content
         products_info = "\n".join(
@@ -538,38 +569,61 @@ def payment(request):
 def increment_quantity(request, product_id):
     product_key = str(product_id)
     cart = request.session.get("cart", {})
+
+    product = get_object_or_404(Product, id=product_id)
+
     if product_key in cart:
-        cart[product_key]["quantity"] += 1
-        request.session["cart"] = cart
-        request.session.modified = True
+        if cart[product_key]["quantity"] < product.amount:
+            cart[product_key]["quantity"] += 1
+            request.session["cart"] = cart
+            request.session.modified = True
 
-        # Calculate total items and cart total
-        total_items = sum(item["quantity"] for item in cart.values())
-        cart_total = sum(
-            float(item["price"]) * item["quantity"] for item in cart.values()
-        )
+            # Calculate total items and cart total
+            total_items = sum(item["quantity"] for item in cart.values())
+            cart_total = sum(
+                float(item["price"]) * item["quantity"] for item in cart.values()
+            )
 
-        return JsonResponse(
-            {
-                "quantity": cart[product_key]["quantity"],
-                "total": float(cart[product_key]["price"])
-                * cart[product_key]["quantity"],
-                "cart_total": cart_total,
-                "total_items": total_items,
-            }
-        )
+            return JsonResponse(
+                {
+                    "quantity": cart[product_key]["quantity"],
+                    "total": float(cart[product_key]["price"]) * cart[product_key]["quantity"],
+                    "cart_total": cart_total,
+                    "total_items": total_items,
+                }
+            )
+        else:
+            total_items = sum(item["quantity"] for item in cart.values())
+            cart_total = sum(
+                float(item["price"]) * item["quantity"] for item in cart.values()
+            )
+
+            return JsonResponse(
+                {
+                    "quantity": cart[product_key]["quantity"],
+                    "total": float(cart[product_key]["price"]) * cart[product_key]["quantity"],
+                    "cart_total": cart_total,
+                    "total_items": total_items,
+                    "limit_reached": True
+                }
+            )
+
     return JsonResponse({"error": "Product not found in cart"}, status=404)
 
 
 def decrement_quantity(request, product_id):
     product_key = str(product_id)
     cart = request.session.get("cart", {})
+
+    product = get_object_or_404(Product, id=product_id)
+
     if product_key in cart:
         if cart[product_key]["quantity"] > 1:
             cart[product_key]["quantity"] -= 1
         else:
             # Instead of deleting the item, set its quantity to 0
             cart[product_key]["quantity"] = 0
+
         request.session["cart"] = cart
         request.session.modified = True
 
@@ -579,16 +633,21 @@ def decrement_quantity(request, product_id):
             float(item["price"]) * item["quantity"] for item in cart.values()
         )
 
+        limit_reached = cart[product_key]["quantity"] >= product.amount
+
         return JsonResponse(
             {
                 "quantity": cart.get(product_key, {}).get("quantity", 0),
                 "total": float(cart.get(product_key, {}).get("price", 0))
-                * cart.get(product_key, {}).get("quantity", 0),
+                         * cart.get(product_key, {}).get("quantity", 0),
                 "cart_total": cart_total,
                 "total_items": total_items,
+                "limit_reached": limit_reached
             }
         )
+
     return JsonResponse({"error": "Product not found in cart"}, status=404)
+
 
 def single_product(request, product_id):
     try:
