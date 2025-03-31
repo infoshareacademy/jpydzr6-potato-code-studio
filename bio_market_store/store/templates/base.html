@@ -30,7 +30,7 @@
     <div class="collapse navbar-collapse justify-content-end" id="navbarNavAltMarkup">
         <div class="navbar-nav">
             <a class="nav-link" id="storeNav" href="{% url 'product_list' %}">Store</a>
-            {% if user.is_authenticated %}
+            {% if user.is_authenticated and user.role == 'seller' %}
             <a class="nav-link" href="{% url 'add' %}">Add Product</a>
             {% endif %}
             <a class="nav-link" id="contactNav" href="{% url 'contact-page' %}">Contact</a>
@@ -94,6 +94,7 @@
                             <img src="{{ item.image }}" alt="{{ item.name }}"
                                  style="width: 50px; height: 50px; object-fit: cover;">
                             {{ item.name }}
+                            <small class="d-block text-muted">Available: <span id="available-{{ key }}">{{ item.available }}</span></small>
                         </td>
                         <td>{{ item.price }} zł</td>
                         <td id="quantity-{{ key }}">{{ item.quantity }}</td>

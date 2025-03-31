@@ -25,6 +25,23 @@ document.addEventListener('DOMContentLoaded', function () {
                 document.getElementById(`total-${productId}`).textContent = data.total + ' zł';
                 document.getElementById('cart-total').textContent = data.cart_total;
                 document.querySelectorAll('.badge').forEach(badge => badge.textContent = data.total_items);
+
+                // Sprawdź, czy osiągnięto limit produktów
+                if (data.limit_reached) {
+                    // Znajdź i wyłącz przycisk zwiększania
+                    const incrementBtn = document.querySelector(`.increment-btn[data-product-id="${productId}"]`);
+                    if (incrementBtn) {
+                        incrementBtn.classList.add('disabled');
+                        incrementBtn.setAttribute('disabled', 'disabled');
+                    }
+                } else {
+                    // Jeśli limit nie został osiągnięty, upewnij się, że przycisk jest aktywny
+                    const incrementBtn = document.querySelector(`.increment-btn[data-product-id="${productId}"]`);
+                    if (incrementBtn) {
+                        incrementBtn.classList.remove('disabled');
+                        incrementBtn.removeAttribute('disabled');
+                    }
+                }
             })
             .catch(error => console.error("Error updating cart:", error));
     });
