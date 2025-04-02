@@ -6,7 +6,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.utils.timezone import now
 from django.http import JsonResponse
-from .models import UserProfile, Address, Product, MiniQuizBio, AddressOptional
+from .models import UserProfile, Address, Product, MiniQuizBio, AddressOptional, DiscountVoucher
 from .forms import UserProfileForm, AddressForm, MiniQuizBioForm, UserPasswordChangeForm
 from .utils.states import STATES
 from django.core.mail import send_mail
@@ -665,3 +665,18 @@ def single_product(request, product_id):
 
 def about_project(request):
     return render(request, "about_project.html")
+
+@login_required
+def convert_points_to_discount(request):
+    user = request.user
+    if user.quiz_score >= 25:
+        vouchers_to_create = user.quiz_score // 25
+        converted_points = vouchers_to_create * 25
+        user.quiz_score -= converted_points
+        user.save()
+        for _ in range(vouchers_to_create):
+            DiscountVoucher.objects.create(user=user, amount=1)
+        messages.success(request, f"You've earned {vouchers_to_create} zł in discount vouchers!")
+    else:
+        messages.warning(request, "You need at least 25 points to convert them.")
+    return redirect("user_profile")

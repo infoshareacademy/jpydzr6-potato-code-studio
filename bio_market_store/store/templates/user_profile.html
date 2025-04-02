@@ -220,13 +220,49 @@
             </div>
 
             <!-- Quiz Score -->
+            <<!-- Quiz Score -->
             <div class="tab-pane fade" id="quiz-score">
               <h5>Your Total Mini Quiz Score:</h5>
               <p class="text-success fs-4">
                 <strong>{{ request.user.quiz_score }}</strong> points
               </p>
-            </div>
 
+              <h5>Your Eligible Discount:</h5>
+              <p class="text-primary fs-4">
+                <strong>{{ request.user.discount_voucher }}</strong> zł discount
+              </p>
+
+              {% if request.user.quiz_score >= 25 %}
+              <form method="POST" action="{% url 'convert_points_to_discount' %}">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-lg btn-warning w-100 fw-bold py-3 mt-4 shadow">
+                  🎁 Convert Points to Discount
+                  <i class="fa-solid fa-arrow-right-arrow-left ms-2"></i>
+                </button>
+              </form>
+              {% else %}
+              <p class="text-muted mt-3">You need at least 25 points to convert them to a discount.</p>
+              {% endif %}
+
+              <hr class="my-4"/>
+
+              <h5>Your Discount Vouchers:</h5>
+              <ul class="list-group">
+                {% for voucher in request.user.vouchers.all %}
+                <li class="list-group-item d-flex justify-content-between align-items-center">
+                  {{ voucher.amount }} zł voucher
+                  {% if voucher.is_redeemed %}
+                  <span class="badge bg-secondary">Used</span>
+                  {% else %}
+                  <span class="badge bg-success">Available</span>
+                  {% endif %}
+                </li>
+                {% empty %}
+                <li class="list-group-item text-muted">You haven't earned any vouchers yet.</li>
+                {% endfor %}
+              </ul>
+
+            </div>
           </div>
         </div>
       </div>

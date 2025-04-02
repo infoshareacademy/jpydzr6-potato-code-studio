@@ -29,6 +29,10 @@ class UserProfile(AbstractUser):
     def __str__(self):
         return f"{self.username}"
 
+    @property
+    def discount_voucher(self):
+        return self.quiz_score // 25
+
 
 class Address(models.Model):
     street = models.CharField(max_length=255)
@@ -103,3 +107,13 @@ class MiniQuizBio(models.Model):
 
     def __str__(self):
         return self.question_text
+
+class DiscountVoucher(models.Model):
+    user = models.ForeignKey(UserProfile, on_delete=models.CASCADE, related_name='vouchers')
+    amount = models.PositiveIntegerField(default=1)  # zł
+    created_at = models.DateTimeField(auto_now_add=True)
+    is_redeemed = models.BooleanField(default=False)
+
+    def __str__(self):
+        return f"{self.amount} zł voucher for {self.user.username}"
+

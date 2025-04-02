@@ -25,6 +25,7 @@ from .views import (
     decrement_quantity,
     single_product,
     about_project,
+    convert_points_to_discount,
 )
 
 urlpatterns = [
@@ -64,6 +65,7 @@ urlpatterns = [
     ),
     path("product/<int:product_id>/", single_product, name='single_product'),
     path("about_project/", about_project, name="about_project"),
+    path("convert-points/", convert_points_to_discount, name="convert_points_to_discount"),
 ]
 
 if settings.DEBUG:
