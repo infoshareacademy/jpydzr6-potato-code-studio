@@ -13,6 +13,7 @@ from django.core.mail import send_mail
 from django.conf import settings
 from django.contrib.auth.password_validation import validate_password
 from django.core.exceptions import ValidationError
+from django.db.models import F
 
 from django.http import HttpResponse
 # import json
@@ -391,9 +392,15 @@ def mini_quiz_bio_view(request):
         "total_questions": total_questions,
     })
 
-
+@login_required
 def quiz_result_view(request):
     score = request.session.get("score", 0)
+
+    if request.user.is_authenticated and score > 0:
+        request.user.quiz_score = F('quiz_score') + score
+        request.user.save(update_fields=["quiz_score"])
+        request.user.refresh_from_db()
+
     request.session.update({"score": 0, "question_index": 0})
     return render(request, "quiz_result.html", {"score": score})
 

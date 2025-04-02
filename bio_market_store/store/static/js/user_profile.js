@@ -48,3 +48,23 @@ const toggleDeleteButton = () => {
     const deleteButton = document.getElementById("delete-button")
     deleteButton.disabled = inputPasswordField.value.trim() === ""
 }
+
+document.addEventListener("DOMContentLoaded", () => {
+    const tabLinks = document.querySelectorAll('.list-group-item[data-bs-toggle="tab"]');
+
+    tabLinks.forEach(link => {
+        link.addEventListener('click', function () {
+            tabLinks.forEach(item => item.classList.remove('active'));
+            this.classList.add('active');
+        });
+    });
+
+    const hash = window.location.hash;
+    if (hash) {
+        const tabTrigger = document.querySelector(`a[href="${hash}"]`);
+        if (tabTrigger) {
+            new bootstrap.Tab(tabTrigger).show();
+            tabTrigger.classList.add('active');
+        }
+    }
+});

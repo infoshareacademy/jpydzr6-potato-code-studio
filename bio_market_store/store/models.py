@@ -24,6 +24,7 @@ class UserProfile(AbstractUser):
     #     validators=[user_validation.validate],
     # )
     role = models.CharField(max_length=20, choices=base_roles, default="client")
+    quiz_score = models.PositiveIntegerField(default=0)
 
     def __str__(self):
         return f"{self.username}"
