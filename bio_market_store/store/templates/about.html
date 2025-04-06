@@ -1,34 +1,47 @@
 {% extends 'base.html' %} {%load static%} {% block extra_head %}
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-<link rel="stylesheet" href="{% static 'css/about.css' %}">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Megrim&display=swap" rel="stylesheet">
 <link
-    rel="stylesheet"
-    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+        rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
 />
+<link rel="stylesheet" href="{% static 'css/about.css' %}">
 {% endblock %}
 {% block content %}
+
 <div class="container marketing">
-    {% comment %} <div class="container">
+    {% comment %}
+    <div class="container">
         <h1 class="text-center mt-5" id="crewName">PotatoCodeStudio</h1>
         <p class="lead text-center" id="crewText">This is our team</p>
-    </div> {% endcomment %}
+    </div>
+    {% endcomment %}
     <div class="row d-flex justify-content-center">
         <div class="col-md-4 col-sm-6 mb-4">
             <div class="card text-center shadow-lg">
                 <div class="card-body">
                     <svg class="bd-placeholder-img rounded-circle" width="140" height="140"
-                     xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Placeholder"
-                     preserveAspectRatio="xMidYMid slice" focusable="false"><title>Placeholder</title>
-                    <rect width="100%" height="100%" fill="var(--bs-secondary-color)"/>
+                         xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Placeholder"
+                         preserveAspectRatio="xMidYMid slice" focusable="false"><title>Placeholder</title>
+                        <rect width="100%" height="100%" fill="var(--bs-secondary-color)"/>
                     </svg>
                     <h2 class="fw-normal">Julia Blaumann</h2>
                     <p>Another exciting bit of representative placeholder content. This time, we've moved on to the
-                            second
-                            column.</p>
-                    <a href="https://github.com/Julbla23" target="_blank" rel="noopener noreferrer"><i class="fa-brands fa-github"></i></a>
+                        second
+                        column.</p>
+                    <div class="d-flex justify-content-center">
+                        <a href="https://github.com/Julbla23" target="_blank" rel="noopener noreferrer"
+                           class="me-3">
+                            <i class="fa-brands fa-github fa-2x"></i>
+                        </a>
+                        <a href="https://www.linkedin.com/in/julia-blaumann/" target="_blank"
+                           rel="noopener noreferrer">
+                            <i class="fa-brands fa-linkedin fa-2x"></i>
+                        </a>
+                    </div>
+
                 </div>
             </div>
         </div>
@@ -36,15 +49,25 @@
             <div class="card text-center shadow-lg">
                 <div class="card-body">
                     <svg class="bd-placeholder-img rounded-circle" width="140" height="140"
-                     xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Placeholder"
-                     preserveAspectRatio="xMidYMid slice" focusable="false"><title>Placeholder</title>
-                    <rect width="100%" height="100%" fill="var(--bs-secondary-color)"/>
+                         xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Placeholder"
+                         preserveAspectRatio="xMidYMid slice" focusable="false"><title>Placeholder</title>
+                        <rect width="100%" height="100%" fill="var(--bs-secondary-color)"/>
                     </svg>
                     <h2 class="fw-normal">Jakub Charkiewicz</h2>
                     <p>Another exciting bit of representative placeholder content. This time, we've moved on to the
-                            second
-                            column.</p>
-                    <a href="https://github.com/JakubCharkiewicz" target="_blank" rel="noopener noreferrer"><i class="fa-brands fa-github"></i></a>
+                        second
+                        column.</p>
+
+                    <div class="d-flex justify-content-center">
+                        <a href="https://github.com/JakubCharkiewicz" target="_blank" rel="noopener noreferrer"
+                           class="me-3">
+                            <i class="fa-brands fa-github fa-2x"></i>
+                        </a>
+                        <a href="https://www.linkedin.com/in/jakubcharkiewicz/" target="_blank"
+                           rel="noopener noreferrer">
+                            <i class="fa-brands fa-linkedin fa-2x"></i>
+                        </a>
+                    </div>
                 </div>
             </div>
         </div>
@@ -52,15 +75,26 @@
             <div class="card text-center shadow-lg">
                 <div class="card-body">
                     <svg class="bd-placeholder-img rounded-circle" width="140" height="140"
-                     xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Placeholder"
-                     preserveAspectRatio="xMidYMid slice" focusable="false"><title>Placeholder</title>
-                    <rect width="100%" height="100%" fill="var(--bs-secondary-color)"/>
+                         xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Placeholder"
+                         preserveAspectRatio="xMidYMid slice" focusable="false"><title>Placeholder</title>
+                        <rect width="100%" height="100%" fill="var(--bs-secondary-color)"/>
                     </svg>
                     <h2 class="fw-normal">Paweł Enerlich</h2>
                     <p>Another exciting bit of representative placeholder content. This time, we've moved on to the
-                            second
-                            column.</p>
-                    <a href="https://github.com/PawelEnerlich" target="_blank" rel="noopener noreferrer"><i class="fa-brands fa-github"></i></a>
+                        second
+                        column.</p>
+
+                    <div class="d-flex justify-content-center">
+                        <a href="https://github.com/PawelEnerlich" target="_blank" rel="noopener noreferrer"
+                           class="me-3">
+                            <i class="fa-brands fa-github fa-2x"></i>
+                        </a>
+                        <a href="https://www.linkedin.com/in/pawe%C5%82-enerlich-544509279/" target="_blank"
+                           rel="noopener noreferrer">
+                            <i class="fa-brands fa-linkedin fa-2x"></i>
+                        </a>
+                    </div>
+
                 </div>
             </div>
         </div>
@@ -68,15 +102,24 @@
             <div class="card text-center shadow-lg">
                 <div class="card-body">
                     <svg class="bd-placeholder-img rounded-circle" width="140" height="140"
-                             xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Placeholder"
-                             preserveAspectRatio="xMidYMid slice" focusable="false"><title>Placeholder</title>
-                            <rect width="100%" height="100%" fill="var(--bs-secondary-color)"/>
-                        </svg>
+                         xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Placeholder"
+                         preserveAspectRatio="xMidYMid slice" focusable="false"><title>Placeholder</title>
+                        <rect width="100%" height="100%" fill="var(--bs-secondary-color)"/>
+                    </svg>
                     <h2 class="fw-normal">Maciej Kusztal</h2>
                     <p>Another exciting bit of representative placeholder content. This time, we've moved on to the
-                            second
-                            column.</p>
-                    <a href="https://github.com/mkusztal" target="_blank" rel="noopener noreferrer"><i class="fa-brands fa-github"></i></a>
+                        second
+                        column.</p>
+                    <div class="d-flex justify-content-center">
+                        <a href="https://github.com/mkusztal" target="_blank" rel="noopener noreferrer"
+                           class="me-3">
+                            <i class="fa-brands fa-github fa-2x"></i>
+                        </a>
+                        <a href="https://www.linkedin.com/in/maciej-kusztal-61b4a3201/" target="_blank"
+                           rel="noopener noreferrer">
+                            <i class="fa-brands fa-linkedin fa-2x"></i>
+                        </a>
+                    </div>
                 </div>
             </div>
         </div>
@@ -84,23 +127,157 @@
             <div class="card text-center shadow-lg">
                 <div class="card-body">
                     <svg class="bd-placeholder-img rounded-circle" width="140" height="140"
-                             xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Placeholder"
-                             preserveAspectRatio="xMidYMid slice" focusable="false"><title>Placeholder</title>
-                            <rect width="100%" height="100%" fill="var(--bs-secondary-color)"/>
-                        </svg>
+                         xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Placeholder"
+                         preserveAspectRatio="xMidYMid slice" focusable="false"><title>Placeholder</title>
+                        <rect width="100%" height="100%" fill="var(--bs-secondary-color)"/>
+                    </svg>
                     <h2 class="fw-normal">Wojciech Wawrzyszko</h2>
                     <p>Another exciting bit of representative placeholder content. This time, we've moved on to the
-                            second
-                            column.</p>
-                    <a href="https://github.com/Wojciech-Wawrzyszko" target="_blank" rel="noopener noreferrer"><i class="fa-brands fa-github"></i></a>
+                        second
+                        column.</p>
+                    <div class="d-flex justify-content-center">
+                        <a href="https://github.com/Wojciech-Wawrzyszko" target="_blank" rel="noopener noreferrer"
+                           class="me-3">
+                            <i class="fa-brands fa-github fa-2x"></i>
+                        </a>
+                        <a href="https://www.linkedin.com/in/wojciech-wawrzyszko-b9544a311/" target="_blank"
+                           rel="noopener noreferrer">
+                            <i class="fa-brands fa-linkedin fa-2x"></i>
+                        </a>
+                    </div>
                 </div>
             </div>
-        </div>
         </div>
     </div>
 </div>
 
-<footer class="footer text-white-50 mt-5">
-    <p>Julia Blaumann, Jakub Charkiewicz, Paweł Enerlich, Maciej Kusztal, Wojciech Wawrzyszko</p>
-</footer>
+<div class="typewriter">
+    <div class="ciek">
+        <h1>
+            <p class="projectPar">But what about <span class="highlight">our</span> project?</p>
+        </h1>
+
+        <div class="centered">
+            <a href="https://github.com/infoshareacademy/jpydzr6-potato-code-studio/tree/dev" target="_blank"
+               rel="noopener noreferrer">
+                <i class="fa-brands fa-github fa-5x"></i>
+            </a>
+        </div>
+
+        <style>
+            .projectPar {
+                margin-bottom: 1rem;
+                text-align: center;
+            }
+
+            .highlight {
+                animation: changeColor 2s 1s forwards;
+            }
+
+            @keyframes changeColor {
+                from {
+                    color: white;
+                }
+                to {
+                    color: #32de84;
+                }
+            }
+
+            .centered {
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                height: 5vh;
+            }
+
+
+        </style>
+    </div>
+
+</div>
+<div class="container-2">
+    <div>
+        <div class="container marketing">
+
+
+            <hr class="featurette-divider">
+
+            <div class="row featurette">
+                <div class="col-md-7">
+                    <h2 class="featurette-heading fw-normal lh-1"> Project Overview <span
+                            class="text-body-secondary" id="coś"></span></h2>
+                    <p class="lead">The "Bio Market Store" project is an e-commerce web application built using the
+                        Django framework for the backend. The application incorporates front-end technologies such
+                        as
+                        HTML, CSS, JavaScript, and Bootstrap to ensure a responsive and user-friendly experience.
+                        Django
+                        handles the backend logic, including product management, user authentication, and database
+                        interactions. The use of these technologies allows for the creation of a dynamic and
+                        scalable
+                        platform.</p>
+                </div>
+                <div class="col-md-5">
+                    <img src="{% static 'images/image2.png' %}"
+                         class="bd-placeholder-img bd-placeholder-img-lg featurette-image img-fluid mx-auto"
+                         width="500"
+                         height="500" alt="Opis obrazu"
+                         style="max-width: 500px; max-height: 500px; object-fit: cover;">
+                </div>
+
+            </div>
+
+            <hr class="featurette-divider">
+
+            <div class="row featurette">
+                <div class="col-md-7 order-md-2">
+                    <h2 class="featurette-heading fw-normal lh-1">Main Features <span
+                            class="text-body-secondary"></span></h2>
+                    <p class="lead">The main features of the application include browsing a list of organic
+                        products,
+                        adding products to the cart, proceeding to the payment method, and contacting customer
+                        support
+                        via email. Additionally, users can create accounts, log in, and manage their information
+                        through
+                        a user panel. Suppliers can add their products to the marketplace, expanding the range of
+                        products available to customers.</p>
+                </div>
+                <div class="col-md-5 order-md-1">
+                    <img src="{% static 'images/js_potato.png' %}"
+                         class="bd-placeholder-img bd-placeholder-img-lg featurette-image img-fluid mx-auto"
+                         width="500"
+                         height="500" alt="Opis obrazu"
+                         style="max-width: 500px; max-height: 500px; object-fit: cover;">
+                </div>
+            </div>
+
+            <hr class="featurette-divider">
+
+            <div class="row featurette">
+                <div class="col-md-7">
+                    <h2 class="featurette-heading fw-normal lh-1">Development Process<span
+                            class="text-body-secondary"></span>
+                    </h2>
+                    <p class="lead">The project was developed iteratively, with the implementation of key features
+                        divided into stages. We used the Git version control system and the GitHub platform, which
+                        facilitated effective teamwork. Each change was documented in commits, and the code
+                        underwent a
+                        review process to ensure its quality. Communication primarily took place through tools such
+                        as
+                        Slack and online meetings, where we discussed progress and upcoming tasks.</p>
+                </div>
+                <div class="col-md-5">
+                    <img src="{% static 'images/Gentleman_potato.png' %}"
+                         class="bd-placeholder-img bd-placeholder-img-lg featurette-image img-fluid mx-auto"
+                         width="500"
+                         height="500" alt="Opis obrazu"
+                         style="max-width: 500px; max-height: 500px; object-fit: cover;">
+                </div>
+            </div>
+
+            <hr class="featurette-divider">
+        </div>
+    </div>
+
+</div>
+
 {% endblock %}

@@ -17,33 +17,43 @@
 {% endblock %}
 {% block content %}
 {% if question %}
-    <div class="container mt-5">
+    <div class="mini-quiz-container mt-5">
         <h1 class="text-center">Mini Quiz Bio</h1>
-            <div class="card p-4 mt-4 shadow-lg text-center position-relative" style="max-width: 1000px; margin: auto;">
-                <h2>{{ question.question_text }}</h2>
-                <form method="POST">
-                    {% csrf_token %}
+        <div class="shadow-box">
+            <div class="progress">
+                <div id="progressBar" class="progress-bar progress-bar-striped progress-bar-animated"
+                    role="progressbar" aria-valuenow="{{ progress }}" aria-valuemin="0"
+                    aria-valuemax="100" style="width: {{ progress }}%">
+                    {{ progress|floatformat:0 }}%
+                </div>
+            </div>
+        </div>
+        <p class="text-center mt-2">Question {{ current_index }} of {{ total_questions }}</p>
+        <div class="card p-4 mt-4 shadow-lg text-center position-relative" style="max-width: 1000px; margin: auto;">
+            <h2>{{ question.question_text }}</h2>
+            <form method="POST">
+                {% csrf_token %}
 
-                    <div class="form-check text-center mt-3">
-                        <div class="d-flex flex-column align-items-center">
-                            {% for value, text in form.fields.answer.choices %}
-                                <label class="form-check-label d-flex align-items-center p-3 mb-3" style="cursor: pointer; width: 75%; background: rgba(255, 255, 255, 0.1); border-radius: 8px;">
-                                    <input type="radio" class="form-check-input me-2" name="answer" value="{{ value }}" {% if messages %}disabled{% endif %}>
-                                    {{ text }}
-                                </label>
-                            {% endfor %}
-                        </div>
+                <div class="form-check text-center mt-3">
+                    <div class="d-flex flex-column align-items-center">
+                        {% for value, text in form.fields.answer.choices %}
+                            <label class="form-check-label d-flex align-items-center p-3 mb-3" style="cursor: pointer; width: 75%; background: rgba(255, 255, 255, 0.1); border-radius: 8px;">
+                                <input type="radio" class="form-check-input me-2" name="answer" value="{{ value }}" {% if messages %}disabled{% endif %}>
+                                {{ text }}
+                            </label>
+                        {% endfor %}
                     </div>
+                </div>
 
                 <div class="button-group" style="position: absolute; bottom: 0; left: 0; right: 0;">
                     <button type="submit" name="submit" class="btn btn-primary" {% if messages %}disabled{% endif %}>Submit</button>
-                    <button type="submit" name="next" class="btn btn-success">Next</button>
-                    <button type="submit" name="finish" class="btn btn-danger">Finish</button>
+                    <button id="nextBtn" type="submit" name="next" class="btn btn-success" {% if not messages %}style="display: none;"{% endif %}>Next</button>
+                    <button id="finishBtn" type="submit" name="finish" class="btn btn-danger">Finish</button>
                 </div>
             </form>
         </div>
 
-        <p class="mt-4"><strong>Score:</strong> {{ score }}</p>
+        <p class="mt-4 text-center"><strong>Score:</strong> {{ score }} </p>
     {% else %}
         <div class="alert alert-warning text-center">No questions available.</div>
     {% endif %}

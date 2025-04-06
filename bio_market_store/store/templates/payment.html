@@ -1,20 +1,20 @@
-<!doctype html>
+{% extends 'base.html' %}
 {% load static %}
-<html lang="en" data-bs-theme="auto">
-<head>
-    <script src="/docs/5.3/assets/js/color-modes.js"></script>
-    <link rel="stylesheet" href="{% static 'css/payment.css' %}">
-    <title>🥔BioPotato🥔</title>
-    <link rel="canonical" href="https://getbootstrap.com/docs/5.3/examples/checkout/">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+{% block extra_head %}
+<link rel="stylesheet" href="{% static 'css/payment.css' %}">
+<title>🥔BioPotato🥔</title>
+<link rel="canonical" href="https://getbootstrap.com/docs/5.3/examples/checkout/">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
           integrity="..." crossorigin="anonymous">
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js" integrity="..."
-            crossorigin="anonymous"></script>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@docsearch/css@3">
-    <link href="/docs/5.3/dist/css/bootstrap.min.css" rel="stylesheet"
-          integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
-</head>
-<body class="bg-body-tertiary">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@docsearch/css@3">
+<style>
+    #fullNameDisplayText {
+        --bs-text-opacity: 1;
+        color: #f8f9fa !important;
+    }
+</style>
+{% endblock %}
+{% block content %}
 
 <div class="container">
     <a href="{% url 'cover_page' %}" class="d-flex align-items-center mb-3 link-dark text-decoration-none">
@@ -23,18 +23,12 @@
                 <path d="M 24.962891 1.0546875 A 1.0001 1.0001 0 0 0 24.384766 1.2636719 L 1.3847656 19.210938 A 1.0005659 1.0005659 0 0 0 2.6152344 20.789062 L 4 19.708984 L 4 46 A 1.0001 1.0001 0 0 0 5 47 L 18.832031 47 A 1.0001 1.0001 0 0 0 19.158203 47 L 30.832031 47 A 1.0001 1.0001 0 0 0 31.158203 47 L 45 47 A 1.0001 1.0001 0 0 0 46 46 L 46 19.708984 L 47.384766 20.789062 A 1.0005657 1.0005657 0 1 0 48.615234 19.210938 L 41 13.269531 L 41 6 L 35 6 L 35 8.5859375 L 25.615234 1.2636719 A 1.0001 1.0001 0 0 0 24.962891 1.0546875 z M 25 3.3222656 L 44 18.148438 L 44 45 L 32 45 L 32 26 L 18 26 L 18 45 L 6 45 L 6 18.148438 L 25 3.3222656 z M 37 8 L 39 8 L 39 11.708984 L 37 10.146484 L 37 8 z M 20 28 L 30 28 L 30 45 L 20 45 L 20 28 z"></path>
             </svg>
         </button>
-
     </a>
-
     <main>
         <div class="py-5 text-center">
-
         </div>
-
         <div class="row g-5 justify-content-end">
-
             <div class="col-md-5 col-lg-4 cart-container">
-
                 <h4 class="d-flex justify-content-between align-items-center mb-3">
                     <span class="text-primary">Your cart</span>
                     <span class="badge bg-primary rounded-pill">{{ total_items }}</span>
@@ -46,8 +40,8 @@
                             <h6 class="my-0">{{ forloop.counter }}. {{ item.name }}</h6>
                         </div>
                         <span class="text-body-secondary">{{ item.total|floatformat:2 }} PLN</span>
-
-                        {% endfor %}
+                    </li>
+                    {% endfor %}
                     <li class="list-group-item d-flex justify-content-between text-end">
                         <strong class="text-end">Total (PLN)</strong>
                         <strong>{{ cart_total|floatformat:2 }} PLN</strong>
@@ -55,111 +49,146 @@
                 </ul>
             </div>
 
-
             <div class="col-md-7 col-lg-8">
-
-
                 <h4 class="mb-3">Billing address</h4>
-                <form class="needs-validation" method="POST">
+                <form class="needs-validation" method="POST" action="{% url 'payment' %}" novalidate>
                     {% csrf_token %}
                     <div class="row g-3">
                         <div class="col-sm-6">
                             <label for="firstName" class="form-label">First name</label>
-                            <input type="text" class="form-control" id="firstName" name="firstName" required>
+                            <input type="text" class="form-control" id="firstName" name="firstName" value="{{ user_profile.first_name }}" required>
                             <div class="invalid-feedback">
                                 Valid first name is required.
                             </div>
                         </div>
                         <div class="col-sm-6">
                             <label for="lastName" class="form-label">Last name</label>
-                            <input type="text" class="form-control" id="lastName" name="lastName" required>
+                            <input type="text" class="form-control" id="lastName" name="lastName" value="{{ user_profile.last_name }}"  required>
                             <div class="invalid-feedback">
                                 Valid last name is required.
                             </div>
                         </div>
                         <div class="col-12">
-                            <label for="username" class="form-label">Phone number</label>
-                            <div class="input-group has-validation">
-                                <span class="input-group-text">+48</span>
-                                <input type="text" class="form-control" id="username" name="phoneNumber" required>
-                                <div class="invalid-feedback">
-                                    Your phone number is required.
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-12">
                             <label for="email" class="form-label">Email</label>
-                            <input type="email" class="form-control" id="email" name="email" required>
+                            <input type="email" class="form-control" id="email" name="email" value="{{ user_profile.email }}" required>
                             <div class="invalid-feedback">
                                 Please enter a valid email address for shipping updates.
                             </div>
                         </div>
-                        <div class="col-12">
-                            <label for="address" class="form-label">Address</label>
-                            <input type="text" class="form-control" id="address" name="address" required>
-                            <div class="invalid-feedback">
-                                Please enter your shipping address.
-                            </div>
-                        </div>
-                        <div class="col-12">
-                            <label for="address2" class="form-label">Address 2 (Optional)</label>
-                            <input type="text" class="form-control" id="address2" name="address2">
-                        </div>
-                        <div class="col-md-5">
-                            <label for="country" class="form-label">Country</label>
-                            <select class="form-select" id="country" name="country" required>
-                                <option value="">Choose...</option>
-                                <option>Poland</option>
+
+                        <!-- New Address Selection Dropdown -->
+                        <div class="col-12 mb-3">
+                            <label for="address-type" class="form-label">Select Address</label>
+                            <select class="form-select" id="address-type" name="address_type" onchange="toggleAddressForm()">
+                                <option value="billing" selected>Billing Address</option>
+                                <option value="alternative">Alternative Address</option>
                             </select>
-                            <div class="invalid-feedback">
-                                Please select a valid country.
+                        </div>
+
+                        <!-- Billing Address Form (default visible) -->
+                        <div id="billing-address-form">
+                            <div class="col-12">
+                                <label for="phone-billing" class="form-label">Phone number</label>
+                                <div class="input-group has-validation">
+                                    <span class="input-group-text">+48</span>
+                                    <input type="text" class="form-control" id="phone-billing" name="phoneNumber" value="{{ address.phone_number }}" required>
+                                    <div class="invalid-feedback">
+                                        Your phone number is required.
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-12">
+                                <label for="address-billing" class="form-label">Address</label>
+                                <input type="text" class="form-control" id="address-billing" name="address" value="{{ address.street }}" required>
+                                <div class="invalid-feedback">
+                                    Please enter your shipping address.
+                                </div>
+                            </div>
+                            <div class="col-12">
+                                <label for="city-billing" class="form-label">City</label>
+                                <input type="text" class="form-control" id="city-billing" name="city" value="{{ address.city }}" required>
+                                <div class="invalid-feedback">
+                                    Please enter your city.
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-8">
+                                    <label for="state-billing" class="form-label">State</label>
+                                    <select class="form-select" id="state-billing" name="state" required>
+                                        {% for state_value, state_name in states %}
+                                            <option value="{{ state_value }}" {% if address.state == state_value %}selected{% endif %}>{{ state_name }}</option>
+                                        {% endfor %}
+                                    </select>
+                                    <div class="invalid-feedback">
+                                        Please provide a valid state.
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <label for="zip-billing" class="form-label">Zip</label>
+                                    <input type="text" class="form-control" id="zip-billing" name="zip" value="{{ address.postal_code }}" required>
+                                    <div class="invalid-feedback">
+                                        Zip code required.
+                                    </div>
+                                </div>
                             </div>
                         </div>
-                        <div class="col-md-4">
-                            <label for="state" class="form-label">Voivodeship</label>
-                            <select class="form-select" id="state" name="state" required>
-                                <option value="">Choose...</option>
-                                <option>Lower Silesia</option>
-                                <option>Kuyavia-Pomerania</option>
-                                <option>Lodzkie</option>
-                                <option>Lublin</option>
-                                <option>Lubusz</option>
-                                <option>Lesser Poland</option>
-                                <option>Masovia</option>
-                                <option>Subcarpathian</option>
-                                <option>Pomerania</option>
-                                <option>West Pomerania</option>
-                                <option>Greater Poland</option>
-                                <option>Podlaskie</option>
-                                <option>Świętokrzyskie</option>
-                                <option>Opolskie</option>
-                            </select>
-                            <div class="invalid-feedback">
-                                Please provide a valid state.
+
+                        <!-- Alternative Address Form (initially hidden) -->
+                        <div id="alternative-address-form" style="display: none;">
+                            <div class="col-12">
+                                <label for="phone-alternative" class="form-label">Phone number</label>
+                                <div class="input-group has-validation">
+                                    <span class="input-group-text">+48</span>
+                                    <input type="text" class="form-control" id="phone-alternative" name="phoneNumber_alt" value="{{ address_optional.phone_number }}">
+                                    <div class="invalid-feedback">
+                                        Your phone number is required.
+                                    </div>
+                                </div>
                             </div>
-                        </div>
-                        <div class="col-md-3">
-                            <label for="zip" class="form-label">Zip</label>
-                            <input type="text" class="form-control" id="zip" name="zip" required>
-                            <div class="invalid-feedback">
-                                Zip code required.
+                            <div class="col-12">
+                                <label for="address-alternative" class="form-label">Address</label>
+                                <input type="text" class="form-control" id="address-alternative" name="address_alt" value="{{ address_optional.street }}">
+                                <div class="invalid-feedback">
+                                    Please enter your shipping address.
+                                </div>
+                            </div>
+                            <div class="col-12">
+                                <label for="city-alternative" class="form-label">City</label>
+                                <input type="text" class="form-control" id="city-alternative" name="city_alt" value="{{ address_optional.city }}">
+                                <div class="invalid-feedback">
+                                    Please enter your city.
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-8">
+                                    <label for="state-alternative" class="form-label">State</label>
+                                    <select class="form-select" id="state-alternative" name="state_alt">
+                                        {% for state_value, state_name in states %}
+                                            <option value="{{ state_value }}" {% if address_optional.state == state_value %}selected{% endif %}>{{ state_name }}</option>
+                                        {% endfor %}
+                                    </select>
+                                    <div class="invalid-feedback">
+                                        Please provide a valid state.
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <label for="zip-alternative" class="form-label">Zip</label>
+                                    <input type="text" class="form-control" id="zip-alternative" name="zip_alt" value="{{ address_optional.postal_code }}">
+                                    <div class="invalid-feedback">
+                                        Zip code required.
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
-                    <hr class="my-4">
-                    <div class="form-check">
-                        <input type="checkbox" class="form-check-input" id="same-address">
-                        <label class="form-check-label" for="same-address">
-                            Shipping address is the same as my billing address
-                        </label>
-                    </div>
+
                     <hr class="my-4">
                     <h4 class="mb-3">Payment</h4>
                     <div class="my-3">
                         <div class="form-check">
                             <input id="credit" name="paymentMethod" value="credit" type="radio" class="form-check-input"
                                    checked required>
-                            <label class="form-check-label" for="credit">Credit card</label>
+                            <label class="form-check-label text-align-left" for="credit">Credit card</label>
                         </div>
                         <div class="form-check">
                             <input id="debit" name="paymentMethod" value="debit" type="radio" class="form-check-input"
@@ -174,33 +203,27 @@
                             <small class="text-body-secondary" id="fullNameDisplayText">
                                 Full name as displayed on card
                             </small>
-                            <style>
-                                #fullNameDisplayText {
-                                    --bs-text-opacity: 1;
-                                    color: #f8f9fa !important;
-                                }
-                            </style>
                             <div class="invalid-feedback">
                                 Name on card is required
                             </div>
                         </div>
                         <div class="col-md-6">
                             <label for="cc-number" class="form-label">Credit card number</label>
-                            <input type="text" class="form-control" id="cc-number" required>
+                            <input type="text" class="form-control" id="cc-number" name="ccNumber" required>
                             <div class="invalid-feedback">
                                 Credit card number is required
                             </div>
                         </div>
                         <div class="col-md-3">
                             <label for="cc-expiration" class="form-label">Expiration</label>
-                            <input type="text" class="form-control" id="cc-expiration" required>
+                            <input type="text" class="form-control" id="cc-expiration" name="ccExpiration" required>
                             <div class="invalid-feedback">
                                 Expiration date required
                             </div>
                         </div>
                         <div class="col-md-3">
                             <label for="cc-cvv" class="form-label">CVV</label>
-                            <input type="text" class="form-control" id="cc-cvv" required>
+                            <input type="text" class="form-control" id="cc-cvv" name="ccCvv" required>
                             <div class="invalid-feedback">
                                 Security code required
                             </div>
@@ -212,12 +235,213 @@
                     </button>
                 </form>
             </div>
-
+        </div>
     </main>
 </div>
-<script src="/docs/5.3/dist/js/bootstrap.bundle.min.js"
-        integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
-        crossorigin="anonymous"></script>
+{% endblock %}
+{% block extra_js %}
+<script src="{% static 'js/states.js' %}"></script>
+<script
+  src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+  integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
+  crossorigin="anonymous"
+></script>
+<script>
+  // Form validation script
+(function () {
+  'use strict'
 
-</body>
-</html>
+  // Fetch all the forms we want to apply custom Bootstrap validation styles to
+  const forms = document.querySelectorAll('.needs-validation')
+
+  // Setup input validation for specific fields
+  setupNameValidation();
+  setupCardNumberValidation();
+  setupExpirationValidation();
+  setupCVVValidation();
+
+  // Loop over forms and prevent submission if invalid
+  Array.from(forms).forEach(form => {
+    form.addEventListener('submit', event => {
+      if (!form.checkValidity()) {
+        event.preventDefault()
+        event.stopPropagation()
+      }
+
+      form.classList.add('was-validated')
+    }, false)
+  })
+})()
+
+// Function to toggle between address forms
+function toggleAddressForm() {
+  const addressType = document.getElementById('address-type').value;
+  const billingForm = document.getElementById('billing-address-form');
+  const alternativeForm = document.getElementById('alternative-address-form');
+
+  if (addressType === 'billing') {
+    billingForm.style.display = 'block';
+    alternativeForm.style.display = 'none';
+
+    // Make billing address fields required
+    document.getElementById('phone-billing').required = true;
+    document.getElementById('address-billing').required = true;
+    document.getElementById('city-billing').required = true;
+    document.getElementById('state-billing').required = true;
+    document.getElementById('zip-billing').required = true;
+
+    // Make alternative address fields not required
+    document.getElementById('phone-alternative').required = false;
+    document.getElementById('address-alternative').required = false;
+    document.getElementById('city-alternative').required = false;
+    document.getElementById('state-alternative').required = false;
+    document.getElementById('zip-alternative').required = false;
+  } else {
+    billingForm.style.display = 'none';
+    alternativeForm.style.display = 'block';
+
+    // Make billing address fields not required
+    document.getElementById('phone-billing').required = false;
+    document.getElementById('address-billing').required = false;
+    document.getElementById('city-billing').required = false;
+    document.getElementById('state-billing').required = false;
+    document.getElementById('zip-billing').required = false;
+
+    // Make alternative address fields required
+    document.getElementById('phone-alternative').required = true;
+    document.getElementById('address-alternative').required = true;
+    document.getElementById('city-alternative').required = true;
+    document.getElementById('state-alternative').required = true;
+    document.getElementById('zip-alternative').required = true;
+  }
+}
+
+// Function to validate name (letters and spaces only)
+function setupNameValidation() {
+  const nameField = document.getElementById('cc-name');
+
+  nameField.addEventListener('input', function(e) {
+    // Allow only letters and spaces
+    const value = e.target.value;
+    const sanitized = value.replace(/[^A-Za-z\s]/g, '');
+
+    if (value !== sanitized) {
+      e.target.value = sanitized;
+    }
+
+    // Custom validation
+    if (sanitized.trim().length === 0) {
+      nameField.setCustomValidity('Please enter a valid name');
+    } else {
+      nameField.setCustomValidity('');
+    }
+  });
+}
+
+// Function to validate credit card number (exactly 16 digits)
+function setupCardNumberValidation() {
+  const cardField = document.getElementById('cc-number');
+
+  cardField.addEventListener('input', function(e) {
+    // Allow only numbers
+    const value = e.target.value;
+    const sanitized = value.replace(/\D/g, '');
+
+    if (value !== sanitized) {
+      e.target.value = sanitized;
+    }
+
+    // Limit to 16 digits
+    if (sanitized.length > 16) {
+      e.target.value = sanitized.substring(0, 16);
+    }
+
+    // Custom validation - require exactly 16 digits
+    if (e.target.value.length !== 16) {
+      cardField.setCustomValidity('Credit card number must be exactly 16 digits');
+    } else {
+      cardField.setCustomValidity('');
+    }
+  });
+}
+
+// Function to validate expiration date (MM/YY format)
+function setupExpirationValidation() {
+  const expirationField = document.getElementById('cc-expiration');
+
+  expirationField.addEventListener('input', function(e) {
+    let value = e.target.value;
+
+    // Remove any non-digit and non-slash characters
+    value = value.replace(/[^\d\/]/g, '');
+
+    // Handle slash input
+    if (value.length === 2 && !value.includes('/') && e.inputType !== 'deleteContentBackward') {
+      value += '/';
+    }
+
+    // Enforce MM/YY format (automatically add slash)
+    if (value.length > 0 && !value.includes('/')) {
+      if (value.length > 2) {
+        value = value.substring(0, 2) + '/' + value.substring(2, 4);
+      }
+    }
+
+    // Limit to MM/YY format (maximum of 5 characters: MM/YY)
+    if (value.length > 5) {
+      value = value.substring(0, 5);
+    }
+
+    e.target.value = value;
+
+    // Custom validation
+    const pattern = /^(0[1-9]|1[0-2])\/([0-9]{2})$/;
+    if (!pattern.test(value)) {
+      expirationField.setCustomValidity('Please enter a valid expiration date (MM/YY)');
+    } else {
+      // Check if the expiration date is in the future
+      const [month, year] = value.split('/');
+      const currentDate = new Date();
+      const expiryDate = new Date();
+
+      // Add 2000 to get the full year (20YY)
+      expiryDate.setFullYear(2000 + parseInt(year, 10));
+      expiryDate.setMonth(parseInt(month, 10) - 1); // Months are 0-indexed
+
+      if (expiryDate < currentDate) {
+        expirationField.setCustomValidity('Expiration date cannot be in the past');
+      } else {
+        expirationField.setCustomValidity('');
+      }
+    }
+  });
+}
+
+// Function to validate CVV (3 digits only)
+function setupCVVValidation() {
+  const cvvField = document.getElementById('cc-cvv');
+
+  cvvField.addEventListener('input', function(e) {
+    // Allow only numbers
+    const value = e.target.value;
+    const sanitized = value.replace(/\D/g, '');
+
+    if (value !== sanitized) {
+      e.target.value = sanitized;
+    }
+
+    // Limit to 3 digits
+    if (sanitized.length > 3) {
+      e.target.value = sanitized.substring(0, 3);
+    }
+
+    // Custom validation
+    if (e.target.value.length !== 3) {
+      cvvField.setCustomValidity('CVV must be exactly 3 digits');
+    } else {
+      cvvField.setCustomValidity('');
+    }
+  });
+}
+</script>
+{% endblock %}

@@ -1,0 +1,79 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block extra_head %}
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<link rel="stylesheet" href="{% static 'css/single_product.css' %}">
+{% endblock %}
+
+{% block content %}
+
+<div class="container center-container mt-5">
+    <div class="card glass-card p-4" style="max-width: 1000px;">
+        <div class="row g-4">
+            <div class="col-12 text-center">
+                <h3 class="product-name mb-3">{{ product.name_tag }}</h3>
+            </div>
+            <div class="col-md-5">
+                <div class="product-image-container" style="position: relative; height: 500px;">
+                    <img src="{{ product.image.url }}" class="img-fluid rounded" alt="{{ product.name }}" style="object-fit: cover; height: 100%; width: 100%;">
+                </div>
+            </div>
+            <div class="col-md-7">
+                <table class="table table-hover table-borderless">
+                    <tbody>
+                        <tr>
+                            <th>Category:</th>
+                            <td>{{ product.category }}</td>
+                        </tr>
+                        <tr>
+                            <th>Producer:</th>
+                            <td>{{ product.producer }}</td>
+                        </tr>
+                        <tr>
+                            <th>Price:</th>
+                            <td>{{ product.price }} zł</td>
+                        </tr>
+                        <tr>
+                            <th>Commission:</th>
+                            <td>{{ product.commission }}</td>
+                        </tr>
+                        <tr>
+                            <th>Weight:</th>
+                            <td>{{ product.weight }} g</td>
+                        </tr>
+                        <tr>
+                            <th>Amount available:</th>
+                            <td>{{ product.amount }}</td>
+                        </tr>
+                        <tr>
+                            <th>Added:</th>
+                            <td>{{ product.created_at|date:"d M Y" }}</td>
+                        </tr>
+                        {% if product.exp_date %}
+                        <tr>
+                            <th>Expires:</th>
+                            <td>{{ product.exp_date }}</td>
+                        </tr>
+                        {% endif %}
+                    </tbody>
+                </table>
+                <h5 class="mt-4">Description:</h5>
+                <div class="p-3 bg-light rounded" style="min-height: 120px; max-height: 250px; overflow-y: auto; color: black;">
+                    {{ product.description }}
+                </div>
+                <div class="mt-4 text-center">
+                    <a href="{% url 'product_list' %}" class="btn btn-secondary">← Back to Products</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-u1OknCvxWvY5kfmNBILK2hRnQC3Pr17a+RTT6rIHI7NnikvbZlHgTPOOmMi466C8"
+        crossorigin="anonymous"></script>
+
+{% endblock %}
