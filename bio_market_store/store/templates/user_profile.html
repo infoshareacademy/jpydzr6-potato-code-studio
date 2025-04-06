@@ -58,8 +58,11 @@
               >
                 {% csrf_token %}
                 <h5>Personal Information</h5>
-                <div class="row mb-3">
+                {% comment %} <div class="row mb-3">
                   <div class="col-md-12 d-flex flex-column">
+                  <label class="form-label">
+                    {{ user_profile_form.first_name.label }}:
+                  </label>
                     <label class="form-label">{{ user_profile_form.first_name.label_tag }}</label>
                     {{ user_profile_form.first_name }}
                   </div>
@@ -92,7 +95,22 @@
                       </span>
                     </div>
                   </div>
-                </div>
+                </div> {% endcomment %}
+                {% for field in user_profile_form %}
+                  <div class="row mb-3">
+                    <div class="col-md-12 d-flex flex-column">
+                      <label class="form-label" for="{{ field.id_for_label }}">{{ field.label }}</label>
+                      <div class="input-group">
+                        {{ field }}
+                        {% if field.name == "role" %}
+                        <span class="input-group-text">
+                          <i class="fa-solid fa-arrow-down"></i>
+                        </span>
+                        {% endif %}
+                      </div>
+                    </div>
+                  </div>
+                  {% endfor %}
                 <button
                   type="submit"
                   class="btn btn-success w-100"
@@ -105,27 +123,15 @@
 
             <!-- Address Tab -->
             <div class="tab-pane fade" id="address">
-              <!-- Wybór adresu -->
-              <div class="mb-3">
-                <label for="address-type" class="form-label">Choose Address</label>
-                <select class="form-select" id="address-type" onchange="toggleAddressForm()">
-                  <option value="main" selected>Billing Address</option>
-                  <option value="optional">Alternative Address</option>
-                </select>
-              </div>
-
-              <!-- Formularz adresu głównego -->
-              <div id="billing-address">
-                <form method="POST" action="{% url 'user_profile_address' %}">
-                  {% csrf_token %}
-                  <h5>Billing Address</h5>
-
-                  <!-- Street -->
-                  <div class="row mb-3">
-                    <div class="col-md-12 d-flex flex-column">
-                      <label for="id_street" class="form-label">Street</label>
-                      {{ address_form.street }}
-                    </div>
+              <form method="POST" action="{% url 'user_profile_address' %}">
+                {% csrf_token %}
+                <h5>Address</h5>
+                {% comment %} <div class="row mb-3">
+                  <div class="col-md-12 d-flex flex-column">
+                    <label class="form-label"
+                      >{{ address_form.street.label_tag }}</label
+                    >
+                    {{ address_form.street }}
                   </div>
 
                   <!-- City -->
@@ -155,76 +161,23 @@
                       {{ address_form.postal_code }}
                     </div>
                   </div>
-
-                  <!-- Phone Number -->
-                  <div class="row mb-3">
-                    <div class="col-md-12 d-flex flex-column">
-                      <label for="id_phone_number" class="form-label">Phone Number</label>
-                      {{ address_form.phone_number }}
-                    </div>
+                </div> {% endcomment %}
+                {% for field in address_form %}
+                <div class="row mb-3">
+                  <div class="col-md-12 d-flex flex-column">
+                    <label class="form-label" for="{{ field.id_for_label }}">{{ field.label }}</label>
+                    {{ field }}
                   </div>
-
-                  <button type="submit" class="btn btn-success w-100">
-                    Save <i class="fas fa-save"></i>
-                  </button>
-                </form>
-              </div>
-
-              <!-- Formularz alternatywnego adresu (ukryty domyślnie) -->
-              <div id="alternative-address" style="display: none;">
-                <form method="POST" action="{% url 'user_profile_address_optional' %}">
-                  {% csrf_token %}
-                  <h5>Alternative Address</h5>
-
-                  <!-- Street -->
-                  <div class="row mb-3">
-                    <div class="col-md-12 d-flex flex-column">
-                      <label for="id_optional_street" class="form-label">Street</label>
-                      {{ address_optional_form.street }}
-                    </div>
-                  </div>
-
-                  <!-- City -->
-                  <div class="row mb-3">
-                    <div class="col-md-12 d-flex flex-column">
-                      <label for="id_optional_city" class="form-label">City</label>
-                      {{ address_optional_form.city }}
-                    </div>
-                  </div>
-
-                  <!-- State field with dropdown from states list -->
-                  <div class="row mb-3">
-                    <div class="col-md-12 d-flex flex-column">
-                      <label for="id_optional_state" class="form-label">State</label>
-                      <select name="state" id="id_optional_state" class="form-select">
-                        {% for state_value, state_name in states %}
-                            <option value="{{ state_value }}" {% if address_optional_form.state.value == state_value or address_optional.state == state_value %}selected{% endif %}>{{ state_name }}</option>
-                        {% endfor %}
-                      </select>
-                    </div>
-                  </div>
-
-                  <!-- Postal Code -->
-                  <div class="row mb-3">
-                    <div class="col-md-12 d-flex flex-column">
-                      <label for="id_optional_postal_code" class="form-label">Postal Code</label>
-                      {{ address_optional_form.postal_code }}
-                    </div>
-                  </div>
-
-                  <!-- Phone Number -->
-                  <div class="row mb-3">
-                    <div class="col-md-12 d-flex flex-column">
-                      <label for="id_optional_phone_number" class="form-label">Phone Number</label>
-                      {{ address_optional_form.phone_number }}
-                    </div>
-                  </div>
-
-                  <button type="submit" class="btn btn-success w-100">
-                    Save <i class="fas fa-save"></i>
-                  </button>
-                </form>
-              </div>
+                </div>
+                {% endfor %}
+                <button
+                  type="submit"
+                  class="btn btn-success w-100"
+                  onclick="success_alert('Address updated successfully')"
+                >
+                  Save <i class="fas fa-save"></i>
+                </button>
+              </form>
             </div>
 
             <!-- Security Settings Tab -->
@@ -232,45 +185,55 @@
               <form method="POST" action="{% url 'user_profile_password' %}">
                 {% csrf_token %}
                 <h5>Change Password</h5>
-                <div class="row mb-3">
-                  <div class="col-md-12 d-flex flex-column">
+                <div class="mb-3">
                     <label class="form-label">
                       {{ password_form.old_password.label_tag }}
                     </label>
-                    <input
-                      type="password"
-                      name="old_password"
-                      class="form-control"
-                      id="id_old_password"
-                      required
-                    />
-                  </div>
+                    <div class="input-group">
+                      <input
+                        type="password"
+                        name="old_password"
+                        class="form-control"
+                        id="id_old_password"
+                        required
+                      />
+                      <span class="input-group-text">
+                        <i class="fa fa-eye" id="toggle_old_password" style="cursor: pointer;"></i>
+                      </span>
+                    </div>
                 </div>
-                <div class="row mb-3">
-                  <div class="col-md-12 d-flex flex-column">
+                <div class="mb-3">
                     <label class="form-label">
                       {{ password_form.new_password1.label_tag }}
                     </label>
-                    <input
-                      type="password"
-                      name="new_password1"
-                      class="form-control"
-                      id="id_new_password1"
-                      required
-                    />
-                  </div>
+                    <div class="input-group">
+                      <input
+                        type="password"
+                        name="new_password1"
+                        class="form-control"
+                        id="id_new_password1"
+                        required
+                      />
+                      <span class="input-group-text">
+                        <i class="fa fa-eye" id="toggle_new_password" style="cursor: pointer;"></i>
+                      </span>
+                    </div>
+                    
                 </div>
-                <div class="row mb-3">
-                  <div class="col-md-12 d-flex flex-column">
+                <div class="mb-3">
                     <label class="form-label"> Confirm password: </label>
-                    <input
-                      type="password"
-                      name="new_password2"
-                      class="form-control"
-                      id="id_new_password2"
-                      required
-                    />
-                  </div>
+                    <div class="input-group">
+                      <input
+                        type="password"
+                        name="new_password2"
+                        class="form-control"
+                        id="id_new_password2"
+                        required
+                      />
+                      <span class="input-group-text">
+                        <i class="fa fa-eye" id="toggle_new_password2" style="cursor: pointer;"></i>
+                      </span>
+                    </div>
                 </div>
                 <button
                   type="submit"
