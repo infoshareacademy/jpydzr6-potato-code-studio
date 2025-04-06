@@ -110,10 +110,17 @@ def product_list(request):
     total_items = 0
     cart_total = 0.0
 
-    # Calculate total items and cart total
-    for item in cart.values():
+    for key, item in cart.items():
+        try:
+            product = Product.objects.get(id=int(key))
+            item["available"] = product.amount
+        except Product.DoesNotExist:
+            item["available"] = 0
+
         total_items += item["quantity"]
         cart_total += float(item["price"]) * item["quantity"]
+
+    request.session["cart"] = cart
 
     return render(
         request,
@@ -297,6 +304,13 @@ def user_profile_password(request):
     password_form = UserPasswordChangeForm(request.user)
     return render(request, "user_profile.html", {"password_form": password_form})
 
+def initialize_quiz_session(request):
+    questions = MiniQuizBio.objects.order_by('?')[:5]
+    request.session.update({
+        "questions": [q.id for q in questions],
+        "question_index": 0,
+        "score": 0
+    })
 
 @login_required
 def user_profile_delete_user(request):
@@ -332,66 +346,56 @@ def user_profile_delete_user(request):
 
 
 def mini_quiz_bio_view(request):
-    questions = list(MiniQuizBio.objects.all())
-    index = request.session.get("question_index", 0)
-    score = request.session.get("score", 0)
+    if "retry" in request.GET:
+        for key in ["questions", "score", "question_index"]:
+            request.session.pop(key, None)
+        return redirect("mini_quiz_bio")
 
-    if index >= len(questions):
+    if "questions" not in request.session:
+        initialize_quiz_session(request)
+
+    index = request.session["question_index"]
+    total_questions = len(request.session["questions"])
+
+    if index >= total_questions:
         return redirect("quiz_result")
 
-    question = questions[index]
-    choices = question.get_choices()
+    question = MiniQuizBio.objects.get(id=request.session["questions"][index])
+    form = MiniQuizBioForm(request.POST or None, question=question)
 
     if request.method == "POST":
-        form = MiniQuizBioForm(request.POST, question=question)
-
         if "submit" in request.POST and form.is_valid():
             selected = form.cleaned_data["answer"]
             correct = question.correct_answer
+            request.session["score"] += 5 if selected == correct else 0
 
-            if selected == correct:
-                score += 5
-                request.session["score"] = score
-                messages.success(request, "✅ Correct!")
-            else:
-                correct_answer_text = choices.get(correct, "Unknown")
-                messages.error(
-                    request,
-                    f"❌ Incorrect! Correct answer: {correct.upper()} - {correct_answer_text}",
-                )
-
-            # ✅ Stay on the same question (don't increment index)
-            return render(
+            messages.success(request, "✅ Correct!") if selected == correct else messages.error(
                 request,
-                "mini_quiz_bio.html",
-                {"form": form, "question": question, "score": score},
+                f"❌ Incorrect! Correct answer: {correct.upper()} - {question.get_choices().get(correct, 'Unknown')}"
             )
-
-        elif "next" in request.POST:
-            request.session["question_index"] = index + 1
             return redirect("mini_quiz_bio")
 
-        elif "finish" in request.POST:
+        if "next" in request.POST:
+            request.session["question_index"] += 1
+            return redirect("mini_quiz_bio")
+
+        if "finish" in request.POST:
             return redirect("quiz_result")
 
-    else:
-        form = MiniQuizBioForm(question=question)
-
-    return render(
-        request,
-        "mini_quiz_bio.html",
-        {"form": form, "question": question, "score": score},
-    )
+    return render(request, "mini_quiz_bio.html", {
+        "form": form,
+        "question": question,
+        "score": request.session["score"],
+        "progress": (index / total_questions) * 100,
+        "current_index": index + 1,
+        "total_questions": total_questions,
+    })
 
 
 def quiz_result_view(request):
     score = request.session.get("score", 0)
-
-    request.session["score"] = 0
-    request.session["question_index"] = 0
-
+    request.session.update({"score": 0, "question_index": 0})
     return render(request, "quiz_result.html", {"score": score})
-
 
 def add_to_cart(request, product_id):
     product = get_object_or_404(Product, id=product_id)
@@ -399,18 +403,26 @@ def add_to_cart(request, product_id):
 
     product_key = str(product_id)
 
-    if product_key in cart:
-        cart[product_key]["quantity"] += 1
-    else:
-        cart[product_key] = {
-            "quantity": 1,
-            "price": str(product.price),
-            "name": product.name_tag,
-            "image": product.image.url,
-        }
+    # Check stock level
+    current_qty = cart.get(product_key, {}).get("quantity", 0)
 
-    request.session["cart"] = cart
-    request.session.modified = True  # Critical fix
+    if current_qty < product.amount:
+        if product_key in cart:
+            cart[product_key]["quantity"] += 1
+        else:
+            cart[product_key] = {
+                "quantity": 1,
+                "price": str(product.price),
+                "name": product.name_tag,
+                "image": product.image.url,
+                "available": product.amount,
+            }
+
+        request.session["cart"] = cart
+        request.session.modified = True  # Critical fix
+    else:
+        messages.warning(request, f"Cannot add more {product.name_tag}. Only {product.amount} available in stock.")
+
     return redirect("product_list")
 
 
@@ -430,8 +442,13 @@ def payment(request):
     address, created = Address.objects.get_or_create(user=request.user)
     address_optional, created = AddressOptional.objects.get_or_create(user=request.user)
 
-    # Process cart items
     for product_id, item in cart.items():
+        try:
+            product = Product.objects.get(id=int(product_id))
+            item["available"] = product.amount
+        except Product.DoesNotExist:
+            item["available"] = 0
+
         total = float(item["price"]) * item["quantity"]
         cart_total += total
         total_items += item["quantity"]
@@ -442,6 +459,7 @@ def payment(request):
                 "price": float(item["price"]),
                 "quantity": item["quantity"],
                 "total": total,
+                "available": item["available"],
             }
         )
 
@@ -488,6 +506,16 @@ def payment(request):
 
             # Use alternative address for shipping
             selected_address = address_optional
+
+        # Stock level update
+        for product_id, item in cart.items():
+            try:
+                product = Product.objects.get(id=int(product_id))
+
+                product.amount -= item["quantity"]
+                product.save()
+            except Product.DoesNotExist:
+                pass
 
         # Prepare email content
         products_info = "\n".join(
@@ -541,38 +569,61 @@ def payment(request):
 def increment_quantity(request, product_id):
     product_key = str(product_id)
     cart = request.session.get("cart", {})
+
+    product = get_object_or_404(Product, id=product_id)
+
     if product_key in cart:
-        cart[product_key]["quantity"] += 1
-        request.session["cart"] = cart
-        request.session.modified = True
+        if cart[product_key]["quantity"] < product.amount:
+            cart[product_key]["quantity"] += 1
+            request.session["cart"] = cart
+            request.session.modified = True
 
-        # Calculate total items and cart total
-        total_items = sum(item["quantity"] for item in cart.values())
-        cart_total = sum(
-            float(item["price"]) * item["quantity"] for item in cart.values()
-        )
+            # Calculate total items and cart total
+            total_items = sum(item["quantity"] for item in cart.values())
+            cart_total = sum(
+                float(item["price"]) * item["quantity"] for item in cart.values()
+            )
 
-        return JsonResponse(
-            {
-                "quantity": cart[product_key]["quantity"],
-                "total": float(cart[product_key]["price"])
-                * cart[product_key]["quantity"],
-                "cart_total": cart_total,
-                "total_items": total_items,
-            }
-        )
+            return JsonResponse(
+                {
+                    "quantity": cart[product_key]["quantity"],
+                    "total": float(cart[product_key]["price"]) * cart[product_key]["quantity"],
+                    "cart_total": cart_total,
+                    "total_items": total_items,
+                }
+            )
+        else:
+            total_items = sum(item["quantity"] for item in cart.values())
+            cart_total = sum(
+                float(item["price"]) * item["quantity"] for item in cart.values()
+            )
+
+            return JsonResponse(
+                {
+                    "quantity": cart[product_key]["quantity"],
+                    "total": float(cart[product_key]["price"]) * cart[product_key]["quantity"],
+                    "cart_total": cart_total,
+                    "total_items": total_items,
+                    "limit_reached": True
+                }
+            )
+
     return JsonResponse({"error": "Product not found in cart"}, status=404)
 
 
 def decrement_quantity(request, product_id):
     product_key = str(product_id)
     cart = request.session.get("cart", {})
+
+    product = get_object_or_404(Product, id=product_id)
+
     if product_key in cart:
         if cart[product_key]["quantity"] > 1:
             cart[product_key]["quantity"] -= 1
         else:
             # Instead of deleting the item, set its quantity to 0
             cart[product_key]["quantity"] = 0
+
         request.session["cart"] = cart
         request.session.modified = True
 
@@ -582,16 +633,21 @@ def decrement_quantity(request, product_id):
             float(item["price"]) * item["quantity"] for item in cart.values()
         )
 
+        limit_reached = cart[product_key]["quantity"] >= product.amount
+
         return JsonResponse(
             {
                 "quantity": cart.get(product_key, {}).get("quantity", 0),
                 "total": float(cart.get(product_key, {}).get("price", 0))
-                * cart.get(product_key, {}).get("quantity", 0),
+                         * cart.get(product_key, {}).get("quantity", 0),
                 "cart_total": cart_total,
                 "total_items": total_items,
+                "limit_reached": limit_reached
             }
         )
+
     return JsonResponse({"error": "Product not found in cart"}, status=404)
+
 
 def single_product(request, product_id):
     try:
@@ -599,3 +655,6 @@ def single_product(request, product_id):
         return render(request, 'single_product.html', {'product': product})
     except Product.DoesNotExist:
         return HttpResponse(f"Product with id {product_id} does not exist.")
+
+def about_project(request):
+    return render(request, "about_project.html")

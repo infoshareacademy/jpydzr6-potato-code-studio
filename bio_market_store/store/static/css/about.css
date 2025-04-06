@@ -1,15 +1,37 @@
+ /*justify-content: normal;*/
+ /*   align-items: normal;*/
+ /*   text-align: start;*/
 
-#crewName {
-    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+.featurette-divider {
+    color: white;
+!important;
+}
+.container-2 {
+    margin-top: 10vh !important;
 }
 
-#crewText {
-    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
-}
 
 .marketing {
     margin-top: 20rem !important;
     margin-bottom: 5rem;
+}
+
+.fa-brands.fa-linkedin {
+
+    transition: color 0.3s ease;
+}
+
+.fa-brands.fa-linkedin:hover {
+    color: #0077B5; /* Kolor po najchaniu */
+}
+
+
+.fa-brands.fa-github {
+    transition: color 0.3s ease;
+}
+
+.fa-brands.fa-github:hover {
+    color: #2b3137; /* Kolor po najchaniu */
 }
 
 .card {
@@ -52,5 +74,15 @@ i {
 .text {
     margin: 0;
     font-size: 16px;
+}
+
+
+.featurette-heading {
+    color: #32de84; !important;
+}
+
+.lead {
+    font-size: 1.75rem; !important;
+    font-weight: 300;
 }
 

@@ -15,9 +15,9 @@
 {% endblock %}
 
 {% block content %}
-<h1 class="product-form-title">Add new product</h1>
 
 <form method="POST" enctype="multipart/form-data" class="product-form">
+    <h1 class="product-form-title">Add new product</h1>
     {% csrf_token %}
 
     <div class="product-form-group">
@@ -97,6 +97,4 @@
     <h3 class="product-form-warning">All fields are required</h3>
 
 </form>
-
 {% endblock %}
-

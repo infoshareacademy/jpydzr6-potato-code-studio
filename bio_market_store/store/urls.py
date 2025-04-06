@@ -24,6 +24,7 @@ from .views import (
     increment_quantity,
     decrement_quantity,
     single_product,
+    about_project,
 )
 
 urlpatterns = [
@@ -45,7 +46,7 @@ urlpatterns = [
     path("add/", add_product, name="add"),
     path("product_list/", product_list, name="product_list"),
     path("about/", about_us, name="about-page"),
-    path("contact", contact_us, name="contact-page"),
+    path("contact/", contact_us, name="contact-page"),
     path("quiz/", mini_quiz_bio_view, name="mini_quiz_bio"),
     path("quiz/result/", quiz_result_view, name="quiz_result"),
     path("add_to_cart/<int:product_id>/", add_to_cart, name="add_to_cart"),
@@ -62,6 +63,7 @@ urlpatterns = [
         name="decrement_quantity",
     ),
     path("product/<int:product_id>/", single_product, name='single_product'),
+    path("about_project/", about_project, name="about_project"),
 ]
 
 if settings.DEBUG:
