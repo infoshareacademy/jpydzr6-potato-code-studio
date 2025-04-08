@@ -50,21 +50,33 @@ const toggleDeleteButton = () => {
 }
 
 document.addEventListener("DOMContentLoaded", () => {
-    const tabLinks = document.querySelectorAll('.list-group-item[data-bs-toggle="tab"]');
-
-    tabLinks.forEach(link => {
-        link.addEventListener('click', function () {
-            tabLinks.forEach(item => item.classList.remove('active'));
-            this.classList.add('active');
+    document.querySelectorAll('.list-group-item[data-bs-toggle="tab"]').forEach(link => {
+        link.addEventListener('click', e => {
+            e.preventDefault();
+            new bootstrap.Tab(link).show();
         });
     });
 
     const hash = window.location.hash;
     if (hash) {
-        const tabTrigger = document.querySelector(`a[href="${hash}"]`);
-        if (tabTrigger) {
-            new bootstrap.Tab(tabTrigger).show();
-            tabTrigger.classList.add('active');
-        }
+        const trigger = document.querySelector(`a[href="${hash}"]`);
+        if (trigger) new bootstrap.Tab(trigger).show();
+    }
+
+    const alerts = document.querySelectorAll(".alert");
+    if (alerts.length) {
+        setTimeout(() => {
+            alerts.forEach(alert => {
+                alert.classList.add("fade");
+                setTimeout(() => alert.remove(), 500);
+            });
+
+            const successAlert = document.querySelector(".alert.alert-success");
+            if (successAlert) {
+                setTimeout(() => {
+                    window.location.href = "/profile#discount-vouchers";
+                }, 1000);
+            }
+        }, 3000);
     }
 });

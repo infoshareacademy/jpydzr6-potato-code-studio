@@ -47,3 +47,67 @@ i {
   background-color: #bb2d3b !important;
   border-color: #bb2d3b !important;
 }
+
+.discount-glow {
+  text-shadow:
+    0 0 5px white,
+    0 0 10px white;
+}
+
+.points-glow {
+  text-shadow:
+    0 0 5px white,
+    0 0 10px white; !important
+}
+
+.convert-btn {
+  background-color: white !important;
+  color: #212529;
+  border: none;
+  border-radius: 12px;
+  box-shadow: 0 0 12px rgba(255, 193, 7, 0.6);
+  transition: all 0.3s ease;
+  text-shadow: none;
+}
+
+.convert-btn:hover {
+  background-color: #fffbe6;
+  transform: scale(1.02);
+  box-shadow: 0 0 18px rgba(255, 193, 7, 0.8);
+}
+
+.voucher-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 16px;
+}
+
+.voucher-card {
+  background: #ffffffcc;
+  border-radius: 12px;
+  padding: 12px 18px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  font-size: 1.1rem;
+  font-weight: 500;
+  color: #000;
+}
+
+
+.status-badge {
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.status-badge.available {
+  background-color: #28a745;
+  color: white;
+}
+
+.status-badge.used {
+  background-color: #6c757d;
+  color: white;
+}

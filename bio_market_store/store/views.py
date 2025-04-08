@@ -14,10 +14,11 @@ from django.conf import settings
 from django.contrib.auth.password_validation import validate_password
 from django.core.exceptions import ValidationError
 from django.db.models import F
-
+from django.urls import reverse
 from django.http import HttpResponse
 # import json
 import logging
+from django.utils import timezone
 
 
 logger = logging.getLogger(__name__)
@@ -203,6 +204,10 @@ def user_profile(request):
     address_optional_form = AddressForm(instance=address_optional)
     password_form = PasswordChangeForm(request.user)
 
+    unredeemed_vouchers = request.user.vouchers.filter(is_redeemed=False)
+    used_vouchers = request.user.vouchers.filter(is_redeemed=True)
+    voucher_options = [1, 2, 3, 4, 5, 6, 7, 8]
+
     return render(
         request,
         "user_profile.html",
@@ -212,6 +217,9 @@ def user_profile(request):
             "address_optional_form": address_optional_form,
             "password_form": password_form,
             "states": STATES,
+            "used_vouchers" : used_vouchers,
+            "unredeemed_vouchers": unredeemed_vouchers,
+            "voucher_options": voucher_options,
         },
     )
 
@@ -470,10 +478,33 @@ def payment(request):
             }
         )
 
+    voucher_used = None
+    voucher_discount = 0
+    selected_voucher_id = request.POST.get("selected_voucher") or request.GET.get("selected_voucher")
+
+    unredeemed_vouchers = request.user.vouchers.filter(is_redeemed=False)
+    has_unredeemed_vouchers = unredeemed_vouchers.exists()
+
+    if selected_voucher_id:
+        try:
+            voucher_used = unredeemed_vouchers.get(id=int(selected_voucher_id))
+            voucher_discount = voucher_used.amount
+        except (ValueError, DiscountVoucher.DoesNotExist):
+            voucher_used = None
+            voucher_discount = 0
+
+    voucher_discount = min(voucher_discount, cart_total)
+    final_price = cart_total - voucher_discount
+
     context = {
         "cart_items": cart_items,
         "cart_total": cart_total,
+        "final_price": final_price,
         "total_items": total_items,
+        "voucher_discount": voucher_discount,
+        "voucher_used": voucher_used,
+        "unredeemed_vouchers": unredeemed_vouchers,
+        "has_unredeemed_vouchers": has_unredeemed_vouchers,
         "user_profile": user_profile,
         "address": address,
         "address_optional": address_optional,
@@ -523,6 +554,11 @@ def payment(request):
                 product.save()
             except Product.DoesNotExist:
                 pass
+
+        if voucher_used:
+            voucher_used.is_redeemed = True
+            voucher_used.redeemed_at = timezone.now()
+            voucher_used.save()
 
         # Prepare email content
         products_info = "\n".join(
@@ -669,14 +705,17 @@ def about_project(request):
 @login_required
 def convert_points_to_discount(request):
     user = request.user
-    if user.quiz_score >= 25:
-        vouchers_to_create = user.quiz_score // 25
-        converted_points = vouchers_to_create * 25
-        user.quiz_score -= converted_points
-        user.save()
-        for _ in range(vouchers_to_create):
-            DiscountVoucher.objects.create(user=user, amount=1)
-        messages.success(request, f"You've earned {vouchers_to_create} zł in discount vouchers!")
-    else:
-        messages.warning(request, "You need at least 25 points to convert them.")
-    return redirect("user_profile")
+    if request.method == "POST":
+        try:
+            amount = int(request.POST.get("voucher_amount"))
+        except (TypeError, ValueError):
+            messages.warning(request, "Invalid voucher amount.")
+            return redirect(reverse("user_profile") + "#discount-vouchers")
+
+        # Only use the model method to handle both logic & creation
+        if user.redeem_points(amount):
+            messages.success(request, f"You've earned a {amount} zł voucher!")
+        else:
+            messages.warning(request, "You don't have enough points for that voucher.")
+
+    return redirect(reverse("user_profile") + "#discount-vouchers")

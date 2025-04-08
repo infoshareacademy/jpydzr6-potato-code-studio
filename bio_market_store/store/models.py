@@ -1,11 +1,10 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
-
+from django.utils import timezone
 # from django.contrib.auth.models import User
 from django.conf import settings
 from .utils.user_validator import UserValidator
 import json
-
 
 class UserProfile(AbstractUser):
     base_roles = [("seller", "Seller"), ("client", "Client")]
@@ -32,6 +31,15 @@ class UserProfile(AbstractUser):
     @property
     def discount_voucher(self):
         return self.quiz_score // 25
+
+    def redeem_points(self, amount):
+        required_points = amount * 25
+        if self.quiz_score >= required_points:
+            self.quiz_score -= required_points
+            self.save(update_fields=["quiz_score"])
+            DiscountVoucher.objects.create(user=self, amount=amount)
+            return True
+        return False
 
 
 class Address(models.Model):
@@ -109,11 +117,20 @@ class MiniQuizBio(models.Model):
         return self.question_text
 
 class DiscountVoucher(models.Model):
-    user = models.ForeignKey(UserProfile, on_delete=models.CASCADE, related_name='vouchers')
-    amount = models.PositiveIntegerField(default=1)  # zł
+    user = models.ForeignKey(
+        UserProfile,
+        on_delete=models.CASCADE,
+        related_name='vouchers',
+    )
+    amount = models.PositiveIntegerField(default=1)
     created_at = models.DateTimeField(auto_now_add=True)
     is_redeemed = models.BooleanField(default=False)
+    redeemed_at = models.DateTimeField(null=True, blank=True)
 
     def __str__(self):
         return f"{self.amount} zł voucher for {self.user.username}"
 
+    def redeem(self):
+        self.is_redeemed = True
+        self.redeemed_at = timezone.now()
+        self.save()
