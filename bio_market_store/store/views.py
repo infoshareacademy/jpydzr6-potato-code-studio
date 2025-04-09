@@ -555,10 +555,12 @@ def payment(request):
             except Product.DoesNotExist:
                 pass
 
-        if voucher_used:
+        if voucher_used and voucher_discount > 0:
             voucher_used.is_redeemed = True
             voucher_used.redeemed_at = timezone.now()
             voucher_used.save()
+        elif voucher_used and voucher_discount == 0:
+            messages.warning(request, f"Voucher {voucher_used.amount} zł was too large and wasn't applied.")
 
         # Prepare email content
         products_info = "\n".join(

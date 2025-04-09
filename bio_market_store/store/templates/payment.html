@@ -73,10 +73,12 @@
                     <select class="form-select" id="selected_voucher_display">
                         <option value="" data-amount="0">-- Don't use a voucher --</option>
                         {% for voucher in unredeemed_vouchers %}
-                        <option value="{{ voucher.id }}" data-amount="{{ voucher.amount }}"
-                                {% if voucher_used and voucher_used.id == voucher.id %}selected{% endif %}>
-                            {{ voucher.amount }} zł
-                        </option>
+                            {% if voucher.amount <= cart_total %}
+                                <option value="{{ voucher.id }}" data-amount="{{ voucher.amount }}"
+                                    {% if voucher_used and voucher_used.id == voucher.id %}selected{% endif %}>
+                                    {{ voucher.amount }} zł
+                                </option>
+                            {% endif %}
                         {% endfor %}
                     </select>
                 </div>
@@ -512,6 +514,19 @@ document.addEventListener("DOMContentLoaded", () => {
     const voucherLabel = document.getElementById("voucher-label");
     const totalToPayDisplay = document.getElementById("total-to-pay-display");
     const cartTotal = parseFloat("{{ cart_total|floatformat:2 }}");
+
+    // Remove vouchers that exceed cart total
+    [formSelect, displaySelect].forEach(select => {
+        if (select) {
+            [...select.options].forEach(option => {
+                const discount = parseFloat(option.dataset.amount || 0);
+                if (discount > cartTotal) {
+                    option.disabled = true;
+                    option.style.display = 'none';
+                }
+            });
+        }
+    });
 
     const updateDiscount = () => {
         const selected = formSelect.options[formSelect.selectedIndex];
