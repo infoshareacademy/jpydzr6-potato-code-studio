@@ -9,6 +9,7 @@ import json
 
 class UserProfile(AbstractUser):
     base_roles = [("seller", "Seller"), ("client", "Client")]
+    quiz_result = models.IntegerField(default=0)
 
     # user_validation = UserValidator()
     # username = models.CharField(
