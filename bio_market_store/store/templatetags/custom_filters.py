@@ -9,6 +9,6 @@ def mul(value, arg):
     Usage in template: {{ value|mul:arg }}
     """
     try:
-        return float(value) * float(arg)
+        return int(value) * int(arg)
     except (ValueError, TypeError):
         return ''
