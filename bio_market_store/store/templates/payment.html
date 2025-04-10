@@ -32,7 +32,7 @@
                     <li class="list-group-item d-flex justify-content-between lh-sm">
                         <div>
                             <h6 class="my-0">{{ forloop.counter }}. {{ item.name }} ({{ item.price|floatformat:2 }} PLN)</h6>
-                            <small style="color: black; display: block; text-align: left;">{{ item.quantity }} szt.</small>
+                            <small style="color: black; display: block; text-align: left;">{{ item.quantity }} pcs.</small>
                         </div>
                         <span class="text-body-secondary" id="PriceColorInMiniCart" >{{ item.total|floatformat:2 }} PLN</span>
                     </li>
