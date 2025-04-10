@@ -19,6 +19,7 @@ from django.http import HttpResponse
 # import json
 import logging
 from django.utils import timezone
+from datetime import timedelta
 
 
 logger = logging.getLogger(__name__)
@@ -204,7 +205,7 @@ def user_profile(request):
     address_optional_form = AddressForm(instance=address_optional)
     password_form = PasswordChangeForm(request.user)
 
-    unredeemed_vouchers = request.user.vouchers.filter(is_redeemed=False)
+    unredeemed_vouchers = request.user.vouchers.filter(is_redeemed=False, expiration_date__gt=timezone.now())
     used_vouchers = request.user.vouchers.filter(is_redeemed=True)
     voucher_options = [1, 2, 3, 4, 5, 6, 7, 8]
 
@@ -558,6 +559,8 @@ def payment(request):
         if voucher_used and voucher_discount > 0:
             voucher_used.is_redeemed = True
             voucher_used.redeemed_at = timezone.now()
+            if not voucher_used.expiration_date:
+                voucher_used.expiration_date = voucher_used.created_at + timedelta(days=30)
             voucher_used.save()
         elif voucher_used and voucher_discount == 0:
             messages.warning(request, f"Voucher {voucher_used.amount} zł was too large and wasn't applied.")
@@ -714,7 +717,6 @@ def convert_points_to_discount(request):
             messages.warning(request, "Invalid voucher amount.")
             return redirect(reverse("user_profile") + "#discount-vouchers")
 
-        # Only use the model method to handle both logic & creation
         if user.redeem_points(amount):
             messages.success(request, f"You've earned a {amount} zł voucher!")
         else:

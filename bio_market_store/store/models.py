@@ -5,6 +5,7 @@ from django.utils import timezone
 from django.conf import settings
 from .utils.user_validator import UserValidator
 import json
+from datetime import timedelta
 
 class UserProfile(AbstractUser):
     base_roles = [("seller", "Seller"), ("client", "Client")]
@@ -24,6 +25,7 @@ class UserProfile(AbstractUser):
     # )
     role = models.CharField(max_length=20, choices=base_roles, default="client")
     quiz_score = models.PositiveIntegerField(default=0)
+    expiration_date = models.DateTimeField(default=timezone.now() + timedelta(days=30))
 
     def __str__(self):
         return f"{self.username}"
@@ -37,7 +39,11 @@ class UserProfile(AbstractUser):
         if self.quiz_score >= required_points:
             self.quiz_score -= required_points
             self.save(update_fields=["quiz_score"])
-            DiscountVoucher.objects.create(user=self, amount=amount)
+            DiscountVoucher.objects.create(
+                user=self,
+                amount=amount,
+                expiration_date=timezone.now() + timedelta(days=30)
+            )
             return True
         return False
 
@@ -126,6 +132,7 @@ class DiscountVoucher(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     is_redeemed = models.BooleanField(default=False)
     redeemed_at = models.DateTimeField(null=True, blank=True)
+    expiration_date = models.DateTimeField(default=timezone.now() + timedelta(days=30), null=True, blank=True)
 
     def __str__(self):
         return f"{self.amount} zł voucher for {self.user.username}"
@@ -134,3 +141,6 @@ class DiscountVoucher(models.Model):
         self.is_redeemed = True
         self.redeemed_at = timezone.now()
         self.save()
+
+    def is_expired(self):
+        return timezone.now() > self.expiration_date

@@ -263,6 +263,7 @@
               {% for voucher in unredeemed_vouchers %}
                 <div class="voucher-card d-flex justify-content-between align-items-center">
                   <div> 🎟️ <strong>{{ voucher.amount }} zł</strong> voucher</div>
+                  <small class="text-muted">Expires: {{ voucher.expiration_date|date:"Y-m-d" }}</small>
                   <span class="status-badge available">Available</span>
                 </div>
               {% empty %}
