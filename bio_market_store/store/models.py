@@ -26,6 +26,7 @@ class UserProfile(AbstractUser):
     role = models.CharField(max_length=20, choices=base_roles, default="client")
     quiz_score = models.PositiveIntegerField(default=0)
     expiration_date = models.DateTimeField(default=timezone.now() + timedelta(days=30))
+    last_quiz_attempt = models.DateTimeField(null=True, blank=True)
 
     def __str__(self):
         return f"{self.username}"

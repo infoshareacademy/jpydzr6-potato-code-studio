@@ -354,12 +354,23 @@ def user_profile_delete_user(request):
 
 
 def mini_quiz_bio_view(request):
+    cooldown_time = timedelta(minutes=5)
+    now_time = timezone.now()
+
+    if request.user.last_quiz_attempt and (now_time - request.user.last_quiz_attempt) < cooldown_time:
+        remaining_time = cooldown_time - (now_time - request.user.last_quiz_attempt)
+        minutes, seconds = divmod(int(remaining_time.total_seconds()), 60)
+        messages.warning(request, f"🕒 You can take the next quiz in {minutes}m {seconds}s.")
+        return redirect("user_profile")
+
     if "retry" in request.GET:
         for key in ["questions", "score", "question_index"]:
             request.session.pop(key, None)
         return redirect("mini_quiz_bio")
 
     if "questions" not in request.session:
+        request.user.last_quiz_attempt = now_time
+        request.user.save(update_fields=["last_quiz_attempt"])
         initialize_quiz_session(request)
 
     index = request.session["question_index"]
