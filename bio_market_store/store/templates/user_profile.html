@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
 {% load static %}
-
+{% load custom_filters %}
 
 
 {% block extra_head %}
@@ -25,7 +25,7 @@
         <a href="#personal-info" class="list-group-item list-group-item-action active" data-bs-toggle="tab">Personal Information</a>
         <a href="#address" class="list-group-item list-group-item-action" data-bs-toggle="tab">Address</a>
         <a href="#security" class="list-group-item list-group-item-action" data-bs-toggle="tab">Security Settings</a>
-
+        <a href="#discount-vouchers" class="list-group-item list-group-item-action" data-bs-toggle="tab">Discount Vouchers</a>
       </div>
     </div>
 
@@ -216,7 +216,69 @@
                         <button type="submit" class="btn btn-danger delete-button" id="delete-button" disabled>Delete</button>
                       </div>
                     </form>
+                  </div>
+                </div>
+              </div>
+            </div>
 
+            <!-- Discount Vouchers -->
+            <div class="tab-pane fade" id="discount-vouchers">
+              <h5>Your Total Mini Quiz Score:</h5>
+              <p class="points-glow text-success fs-4">
+                <strong>{{ request.user.quiz_score }}</strong> points
+              </p>
+
+              <h5>Your Discount:</h5>
+              <p class="discount-glow text-success fs-4">
+                <strong>{{ request.user.discount_voucher }}</strong> zł
+              </p>
+
+              {% if request.user.quiz_score >= 25 %}
+              <form method="POST" action="{% url 'convert_points_to_discount' %}">
+                {% csrf_token %}
+                <div class="mb-3">
+                  <label for="voucher_amount" class="form-label">Select voucher value</label>
+                  <select name="voucher_amount" id="voucher_amount" class="form-select" required>
+                    {% for option in voucher_options %}
+                      {% with required_points=option|add:"0"|mul:25 %}
+                        {% if request.user.quiz_score >= required_points %}
+                          <option value="{{ option }}">{{ option }} zł ({{ required_points }} points)</option>
+                        {% endif %}
+                      {% endwith %}
+                    {% endfor %}
+                  </select>
+                </div>
+                <button type="submit" class="convert-btn btn btn-lg btn-warning w-100 fw-bold py-3 mt-4">
+                  🎁 Convert Points to Voucher
+                  <i class="fa-solid fa-arrow-right-arrow-left ms-2"></i>
+                </button>
+              </form>
+            {% else %}
+              <p class="points-info-message">
+                You need at least 25 points to convert them to a discount.
+              </p>
+            {% endif %}
+            <hr class="my-4"/>
+
+            <h5>Your Discount Vouchers:</h5>
+            <div class="voucher-list">
+              {% for voucher in unredeemed_vouchers %}
+                <div class="voucher-card d-flex justify-content-between align-items-center">
+                  <div> 🎟️ <strong>{{ voucher.amount }} zł</strong> voucher</div>
+                  <small class="text-muted">Expires: {{ voucher.expiration_date|date:"Y-m-d" }}</small>
+                  <span class="status-badge available">Available</span>
+                </div>
+              {% empty %}
+                <p class="text-muted">You haven't earned any vouchers yet.</p>
+              {% endfor %}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
 {% endblock %} {% block extra_js %}
 <script
   src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"

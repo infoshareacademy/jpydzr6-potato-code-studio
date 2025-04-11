@@ -6,7 +6,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.utils.timezone import now
 from django.http import JsonResponse
-from .models import UserProfile, Address, Product, MiniQuizBio, AddressOptional
+from .models import UserProfile, Address, Product, MiniQuizBio, AddressOptional, DiscountVoucher
 from .forms import (
     UserProfileForm,
     AddressForm,
@@ -15,15 +15,19 @@ from .forms import (
     UserCreatingForm,
     UserAuthenticationForm,
 )
+from .forms import UserProfileForm, AddressForm, MiniQuizBioForm, UserPasswordChangeForm
 from .utils.states import STATES
 from django.core.mail import send_mail
 from django.conf import settings
 from django.contrib.auth.password_validation import validate_password
 from django.core.exceptions import ValidationError
-
+from django.db.models import F
+from django.urls import reverse
 from django.http import HttpResponse
 # import json
 import logging
+from django.utils import timezone
+from datetime import timedelta
 
 
 logger = logging.getLogger(__name__)
@@ -199,6 +203,10 @@ def user_profile(request):
     address_optional_form = AddressForm(instance=address_optional)
     password_form = PasswordChangeForm(request.user)
 
+    unredeemed_vouchers = request.user.vouchers.filter(is_redeemed=False, expiration_date__gt=timezone.now())
+    used_vouchers = request.user.vouchers.filter(is_redeemed=True)
+    voucher_options = [1, 2, 3, 4, 5, 6, 7, 8]
+
     return render(
         request,
         "user_profile.html",
@@ -208,6 +216,9 @@ def user_profile(request):
             "address_optional_form": address_optional_form,
             "password_form": password_form,
             "states": STATES,
+            "used_vouchers" : used_vouchers,
+            "unredeemed_vouchers": unredeemed_vouchers,
+            "voucher_options": voucher_options,
         },
     )
 
@@ -388,9 +399,15 @@ def mini_quiz_bio_view(request):
         "total_questions": total_questions,
     })
 
-
+@login_required
 def quiz_result_view(request):
     score = request.session.get("score", 0)
+
+    if request.user.is_authenticated and score > 0:
+        request.user.quiz_score = F('quiz_score') + score
+        request.user.save(update_fields=["quiz_score"])
+        request.user.refresh_from_db()
+
     request.session.update({"score": 0, "question_index": 0})
     return render(request, "quiz_result.html", {"score": score})
 
@@ -460,10 +477,33 @@ def payment(request):
             }
         )
 
+    voucher_used = None
+    voucher_discount = 0
+    selected_voucher_id = request.POST.get("selected_voucher") or request.GET.get("selected_voucher")
+
+    unredeemed_vouchers = request.user.vouchers.filter(is_redeemed=False)
+    has_unredeemed_vouchers = unredeemed_vouchers.exists()
+
+    if selected_voucher_id:
+        try:
+            voucher_used = unredeemed_vouchers.get(id=int(selected_voucher_id))
+            voucher_discount = voucher_used.amount
+        except (ValueError, DiscountVoucher.DoesNotExist):
+            voucher_used = None
+            voucher_discount = 0
+
+    voucher_discount = min(voucher_discount, cart_total)
+    final_price = cart_total - voucher_discount
+
     context = {
         "cart_items": cart_items,
         "cart_total": cart_total,
+        "final_price": final_price,
         "total_items": total_items,
+        "voucher_discount": voucher_discount,
+        "voucher_used": voucher_used,
+        "unredeemed_vouchers": unredeemed_vouchers,
+        "has_unredeemed_vouchers": has_unredeemed_vouchers,
         "user_profile": user_profile,
         "address": address,
         "address_optional": address_optional,
@@ -513,6 +553,15 @@ def payment(request):
                 product.save()
             except Product.DoesNotExist:
                 pass
+
+        if voucher_used and voucher_discount > 0:
+            voucher_used.is_redeemed = True
+            voucher_used.redeemed_at = timezone.now()
+            if not voucher_used.expiration_date:
+                voucher_used.expiration_date = voucher_used.created_at + timedelta(days=30)
+            voucher_used.save()
+        elif voucher_used and voucher_discount == 0:
+            messages.warning(request, f"Voucher {voucher_used.amount} zł was too large and wasn't applied.")
 
         # Prepare email content
         products_info = "\n".join(
@@ -655,3 +704,20 @@ def single_product(request, product_id):
 
 def about_project(request):
     return render(request, "about_project.html")
+
+@login_required
+def convert_points_to_discount(request):
+    user = request.user
+    if request.method == "POST":
+        try:
+            amount = int(request.POST.get("voucher_amount"))
+        except (TypeError, ValueError):
+            messages.warning(request, "Invalid voucher amount.")
+            return redirect(reverse("user_profile") + "#discount-vouchers")
+
+        if user.redeem_points(amount):
+            messages.success(request, f"You've earned a {amount} zł voucher!")
+        else:
+            messages.warning(request, "You don't have enough points for that voucher.")
+
+    return redirect(reverse("user_profile") + "#discount-vouchers")

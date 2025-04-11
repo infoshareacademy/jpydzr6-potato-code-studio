@@ -15,7 +15,6 @@
 </style>
 {% endblock %}
 {% block content %}
-
 <div class="container">
 
     <main>
@@ -24,7 +23,7 @@
         <div class="row g-5 justify-content-end">
             <div class="col-md-5 col-lg-4 cart-container">
                 <h4 class="d-flex justify-content-between align-items-center mb-3">
-                    <span class="text-primary">Your cart</span>
+                    <span class="text-white">Your cart</span>
                     <span class="badge bg-primary rounded-pill">{{ total_items }}</span>
                 </h4>
                 <ul class="list-group mb-3">
@@ -37,17 +36,69 @@
                         <span class="text-body-secondary" id="PriceColorInMiniCart" >{{ item.total|floatformat:2 }} PLN</span>
                     </li>
                     {% endfor %}
-                    <li class="list-group-item d-flex justify-content-between text-end">
-                        <strong class="text-end">Total (PLN)</strong>
+                    <li class="list-group-item d-flex justify-content-between">
+                        <strong>Subtotal:</strong>
                         <strong>{{ cart_total|floatformat:2 }} PLN</strong>
                     </li>
+
+                    <li id="voucher-discount-wrapper"
+                        class="list-group-item d-flex justify-content-between text-success"
+                        style="{% if voucher_discount == 0 %}display: none;{% endif %}">
+                        <span>
+                            Voucher Discount
+                            <small id="voucher-label" class="text-muted">
+                                {% if voucher_used %}
+                                    (Voucher: {{ voucher_used.amount }} zł)
+                                {% else %}
+                                    (No voucher selected)
+                                {% endif %}
+                            </small>
+                        </span>
+                        <strong id="voucher-discount-display">-{{ voucher_discount|floatformat:2 }} PLN</strong>
+                    </li>
+
+                    <li class="list-group-item d-flex justify-content-between">
+                        <strong>Total to pay:</strong>
+                        <strong id="total-to-pay-display">{{ final_price|floatformat:2 }} PLN</strong>
+                    </li>
                 </ul>
+                {% if has_unredeemed_vouchers %}
+                <div class="mb-3 d-none d-md-block">
+                    <label for="selected_voucher_display" class="form-label">Select Discount Voucher</label>
+                    <select class="form-select" id="selected_voucher_display">
+                        <option value="" data-amount="0">-- Don't use a voucher --</option>
+                        {% for voucher in unredeemed_vouchers %}
+                            {% if voucher.amount <= cart_total %}
+                                <option value="{{ voucher.id }}" data-amount="{{ voucher.amount }}"
+                                    {% if voucher_used and voucher_used.id == voucher.id %}selected{% endif %}>
+                                    {{ voucher.amount }} zł
+                                </option>
+                            {% endif %}
+                        {% endfor %}
+                    </select>
+                </div>
+                {% endif %}
             </div>
 
             <div class="col-md-7 col-lg-8">
                 <h4 class="mb-3">Billing address</h4>
                 <form class="needs-validation" method="POST" action="{% url 'payment' %}" novalidate>
                     {% csrf_token %}
+                    {% if has_unredeemed_vouchers %}
+
+                    <div class="mb-3 d-md-none">
+                        <label for="selected_voucher" class="form-label">Select Discount Voucher</label>
+                        <select class="form-select" id="selected_voucher" name="selected_voucher">
+                            <option value="" data-amount="0">-- Don't use a voucher --</option>
+                            {% for voucher in unredeemed_vouchers %}
+                            <option value="{{ voucher.id }}" data-amount="{{ voucher.amount }}"
+                                    {% if voucher_used and voucher_used.id == voucher.id %}selected{% endif %}>
+                                {{ voucher.amount }} zł
+                            </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    {% endif %}
                     <div class="row g-3">
                         <div class="col-sm-6">
                             <label for="firstName" class="form-label">First name</label>
@@ -438,5 +489,62 @@ function setupCVVValidation() {
     }
   });
 }
+document.addEventListener("DOMContentLoaded", () => {
+    const formSelect = document.getElementById("selected_voucher");
+    const displaySelect = document.getElementById("selected_voucher_display");
+
+    if (formSelect && displaySelect) {
+        displaySelect.addEventListener("change", () => {
+            const value = displaySelect.value;
+            formSelect.value = value;
+            formSelect.dispatchEvent(new Event("change"));
+        });
+
+        // On load, sync form to display
+        displaySelect.value = formSelect.value;
+    }
+
+    const discountWrapper = document.getElementById("voucher-discount-wrapper");
+    const voucherDiscountDisplay = document.getElementById("voucher-discount-display");
+    const voucherLabel = document.getElementById("voucher-label");
+    const totalToPayDisplay = document.getElementById("total-to-pay-display");
+    const cartTotal = parseFloat("{{ cart_total|floatformat:2 }}");
+
+    // Remove vouchers that exceed cart total
+    [formSelect, displaySelect].forEach(select => {
+        if (select) {
+            [...select.options].forEach(option => {
+                const discount = parseFloat(option.dataset.amount || 0);
+                if (discount > cartTotal) {
+                    option.disabled = true;
+                    option.style.display = 'none';
+                }
+            });
+        }
+    });
+
+    const updateDiscount = () => {
+        const selected = formSelect.options[formSelect.selectedIndex];
+        const discount = parseFloat(selected.dataset.amount || 0);
+        const newTotal = (cartTotal - discount).toFixed(2);
+
+        totalToPayDisplay.textContent = `${newTotal} PLN`;
+
+        if (discount > 0) {
+            discountWrapper.style.display = "flex";
+            voucherDiscountDisplay.textContent = `-${discount.toFixed(2)} PLN`;
+            voucherLabel.textContent = `(Voucher: ${discount.toFixed(2)} zł)`;
+        } else {
+            discountWrapper.style.display = "none";
+            voucherDiscountDisplay.textContent = "";
+            voucherLabel.textContent = `(No voucher selected)`;
+        }
+    }
+
+    if (formSelect) {
+        formSelect.addEventListener("change", updateDiscount);
+        updateDiscount();
+    }
+});
 </script>
 {% endblock %}
