@@ -231,7 +231,7 @@ def user_profile_personal_info(request):
         if user_profile_form.is_valid():
             user_profile_form.save()
             messages.success(request, "Profile updated successfully!")
-            return redirect("user_profile")
+            return redirect(reverse("user_profile") + "#personal-info")
     else:
         user_profile_data = {
             "first_name": user_profile.first_name if user_profile.first_name else "",
@@ -258,7 +258,7 @@ def user_profile_address(request):
         if address_form.is_valid():
             address_form.save()
             messages.success(request, "Profile updated successfully!")
-            return redirect("user_profile")
+            return redirect(reverse("user_profile") + "#address")
         else:
             address_data = {
                 "street": address.street if address.street else "",
@@ -285,7 +285,7 @@ def user_profile_address_optional(request):
         if form.is_valid():
             form.save()
             messages.success(request, "Alternative address updated successfully.")
-            return redirect("user_profile")  # Przekierowanie z powrotem do profilu
+            return redirect(reverse("user_profile") + "#address")
     else:
         form = AddressForm(instance=address_optional)
 
@@ -300,14 +300,14 @@ def user_profile_password(request):
             user = password_form.save()
             update_session_auth_hash(request, user)
             messages.success(request, "The password was changed successfully!")
-            return redirect("user_profile")
+            return redirect(reverse("user_profile") + "#security")
         else:
             if "old_password" in password_form.errors:
                 messages.error(request, "The old password is incorrect.")
             if "new_password2" in password_form.errors:
                 messages.error(request, "New password and confirmation do not match.")
 
-            return redirect("user_profile")
+            return redirect(reverse("user_profile") + "#security")
 
     password_form = UserPasswordChangeForm(request.user)
     return render(request, "user_profile.html", {"password_form": password_form})

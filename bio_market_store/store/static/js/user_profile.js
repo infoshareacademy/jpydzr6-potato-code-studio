@@ -109,7 +109,8 @@ document.addEventListener("DOMContentLoaded", () => {
             const successAlert = document.querySelector(".alert.alert-success");
             if (successAlert) {
                 setTimeout(() => {
-                    window.location.href = "/profile#discount-vouchers";
+                    const currentHash = window.location.hash || "#personal-info"
+                    window.location.href = `/profile${currentHash}`;
                 }, 1000);
             }
         }, 3000);
