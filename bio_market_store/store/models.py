@@ -1,9 +1,9 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 from django.utils import timezone
-# from django.contrib.auth.models import User
 from django.conf import settings
 from .utils.user_validator import UserValidator
+from django.core.validators import MinValueValidator, MaxValueValidator
 import json
 from datetime import timedelta
 
@@ -100,6 +100,15 @@ class Product(models.Model):
     def __str__(self):
         return f"{self.name_tag} ({self.category})"
 
+    def average_rating(self):
+        reviews = self.reviews.all()
+        if reviews:
+            return sum(review.rating for review in reviews) / len(reviews)
+        return 0
+
+    def total_reviews(self):
+        return self.reviews.count()
+
 
 class MiniQuizBio(models.Model):
     question_text = models.TextField()
@@ -123,6 +132,7 @@ class MiniQuizBio(models.Model):
     def __str__(self):
         return self.question_text
 
+
 class DiscountVoucher(models.Model):
     user = models.ForeignKey(
         UserProfile,
@@ -145,3 +155,17 @@ class DiscountVoucher(models.Model):
 
     def is_expired(self):
         return timezone.now() > self.expiration_date
+
+
+class Review(models.Model):
+    product = models.ForeignKey('Product', on_delete=models.CASCADE, related_name='reviews')
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    rating = models.IntegerField(validators=[MinValueValidator(1), MaxValueValidator(5)])
+    comment = models.TextField(blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        unique_together = ('product', 'user')  # one user can add only one review per product
+
+    def __str__(self):
+        return f"{self.user.username}: {self.rating}/5 for {self.product.name}"

@@ -6,7 +6,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.utils.timezone import now
 from django.http import JsonResponse
-from .models import UserProfile, Address, Product, MiniQuizBio, AddressOptional, DiscountVoucher
+from .models import UserProfile, Address, Product, MiniQuizBio, AddressOptional, DiscountVoucher, Review
 from .forms import (
     UserProfileForm,
     AddressForm,
@@ -14,6 +14,7 @@ from .forms import (
     UserPasswordChangeForm,
     UserCreatingForm,
     UserAuthenticationForm,
+    ReviewForm,
 )
 from .forms import UserProfileForm, AddressForm, MiniQuizBioForm, UserPasswordChangeForm
 from .utils.states import STATES
@@ -707,11 +708,18 @@ def decrement_quantity(request, product_id):
 
 
 def single_product(request, product_id):
-    try:
-        product = Product.objects.get(id=product_id)
-        return render(request, 'single_product.html', {'product': product})
-    except Product.DoesNotExist:
-        return HttpResponse(f"Product with id {product_id} does not exist.")
+    product = get_object_or_404(Product, id=product_id)
+    reviews = product.reviews.all().order_by('-created_at')
+
+    user_review = None
+    if request.user.is_authenticated:
+        user_review = Review.objects.filter(product=product, user=request.user).first()
+
+    return render(request, 'product_detail.html', {
+        'product': product,
+        'reviews': reviews,
+        'user_has_reviewed': user_review is not None
+    })
 
 def about_project(request):
     return render(request, "about_project.html")
@@ -732,3 +740,47 @@ def convert_points_to_discount(request):
             messages.warning(request, "You don't have enough points for that voucher.")
 
     return redirect(reverse("user_profile") + "#discount-vouchers")
+
+
+@login_required
+def add_review(request, product_id):
+    product = get_object_or_404(Product, id=product_id)
+
+    # Check if user already reviewed this product
+    user_review = Review.objects.filter(product=product, user=request.user).first()
+
+    if request.method == 'POST':
+        form = ReviewForm(request.POST, instance=user_review)
+        if form.is_valid():
+            review = form.save(commit=False)
+            review.product = product
+            review.user = request.user
+            review.save()
+            messages.success(request, "Your review has been saved!")
+            return redirect('single_product', product_id=product.id)
+    else:
+        form = ReviewForm(instance=user_review)
+
+    return render(request, 'add_review.html', {
+        'form': form,
+        'product': product,
+        'edit_mode': user_review is not None
+    })
+
+
+# def product_detail(request, product_id):
+#     product = get_object_or_404(Product, id=product_id)
+#     reviews = product.reviews.all().order_by('-created_at')
+#
+#     user_review = None
+#     if request.user.is_authenticated:
+#         user_review = Review.objects.filter(product=product, user=request.user).first()
+#
+#     review_form = ReviewForm(instance=user_review)
+#
+#     return render(request, 'product_detail.html', {
+#         'product': product,
+#         'reviews': reviews,
+#         'review_form': review_form,
+#         'user_has_reviewed': user_review is not None
+#     })

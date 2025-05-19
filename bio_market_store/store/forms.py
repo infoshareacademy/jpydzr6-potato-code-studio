@@ -5,7 +5,7 @@ from django.contrib.auth.forms import (
     PasswordChangeForm,
 )
 from django.contrib.auth import get_user_model
-from .models import UserProfile, Product, Address, MiniQuizBio, AddressOptional
+from .models import UserProfile, Product, Address, MiniQuizBio, AddressOptional, Review
 from .utils.user_registration import ROLE_CHOICES
 import json
 from django.conf import settings
@@ -180,3 +180,12 @@ class MiniQuizBioForm(forms.Form):
             self.fields["answer"].choices = [
                 (key, value) for key, value in answer_choices.items()
             ]
+
+class ReviewForm(forms.ModelForm):
+    class Meta:
+        model = Review
+        fields = ['rating', 'comment']
+        widgets = {
+            'rating': forms.Select(choices=[(i, i) for i in range(1, 6)]),
+            'comment': forms.Textarea(attrs={'rows': 4, 'placeholder': 'Share your experience with this product...'}),
+        }

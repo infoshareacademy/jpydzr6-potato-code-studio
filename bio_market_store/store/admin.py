@@ -1,7 +1,7 @@
 from django.contrib import admin
 from django import forms
 from django.contrib.auth.forms import UserChangeForm, AdminPasswordChangeForm
-from .models import UserProfile, Address, MiniQuizBio, Product  # Import the Product model
+from .models import UserProfile, Address, MiniQuizBio, Product, Review
 from .forms import UserCreatingForm
 
 
@@ -73,6 +73,12 @@ class ProductAdmin(admin.ModelAdmin):
     ordering = ('-created_at',)  # Default ordering (newest first)
 
 
+class ReviewAdmin(admin.ModelAdmin):
+    list_display = ('product', 'user', 'rating', 'created_at')
+    list_filter = ('rating', 'created_at')
+    search_fields = ('product__name', 'user__username', 'comment')
+
 # Register other models
 admin.site.register(UserProfile, UserProfileAdmin)
 admin.site.register(MiniQuizBio)
+admin.site.register(Review, ReviewAdmin)
