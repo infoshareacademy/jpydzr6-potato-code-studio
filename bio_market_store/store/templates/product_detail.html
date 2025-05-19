@@ -1,0 +1,189 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block extra_head %}
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+<link rel="stylesheet" href="{% static 'css/product_detail_style.css' %}">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+{% endblock %}
+
+{% block content %}
+<div class="container product-detail">
+    <nav aria-label="breadcrumb" class="my-4">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{% url 'product_list' %}">Products</a></li>
+            <li class="breadcrumb-item active" aria-current="page">{{ product.name_tag }}</li>
+        </ol>
+    </nav>
+
+    <div class="row">
+        <!-- Product Image -->
+        <div class="col-md-5 mb-4">
+            <div class="card shadow-sm">
+                <img src="{{ product.image.url }}" class="img-fluid product-detail-img" alt="{{ product.name }}">
+            </div>
+        </div>
+
+        <!-- Product Info -->
+        <div class="col-md-7 mb-4">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <h1 class="card-title">{{ product.name_tag }}</h1>
+
+                    <!-- Average Rating Display -->
+                    <div class="product-rating mb-3">
+                        <div class="d-flex align-items-center">
+                            <div class="rating-stars me-2">
+                                {% for i in "12345" %}
+                                    {% if forloop.counter <= product.average_rating|floatformat:0|add:"0" %}
+                                        <i class="fas fa-star text-warning"></i>
+                                    {% else %}
+                                        <i class="far fa-star text-warning"></i>
+                                    {% endif %}
+                                {% endfor %}
+                            </div>
+                            <span class="rating-text">
+                                {{ product.average_rating|floatformat:1 }} ({{ product.total_reviews }} reviews)
+                            </span>
+                        </div>
+                    </div>
+
+                    <p class="card-text text-primary fw-bold fs-4">Price: {{ product.price }} zł</p>
+                    <p class="card-text">Category: <strong>{{ product.category }}</strong></p>
+                    <p class="card-text">Weight: <strong>{{ product.weight }}</strong></p>
+                    <p class="card-text">Expiration date: <strong>{{ product.exp_date }}</strong></p>
+                    <p class="card-text">Amount: <strong>{{ product.amount }}</strong></p>
+                    <p class="card-text">Producer: <strong>{{ product.producer }}</strong></p>
+
+                    {% if product.description %}
+                    <h4 class="mt-4">Description</h4>
+                    <p class="card-text">{{ product.description }}</p>
+                    {% endif %}
+
+                    <!-- Add to Cart Section -->
+                    <div class="mt-4">
+                        {% if product.id|stringformat:"s" in request.session.cart %}
+                            <button class="btn btn-secondary" disabled>Added to Cart</button>
+                        {% elif not user.is_authenticated %}
+                            <a href="{% url 'login' %}" class="btn btn-primary">Log in to add to cart</a>
+                        {% else %}
+                            <form method="post" action="{% url 'add_to_cart' product.id %}">
+                                {% csrf_token %}
+                                <a href="{% url 'add_to_cart' product.id %}" class="btn btn-success btn-lg">Add to Cart</a>
+                            </form>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Reviews Section -->
+    <div class="row">
+        <div class="col-12">
+            <div class="card shadow-sm mb-5">
+                <div class="card-header bg-light">
+                    <ul class="nav nav-tabs card-header-tabs" id="productTabs" role="tablist">
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link active" id="reviews-tab" data-bs-toggle="tab" data-bs-target="#reviews" type="button" role="tab" aria-controls="reviews" aria-selected="true">
+                                Reviews ({{ product.total_reviews }})
+                            </button>
+                        </li>
+                    </ul>
+                </div>
+                <div class="card-body">
+                    <div class="tab-content" id="productTabsContent">
+                        <div class="tab-pane fade show active" id="reviews" role="tabpanel" aria-labelledby="reviews-tab">
+                            <!-- Add Review Button -->
+                            <div class="d-flex justify-content-between align-items-center mb-4">
+                                <h3>Customer Reviews</h3>
+                                {% if user.is_authenticated %}
+                                    {% if user_has_reviewed %}
+                                        <a href="{% url 'add_review' product_id=product.id %}" class="btn btn-outline-primary">
+                                            <i class="fas fa-edit"></i> Edit Your Review
+                                        </a>
+                                    {% else %}
+                                        <a href="{% url 'add_review' product_id=product.id %}" class="btn btn-primary">
+                                            <i class="fas fa-star"></i> Write a Review
+                                        </a>
+                                    {% endif %}
+                                {% else %}
+                                    <p><a href="{% url 'login' %}?next={{ request.path }}">Log in</a> to write a review</p>
+                                {% endif %}
+                            </div>
+
+                            <!-- Reviews List -->
+                            {% if reviews %}
+                                <div class="reviews-list">
+                                    {% for review in reviews %}
+                                        <div class="review-item card mb-3">
+                                            <div class="card-body">
+                                                <div class="d-flex justify-content-between">
+                                                    <div>
+                                                        <span class="review-author fw-bold">{{ review.user.username }}</span>
+                                                        <div class="review-rating">
+                                                            {% for i in "12345" %}
+                                                                {% if forloop.counter <= review.rating %}
+                                                                    <i class="fas fa-star text-warning"></i>
+                                                                {% else %}
+                                                                    <i class="far fa-star text-warning"></i>
+                                                                {% endif %}
+                                                            {% endfor %}
+                                                            <span class="rating-text ms-1">{{ review.rating }}/5</span>
+                                                        </div>
+                                                    </div>
+                                                    <div class="review-date text-muted">
+                                                        {{ review.created_at|date:"F d, Y" }}
+                                                    </div>
+                                                </div>
+
+                                                {% if review.comment %}
+                                                    <div class="review-comment mt-3">
+                                                        {{ review.comment }}
+                                                    </div>
+                                                {% endif %}
+                                            </div>
+                                        </div>
+                                    {% endfor %}
+                                </div>
+                            {% else %}
+                                <div class="alert alert-info">
+                                    No reviews yet. Be the first to review this product!
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Related Products - If you implement this feature -->
+    {% if related_products %}
+    <div class="row mt-4">
+        <div class="col-12">
+            <h3 class="mb-4">You may also like</h3>
+        </div>
+        {% for related in related_products %}
+            <div class="col-md-3 mb-4">
+                <div class="card shadow-sm product-card">
+                    <img src="{{ related.image.url }}" class="product-img" alt="{{ related.name }}">
+                    <div class="card-body">
+                        <h5 class="card-title">{{ related.name_tag }}</h5>
+                        <p class="card-text text-primary fw-bold">Price: {{ related.price }} zł</p>
+                        <a href="{% url 'single_product' related.id %}" class="btn btn-sm btn-primary">View Details</a>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
+        crossorigin="anonymous"></script>
+{% endblock %}

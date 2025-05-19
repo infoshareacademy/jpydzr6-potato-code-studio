@@ -1,6 +1,7 @@
 from django.urls import path
 from django.conf.urls.static import static
 from django.conf import settings
+from . import views
 from .views import (
     cover_page,
     about_us,
@@ -66,6 +67,7 @@ urlpatterns = [
     path("product/<int:product_id>/", single_product, name='single_product'),
     path("about_project/", about_project, name="about_project"),
     path("convert-points/", convert_points_to_discount, name="convert_points_to_discount"),
+    path('product/<int:product_id>/review/', views.add_review, name='add_review'),
 ]
 
 if settings.DEBUG:

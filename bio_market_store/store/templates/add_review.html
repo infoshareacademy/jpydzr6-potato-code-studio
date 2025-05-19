@@ -1,0 +1,87 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block extra_head %}
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <nav aria-label="breadcrumb" class="my-4">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{% url 'product_list' %}">Products</a></li>
+            <li class="breadcrumb-item"><a href="{% url 'single_product' product.id %}">{{ product.name_tag }}</a></li>
+            <li class="breadcrumb-item active" aria-current="page">{% if edit_mode %}Edit{% else %}Add{% endif %} Review</li>
+        </ol>
+    </nav>
+
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow-sm">
+                <div class="card-header bg-light">
+                    <h2 class="card-title mb-0">{% if edit_mode %}Edit{% else %}Add{% endif %} Review for {{ product.name_tag }}</h2>
+                </div>
+                <div class="card-body">
+                    <div class="mb-4">
+                        <div class="d-flex align-items-center">
+                            <img src="{{ product.image.url }}" alt="{{ product.name }}" class="img-thumbnail me-3" style="max-width: 100px;">
+                            <div>
+                                <h5>{{ product.name_tag }}</h5>
+                                <p class="text-primary fw-bold mb-0">{{ product.price }} zł</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <form method="post">
+                        {% csrf_token %}
+
+                        <div class="mb-3">
+                            <label for="{{ form.rating.id_for_label }}" class="form-label">Rating</label>
+                            <select name="{{ form.rating.name }}" id="{{ form.rating.id_for_label }}" class="form-select">
+                                <option value="" disabled {% if not form.rating.value %}selected{% endif %}>Select rating</option>
+                                {% for i in "12345" %}
+                                <option value="{{ forloop.counter }}" {% if form.rating.value|add:"0" == forloop.counter %}selected{% endif %}>
+                                    {{ forloop.counter }} Star{% if forloop.counter != 1 %}s{% endif %}
+                                </option>
+                                {% endfor %}
+                            </select>
+                            {% if form.rating.errors %}
+                            <div class="invalid-feedback d-block">
+                                {{ form.rating.errors }}
+                            </div>
+                            {% endif %}
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="{{ form.comment.id_for_label }}" class="form-label">Your Review (Optional)</label>
+                            <textarea name="{{ form.comment.name }}" id="{{ form.comment.id_for_label }}"
+                                      class="form-control" rows="4"
+                                      placeholder="Share your experience with this product...">{{ form.comment.value|default:'' }}</textarea>
+                            {% if form.comment.errors %}
+                            <div class="invalid-feedback d-block">
+                                {{ form.comment.errors }}
+                            </div>
+                            {% endif %}
+                        </div>
+
+                        <div class="d-flex justify-content-between mt-4">
+                            <a href="{% url 'single_product' product.id %}" class="btn btn-outline-secondary">Cancel</a>
+                            <button type="submit" class="btn btn-primary">
+                                {% if edit_mode %}Update{% else %}Submit{% endif %} Review
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
+        crossorigin="anonymous"></script>
+{% endblock %}
